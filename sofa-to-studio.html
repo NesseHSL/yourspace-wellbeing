@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sofa to Studio — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    /* ── PAGE HERO ─────────────────────────────── */
+    .prog-hero {
+      background: var(--navy);
+      padding: 130px 48px 110px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .prog-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(42,157,181,0.18) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .prog-hero .kicker {
+      color: var(--teal);
+      margin-bottom: 20px;
+    }
+    .prog-hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(58px, 9vw, 104px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.0;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .prog-hero-sub {
+      font-family: var(--font-serif);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      font-style: italic;
+      margin-bottom: 52px;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.55;
+    }
+    .prog-hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .hero-small-print {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.5px;
+    }
+
+    /* ── WHO IT'S FOR ──────────────────────────── */
+    #who {
+      background: var(--off-white);
+      padding: 100px 48px;
+    }
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 52px;
+    }
+    .who-card {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 32px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .who-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+    }
+    .who-icon {
+      font-size: 28px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .who-card p {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--navy);
+      font-weight: 300;
+    }
+
+    /* ── WHAT YOU'LL NEED ──────────────────────── */
+    #equipment {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+    .equipment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .equipment-item {
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 28px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.2s;
+    }
+    .equipment-item:hover {
+      box-shadow: 0 6px 28px rgba(0,0,0,0.07);
+    }
+    .equipment-name {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--navy);
+    }
+    .equipment-arrow {
+      display: inline-block;
+      color: var(--teal);
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      font-weight: 300;
+      font-style: italic;
+    }
+    .equipment-sub {
+      font-size: 13px;
+      color: var(--grey-mid);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ── 30-DAY STRUCTURE ──────────────────────── */
+    #structure {
+      background: var(--navy);
+      padding: 100px 48px;
+    }
+    #structure .section-label { color: rgba(255,255,255,0.4); }
+    #structure h2 { color: var(--white); }
+    #structure .section-sub {
+      color: rgba(255,255,255,0.55);
+      max-width: 600px;
+    }
+
+    .phase-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 60px;
+      position: relative;
+    }
+    .phase-timeline::before {
+      content: '';
+      position: absolute;
+      top: 42px;
+      left: calc(16.66% + 10px);
+      right: calc(16.66% + 10px);
+      height: 2px;
+      background: linear-gradient(to right, rgba(42,157,181,0.4), rgba(42,157,181,0.8), rgba(42,157,181,0.4));
+    }
+    .phase-card {
+      padding: 0 28px 0;
+      text-align: center;
+      position: relative;
+    }
+    .phase-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--teal);
+      margin: 32px auto 32px;
+      box-shadow: 0 0 0 6px rgba(42,157,181,0.2);
+      position: relative;
+      z-index: 1;
+    }
+    .phase-number {
+      font-size: 9px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+    .phase-card h3 {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .phase-days {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 16px;
+    }
+    .phase-card p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.55);
+      font-weight: 300;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .schedule-rhythm {
+      margin-top: 56px;
+      display: flex;
+      justify-content: center;
+    }
+    .rhythm-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+    .rhythm-segment {
+      padding: 14px 28px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+    .rhythm-segment.active-days {
+      background: rgba(42,157,181,0.2);
+      color: var(--teal);
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .rhythm-segment.rest-days {
+      color: rgba(255,255,255,0.35);
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .rhythm-segment.repeat {
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ── THE PROGRAMME (content cards) ─────────── */
+    #the-programme {
+      background: var(--off-white);
+      padding: 100px 48px;
+    }
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+    .content-card {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 16px;
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .content-card:hover {
+      box-shadow: 0 12px 44px rgba(0,0,0,0.09);
+      transform: translateY(-3px);
+    }
+    .content-card.card-welcome {
+      grid-column: span 2;
+    }
+    .content-card.card-fuel {
+      border-color: rgba(42,157,181,0.25);
+      background: var(--teal-light);
+    }
+    .coming-soon-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.05);
+      color: var(--grey-mid);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .card-phase-badge {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: var(--navy);
+      color: var(--white);
+      width: fit-content;
+    }
+    .card-phase-badge.badge-phase1 { background: rgba(28,52,97,0.7); }
+    .card-phase-badge.badge-phase2 { background: rgba(28,52,97,0.85); }
+    .card-phase-badge.badge-phase3 { background: var(--navy); }
+    .card-phase-badge.badge-bonus { background: var(--teal); }
+    .card-phase-badge.badge-start { background: var(--grey-mid); }
+
+    .content-card h3 {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--navy);
+      line-height: 1.15;
+      padding-right: 80px;
+    }
+    .content-card p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--grey-mid);
+      font-weight: 300;
+      flex-grow: 1;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: auto;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .card-tags span {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: var(--teal-light);
+      padding: 4px 11px;
+      border-radius: 20px;
+    }
+    .card-fuel .card-tags span {
+      background: rgba(42,157,181,0.15);
+    }
+    .card-duration {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--navy);
+      opacity: 0.5;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── MACRO CALCULATOR ──────────────────────── */
+    #calculator {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+    .calc-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .calc-form {
+      margin-top: 52px;
+      background: var(--off-white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 20px;
+      padding: 48px;
+    }
+    .calc-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .calc-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .calc-field label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--navy);
+      opacity: 0.55;
+      font-weight: 400;
+    }
+    .calc-field input,
+    .calc-field select {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--navy);
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 10px;
+      padding: 14px 18px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+    }
+    .calc-field input:focus,
+    .calc-field select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(42,157,181,0.12);
+    }
+    .calc-field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231C3461' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+    .calc-sex-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    .calc-sex-toggle input[type="radio"] { display: none; }
+    .calc-sex-toggle label {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--grey-mid);
+      background: var(--white);
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+      text-transform: none;
+    }
+    .calc-sex-toggle input[type="radio"]:checked + label {
+      background: var(--navy);
+      color: var(--white);
+    }
+    .calc-btn-row {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+    }
+    .btn-teal {
+      display: inline-block;
+      background: var(--teal);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 16px 48px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-teal:hover {
+      background: #228fa5;
+      transform: translateY(-1px);
+    }
+    .btn-teal:active { transform: translateY(0); }
+
+    /* Results */
+    .calc-results {
+      margin-top: 32px;
+      display: none;
+    }
+    .calc-results.visible { display: block; }
+    .results-inner {
+      background: var(--navy);
+      border-radius: 16px;
+      padding: 40px 44px;
+    }
+    .results-title {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 28px;
+    }
+    .results-calories {
+      font-family: var(--font-serif);
+      font-size: 64px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .results-cal-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+    .results-macros {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .macro-block {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 12px;
+      padding: 22px 20px;
+      text-align: center;
+    }
+    .macro-grams {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .macro-unit {
+      font-size: 14px;
+      opacity: 0.4;
+    }
+    .macro-name {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-top: 8px;
+    }
+    .calc-disclaimer {
+      font-size: 11px;
+      color: var(--grey);
+      font-weight: 300;
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    /* ── PRICING ───────────────────────────────── */
+    #pricing {
+      background: var(--navy);
+      padding: 100px 48px;
+    }
+    #pricing .section-label { color: rgba(255,255,255,0.4); }
+    #pricing h2 { color: var(--white); }
+    #pricing .section-sub { color: rgba(255,255,255,0.5); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 860px;
+      margin: 56px auto 0;
+    }
+    .pricing-card {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: rgba(255,255,255,0.04);
+    }
+    .pricing-card.featured {
+      background: var(--white);
+      border-color: var(--white);
+      position: relative;
+    }
+    .featured-flag {
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--teal);
+      color: var(--white);
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 20px;
+      border-radius: 0 0 10px 10px;
+    }
+    .pricing-label {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .pricing-card.featured .pricing-label { color: var(--teal); margin-top: 12px; }
+    .pricing-amount {
+      font-family: var(--font-serif);
+      font-size: 54px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+    }
+    .pricing-card.featured .pricing-amount { color: var(--navy); }
+    .pricing-amount-alt {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.4);
+      margin-top: 4px;
+    }
+    .pricing-card.featured .pricing-amount-alt { color: var(--grey-mid); }
+    .pricing-period {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.35);
+      margin-top: 4px;
+    }
+    .pricing-card.featured .pricing-period { color: var(--grey-mid); }
+    .pricing-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .pricing-card.featured .pricing-divider { border-color: rgba(0,0,0,0.08); }
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      flex-grow: 1;
+    }
+    .pricing-features li {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      padding-left: 22px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .pricing-card.featured .pricing-features li { color: var(--grey-mid); }
+    .pricing-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: 12px;
+    }
+    .pricing-note {
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+      font-weight: 300;
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────── */
+    @media (max-width: 1000px) {
+      .phase-timeline { grid-template-columns: 1fr; }
+      .phase-timeline::before { display: none; }
+      .phase-card { padding: 0; text-align: left; display: flex; gap: 20px; align-items: flex-start; }
+      .phase-dot { margin: 4px 0 0; flex-shrink: 0; }
+      .phase-card p { margin: 0; }
+      .content-card.card-welcome { grid-column: span 1; }
+    }
+    @media (max-width: 900px) {
+      .prog-hero { padding: 88px 24px 72px; }
+      #who, #equipment, #structure, #the-programme, #calculator, #pricing { padding: 72px 24px; }
+      .calc-form { padding: 32px 24px; }
+      .results-inner { padding: 32px 24px; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 460px; }
+    }
+    @media (max-width: 640px) {
+      .who-grid { grid-template-columns: 1fr; }
+      .calc-row { grid-template-columns: 1fr; }
+      .results-macros { grid-template-columns: 1fr; }
+      .content-card h3 { padding-right: 0; }
+      .coming-soon-badge { position: static; width: fit-content; margin-top: -4px; margin-left: auto; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="site" class="visible">
+
+    <!-- HEADER -->
+    <header id="header">
+      <div class="header-inner">
+        <a href="index.html" class="header-logo">
+          <img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing">
+        </a>
+        <nav>
+          <a href="index.html#programmes">Programmes</a>
+          <a href="index.html#about">About</a>
+          <a href="#" class="nav-btn">Sign In</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="prog-hero">
+      <div class="hero-inner">
+        <p class="kicker">30-Day Programme</p>
+        <h1>Sofa to Studio</h1>
+        <p class="prog-hero-sub">A complete beginner's transformation — from your living room to the studio floor</p>
+        <div class="prog-hero-btns">
+          <a href="#pricing" class="btn-primary">Join the programme — £29.99</a>
+          <a href="#pricing" class="btn-ghost-light">Included in All Access</a>
+        </div>
+        <p class="hero-small-print">30 days access from purchase date</p>
+      </div>
+    </section>
+
+    <!-- WHO IT'S FOR -->
+    <section id="who">
+      <div class="section-inner">
+        <p class="section-label">Who it's for</p>
+        <h2>Is this for you?</h2>
+        <div class="who-grid">
+          <div class="who-card">
+            <div class="who-icon">🧘</div>
+            <p>You're new to barre or Pilates</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">💪</div>
+            <p>You want to feel stronger and more confident</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">🏛️</div>
+            <p>You'd love to try a studio class but want to prepare first</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">🏠</div>
+            <p>You want a structured programme you can do at home</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT YOU'LL NEED -->
+    <section id="equipment">
+      <div class="section-inner">
+        <p class="section-label">Equipment</p>
+        <h2>What you'll need</h2>
+        <p class="section-sub">No expensive equipment required — we've included alternatives for everything</p>
+        <div class="equipment-grid">
+
+          <div class="equipment-item">
+            <div class="equipment-name">Yoga mat</div>
+            <span class="equipment-arrow">or alternatively →</span>
+            <div class="equipment-sub">A folded blanket or towel works perfectly</div>
+          </div>
+
+          <div class="equipment-item">
+            <div class="equipment-name">Resistance bands / straps</div>
+            <span class="equipment-arrow">or alternatively →</span>
+            <div class="equipment-sub">A pair of thick tights — they stretch, grip, and work perfectly for abs and thigh exercises</div>
+          </div>
+
+          <div class="equipment-item">
+            <div class="equipment-name">Small Pilates ball</div>
+            <span class="equipment-arrow">or alternatively →</span>
+            <div class="equipment-sub">A rolled-up towel or cushion</div>
+          </div>
+
+          <div class="equipment-item">
+            <div class="equipment-name">Light hand weights (1–2kg)</div>
+            <span class="equipment-arrow">or alternatively →</span>
+            <div class="equipment-sub">Two tins of beans or water bottles</div>
+          </div>
+
+          <div class="equipment-item">
+            <div class="equipment-name">A sturdy chair</div>
+            <span class="equipment-arrow">or alternatively →</span>
+            <div class="equipment-sub">Any chair with a back, or a wall</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- THE 30-DAY STRUCTURE -->
+    <section id="structure">
+      <div class="section-inner">
+        <p class="section-label">The Structure</p>
+        <h2>How it works</h2>
+        <p class="section-sub">Three progressive workouts, each done for 10 active days — with built-in rest days because recovery is part of the programme</p>
+
+        <div class="phase-timeline">
+          <div class="phase-card">
+            <div class="phase-dot"></div>
+            <div>
+              <div class="phase-number">Phase 1</div>
+              <h3>Foundation</h3>
+              <div class="phase-days">Days 1–10</div>
+              <p>Build your base. Learn the fundamental movements, activate the right muscles, and establish your practice.</p>
+            </div>
+          </div>
+          <div class="phase-card">
+            <div class="phase-dot"></div>
+            <div>
+              <div class="phase-number">Phase 2</div>
+              <h3>Build</h3>
+              <div class="phase-days">Days 11–20</div>
+              <p>Increase the challenge. Longer holds, more reps, deeper range of motion.</p>
+            </div>
+          </div>
+          <div class="phase-card">
+            <div class="phase-dot"></div>
+            <div>
+              <div class="phase-number">Phase 3</div>
+              <h3>Strengthen</h3>
+              <div class="phase-days">Days 21–30</div>
+              <p>Full strength. This is where the transformation happens.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-rhythm">
+          <div class="rhythm-pill">
+            <div class="rhythm-segment active-days">5 days on</div>
+            <div class="rhythm-segment rest-days">2 days rest</div>
+            <div class="rhythm-segment repeat">repeat</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- THE PROGRAMME -->
+    <section id="the-programme">
+      <div class="section-inner">
+        <p class="section-label">Your Programme</p>
+        <h2>Everything included</h2>
+        <p class="section-sub">Five pieces of content — a welcome guide, three progressive workouts, and a full nutrition companion. Coming soon.</p>
+
+        <div class="content-grid">
+
+          <!-- Welcome -->
+          <div class="content-card card-welcome">
+            <span class="coming-soon-badge">Coming soon</span>
+            <span class="card-phase-badge badge-start">Start here</span>
+            <h3>Welcome to Sofa to Studio</h3>
+            <p>Before you begin — your guide to equipment, what to expect, how to progress, and how to get the most from the next 30 days.</p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span>Intro video</span>
+              </div>
+              <div class="card-duration">15 min</div>
+            </div>
+          </div>
+
+          <!-- Foundation -->
+          <div class="content-card">
+            <span class="coming-soon-badge">Coming soon</span>
+            <span class="card-phase-badge badge-phase1">Phase 1 · Days 1–10</span>
+            <h3>Foundation</h3>
+            <p>Your starting point. We focus on alignment, activation, and establishing the fundamental barre and Pilates movements that underpin everything that follows.</p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span>Barre</span>
+                <span>Pilates</span>
+                <span>Beginner</span>
+              </div>
+              <div class="card-duration">35 min</div>
+            </div>
+          </div>
+
+          <!-- Build -->
+          <div class="content-card">
+            <span class="coming-soon-badge">Coming soon</span>
+            <span class="card-phase-badge badge-phase2">Phase 2 · Days 11–20</span>
+            <h3>Build</h3>
+            <p>You've earned this. Longer holds, more reps, deeper ranges. You'll start to feel the difference in how you move, stand, and carry yourself.</p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span>Barre</span>
+                <span>Pilates</span>
+                <span>Intermediate</span>
+              </div>
+              <div class="card-duration">40 min</div>
+            </div>
+          </div>
+
+          <!-- Strengthen -->
+          <div class="content-card">
+            <span class="coming-soon-badge">Coming soon</span>
+            <span class="card-phase-badge badge-phase3">Phase 3 · Days 21–30</span>
+            <h3>Strengthen</h3>
+            <p>This is where it all comes together. Full-length, full-intensity — and proof of how far you've come since day one.</p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span>Barre</span>
+                <span>Pilates</span>
+                <span>Progressive</span>
+              </div>
+              <div class="card-duration">45 min</div>
+            </div>
+          </div>
+
+          <!-- Fuel -->
+          <div class="content-card card-fuel">
+            <span class="coming-soon-badge">Coming soon</span>
+            <span class="card-phase-badge badge-bonus">Bonus</span>
+            <h3>Fuel — Your Nutrition Guide</h3>
+            <p>High-protein, low-calorie recipes, supplement guidance, and a simple macro calculator — everything you need to support your training and feel your best.</p>
+            <div class="card-footer">
+              <div class="card-tags">
+                <span>Nutrition</span>
+                <span>Recipes</span>
+                <span>Macros</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- MACRO CALCULATOR -->
+    <section id="calculator">
+      <div class="section-inner">
+        <div class="calc-wrap">
+          <p class="section-label">Nutrition</p>
+          <h2>Find your numbers</h2>
+          <p class="section-sub">Use our simple calculator to find your daily protein, carbohydrate and fat targets — tailored to your body and your goal</p>
+
+          <div class="calc-form">
+            <div class="calc-row">
+              <div class="calc-field">
+                <label for="calc-weight">Weight (kg)</label>
+                <input type="number" id="calc-weight" placeholder="e.g. 68" min="30" max="250">
+              </div>
+              <div class="calc-field">
+                <label for="calc-height">Height (cm)</label>
+                <input type="number" id="calc-height" placeholder="e.g. 165" min="100" max="250">
+              </div>
+            </div>
+            <div class="calc-row">
+              <div class="calc-field">
+                <label for="calc-age">Age</label>
+                <input type="number" id="calc-age" placeholder="e.g. 34" min="16" max="99">
+              </div>
+              <div class="calc-field">
+                <label>Sex</label>
+                <div class="calc-sex-toggle">
+                  <input type="radio" name="calc-sex" id="sex-female" value="female" checked>
+                  <label for="sex-female">Female</label>
+                  <input type="radio" name="calc-sex" id="sex-male" value="male">
+                  <label for="sex-male">Male</label>
+                </div>
+              </div>
+            </div>
+            <div class="calc-row">
+              <div class="calc-field">
+                <label for="calc-activity">Activity level</label>
+                <select id="calc-activity">
+                  <option value="1.2">Sedentary (little or no exercise)</option>
+                  <option value="1.375">Lightly active (1–3 days/week)</option>
+                  <option value="1.55" selected>Moderately active (3–5 days/week)</option>
+                  <option value="1.725">Very active (6–7 days/week)</option>
+                </select>
+              </div>
+              <div class="calc-field">
+                <label for="calc-goal">Your goal</label>
+                <select id="calc-goal">
+                  <option value="lose">Lose weight</option>
+                  <option value="maintain" selected>Maintain weight</option>
+                  <option value="build">Build strength</option>
+                </select>
+              </div>
+            </div>
+            <div class="calc-btn-row">
+              <button class="btn-teal" id="calc-btn" type="button">Calculate</button>
+            </div>
+          </div>
+
+          <div class="calc-results" id="calc-results">
+            <div class="results-inner">
+              <div class="results-title">Your daily targets</div>
+              <div class="results-calories" id="result-calories">—</div>
+              <div class="results-cal-label">calories per day</div>
+              <div class="results-macros">
+                <div class="macro-block">
+                  <div class="macro-grams" id="result-protein">—<span class="macro-unit">g</span></div>
+                  <div class="macro-name">Protein</div>
+                </div>
+                <div class="macro-block">
+                  <div class="macro-grams" id="result-carbs">—<span class="macro-unit">g</span></div>
+                  <div class="macro-name">Carbohydrates</div>
+                </div>
+                <div class="macro-block">
+                  <div class="macro-grams" id="result-fat">—<span class="macro-unit">g</span></div>
+                  <div class="macro-name">Fat</div>
+                </div>
+              </div>
+            </div>
+            <p class="calc-disclaimer">These are general guidelines only. For personalised nutrition advice, consult a registered dietitian.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- GROUP MOVEMENT SCIENCE -->
+    <section id="community" style="background:var(--navy);padding:100px 48px;">
+      <div class="section-inner" style="max-width:860px;text-align:center;">
+        <p class="section-label" style="color:var(--teal);">The Science of Moving Together</p>
+        <h2 style="color:var(--white);margin-bottom:28px;">Your body is built for community</h2>
+        <p style="font-size:18px;line-height:1.85;color:rgba(255,255,255,0.75);font-weight:300;margin-bottom:20px;">
+          Sofa to Studio gets you moving. But neuroscience tells us something remarkable — when we move in synchrony with other people, something measurably different happens in the brain and body. Mirror neurons fire. Oxytocin is released. Pain tolerance increases. Effort feels easier. Mood lifts higher.
+        </p>
+        <p style="font-size:18px;line-height:1.85;color:rgba(255,255,255,0.75);font-weight:300;margin-bottom:20px;">
+          Researchers at Oxford found that people working out in groups had significantly higher pain thresholds than those training alone — not because they were fitter, but because coordinated movement with others triggers the same neurochemical bonding response as physical touch. Your nervous system, quite literally, needs this.
+        </p>
+        <p style="font-size:18px;line-height:1.85;color:rgba(255,255,255,0.75);font-weight:300;margin-bottom:48px;">
+          This programme is your foundation. But when you're ready — and you will be — find your people. Whether that's HerSpace London or a studio near you, the science is clear: moving with others is one of the most powerful things you can do for your body <em>and</em> your mind.
+        </p>
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+          <a href="https://www.herspaceldn.com" target="_blank" class="btn-primary" style="background:var(--teal);">Discover HerSpace London</a>
+          <a href="#pricing" class="btn-ghost-light">Start Sofa to Studio</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing">
+      <div class="section-inner">
+        <p class="section-label">Get Access</p>
+        <h2>Start today</h2>
+        <p class="section-sub">Choose the option that works for you — a one-time purchase, or full access to everything on YourSpace.</p>
+
+        <div class="pricing-grid">
+
+          <!-- One-time -->
+          <div class="pricing-card">
+            <div class="pricing-label">Sofa to Studio</div>
+            <div>
+              <div class="pricing-amount">£29.99</div>
+              <div class="pricing-period">30 days access from purchase</div>
+            </div>
+            <hr class="pricing-divider">
+            <ul class="pricing-features">
+              <li>Welcome video</li>
+              <li>3 progressive workouts</li>
+              <li>Nutrition guide &amp; macro calculator</li>
+              <li>Access on any device</li>
+            </ul>
+            <a href="#" class="btn-ghost-light">Buy now — £29.99</a>
+          </div>
+
+          <!-- All Access -->
+          <div class="pricing-card featured">
+            <div class="featured-flag">Best Value</div>
+            <div class="pricing-label">All Access</div>
+            <div>
+              <div class="pricing-amount">£19.99<span style="font-size:22px; opacity:0.5;">/mo</span></div>
+              <div class="pricing-amount-alt">or £179/year</div>
+              <div class="pricing-period">Includes everything in YourSpace Wellbeing</div>
+            </div>
+            <hr class="pricing-divider">
+            <ul class="pricing-features">
+              <li>Sofa to Studio</li>
+              <li>The Home Studio (6 new classes quarterly)</li>
+              <li>Prehab programme</li>
+              <li>All future specialist programmes</li>
+              <li>Nutrition guides</li>
+            </ul>
+            <a href="#" class="btn-primary">Start All Access</a>
+            <p style="font-size:11px; color:var(--grey-mid); text-align:center; margin-top:-4px;">HerSpace London members get free access to The Home Studio</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <img src="assets/ys-favicon-white.png" alt="YS" class="footer-mark">
+            <div>
+              <p class="footer-name">YourSpace Wellbeing</p>
+              <p class="footer-sub">by HerSpace London</p>
+            </div>
+          </div>
+          <nav class="footer-nav">
+            <a href="index.html#programmes">Programmes</a>
+            <a href="index.html#about">About</a>
+            <a href="#">Sign In</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 HerSpace London Ltd. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /site -->
+
+  <script>
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        const target = href.length > 1 ? document.querySelector(href) : null;
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+
+    // ── MACRO CALCULATOR ──────────────────────────────────────────────────
+    document.getElementById('calc-btn').addEventListener('click', () => {
+
+      const weight   = parseFloat(document.getElementById('calc-weight').value);
+      const height   = parseFloat(document.getElementById('calc-height').value);
+      const age      = parseFloat(document.getElementById('calc-age').value);
+      const sex      = document.querySelector('input[name="calc-sex"]:checked').value;
+      const activity = parseFloat(document.getElementById('calc-activity').value);
+      const goal     = document.getElementById('calc-goal').value;
+
+      // Validate
+      if (!weight || !height || !age || weight < 30 || height < 100 || age < 16) {
+        alert('Please fill in all fields with realistic values.');
+        return;
+      }
+
+      // Mifflin-St Jeor BMR
+      let bmr;
+      if (sex === 'female') {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+      } else {
+        bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+      }
+
+      // TDEE
+      let tdee = bmr * activity;
+
+      // Goal adjustment
+      let calories;
+      if (goal === 'lose')     calories = Math.round(tdee - 400);
+      else if (goal === 'build') calories = Math.round(tdee + 200);
+      else                     calories = Math.round(tdee);
+
+      // Macros
+      // Protein: 2g per kg for strength/loss, 1.6g for maintain
+      const proteinPerKg = (goal === 'maintain') ? 1.6 : 2.0;
+      const protein = Math.round(weight * proteinPerKg);
+      const proteinCals = protein * 4;
+
+      // Fat: 0.9g per kg
+      const fat = Math.round(weight * 0.9);
+      const fatCals = fat * 9;
+
+      // Carbs: fill remaining
+      const carbCals = calories - proteinCals - fatCals;
+      const carbs = Math.max(0, Math.round(carbCals / 4));
+
+      // Display
+      document.getElementById('result-calories').textContent = calories.toLocaleString();
+      document.getElementById('result-protein').innerHTML  = protein + '<span class="macro-unit">g</span>';
+      document.getElementById('result-carbs').innerHTML    = carbs   + '<span class="macro-unit">g</span>';
+      document.getElementById('result-fat').innerHTML      = fat     + '<span class="macro-unit">g</span>';
+
+      const results = document.getElementById('calc-results');
+      results.classList.add('visible');
+      setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+    });
+
+    // Allow Enter key to trigger calculator
+    ['calc-weight','calc-height','calc-age'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('calc-btn').click();
+      });
+    });
+
+  </script>
+
+</body>
+</html>
