@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specialist Programmes — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/ys-monogram.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    /* ── PAGE HERO ─────────────────────────────── */
+    .spec-hero {
+      background: var(--off-white);
+      padding: 120px 48px 100px;
+      text-align: center;
+    }
+    .spec-hero .kicker { margin-bottom: 20px; }
+    .spec-hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(48px, 7vw, 82px);
+      font-weight: 300;
+      color: var(--navy);
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .spec-hero p {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--grey-mid);
+      font-weight: 300;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── PROGRAMMES GRID ───────────────────────── */
+    #spec-programmes {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── PROGRAMME CARD ────────────────────────── */
+    .spec-card {
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.25s, transform 0.25s;
+      background: var(--white);
+      text-decoration: none;
+      color: inherit;
+    }
+    .spec-card:hover {
+      box-shadow: 0 16px 56px rgba(0,0,0,0.1);
+      transform: translateY(-4px);
+    }
+    .spec-card.coming-soon {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    .spec-card-top {
+      background: var(--navy);
+      padding: 48px 40px 40px;
+      position: relative;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .spec-card.teal .spec-card-top { background: #1A5F7A; }
+    .spec-card.coming-soon .spec-card-top { background: #3A4A5A; }
+
+    .spec-card-badge {
+      position: absolute;
+      top: 28px;
+      left: 40px;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+      backdrop-filter: blur(4px);
+    }
+    .spec-card-top h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(34px, 4vw, 46px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+    .spec-card-top p {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255,255,255,0.6);
+    }
+    .spec-card-body {
+      padding: 36px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-grow: 1;
+    }
+    .spec-card-desc {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--grey-mid);
+      font-weight: 300;
+    }
+    .spec-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .spec-card-tags span {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: var(--teal-light);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    .spec-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: auto;
+    }
+    .spec-card-price {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--navy);
+    }
+    .spec-card-price span {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--grey-mid);
+    }
+    .spec-coming-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--grey);
+      padding: 10px 20px;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: var(--radius);
+    }
+
+    /* ── WHY SPECIALIST ────────────────────────── */
+    #why-specialist {
+      background: var(--navy);
+      padding: 100px 48px;
+    }
+    #why-specialist .section-label { color: rgba(255,255,255,0.4); }
+    #why-specialist h2 { color: var(--white); }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 40px;
+      margin-top: 56px;
+    }
+    .why-item {
+      border-left: 2px solid var(--teal);
+      padding-left: 24px;
+    }
+    .why-item h4 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .why-item p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.5);
+      font-weight: 300;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────── */
+    @media (max-width: 768px) {
+      .spec-hero { padding: 80px 24px 64px; }
+      #spec-programmes { padding: 72px 24px; }
+      #why-specialist { padding: 72px 24px; }
+      .spec-card-top { min-height: 180px; padding: 40px 28px 32px; }
+      .spec-card-badge { left: 28px; }
+      .spec-card-body { padding: 28px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="site" class="visible">
+
+    <!-- HEADER -->
+    <header id="header">
+      <div class="header-inner">
+        <a href="index.html" class="header-logo">
+          <img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing">
+        </a>
+        <nav>
+          <a href="index.html#programmes">Programmes</a>
+          <a href="index.html#about">About</a>
+          <a href="#" class="nav-btn">Sign In</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="spec-hero">
+      <div class="hero-inner">
+        <p class="kicker">Specialist Programmes</p>
+        <h1>Designed for<br>your body.<br>Your goals.</h1>
+        <p>Not everyone needs the same thing. Our specialist programmes are built around specific bodies, specific goals, and specific life stages — with the same expert instruction and rigour as everything on YourSpace.</p>
+      </div>
+    </section>
+
+    <!-- PROGRAMMES -->
+    <section id="spec-programmes">
+      <div class="spec-grid">
+
+        <!-- PREHAB -->
+        <a href="prehab.html" class="spec-card">
+          <div class="spec-card-top">
+            <div class="spec-card-badge">Available Now</div>
+            <h2>Prehab</h2>
+            <p>Stability & strength for injury prevention</p>
+          </div>
+          <div class="spec-card-body">
+            <p class="spec-card-desc">Six progressive sessions designed to build the foundations your body needs to train harder, move better, and stay injury-free — whatever your sport. For runners, skiers, tennis players, cyclists, and anyone who trains regularly.</p>
+            <div class="spec-card-tags">
+              <span>Hip stability</span>
+              <span>Core strength</span>
+              <span>Ankle resilience</span>
+              <span>Knee mechanics</span>
+              <span>All sports</span>
+            </div>
+            <div class="spec-card-footer">
+              <div class="spec-card-price">£24.99 <span>· 90 days</span></div>
+              <span class="btn-primary btn-sm">View programme →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- RESTORE (POST-NATAL) -->
+        <a href="restore.html" class="spec-card teal">
+          <div class="spec-card-top">
+            <div class="spec-card-badge">Coming Soon</div>
+            <h2>Restore</h2>
+            <p>Safe, progressive movement for new mothers</p>
+          </div>
+          <div class="spec-card-body">
+            <p class="spec-card-desc">A gentle, expert-led programme for women returning to movement after birth. Focused on pelvic floor recovery, core rehabilitation, and rebuilding strength safely — at whatever pace feels right for you.</p>
+            <div class="spec-card-tags">
+              <span>Pelvic floor</span>
+              <span>Core rehab</span>
+              <span>Post-natal safe</span>
+              <span>Progressive</span>
+            </div>
+            <div class="spec-card-footer">
+              <div class="spec-card-price">£24.99 <span>· 90 days</span></div>
+              <span class="btn-primary btn-sm">View programme →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- MENOPAUSE -->
+        <a href="#" class="spec-card coming-soon">
+          <div class="spec-card-top">
+            <div class="spec-card-badge">Coming Soon</div>
+            <h2>Strong Through Menopause</h2>
+            <p>Movement that works with your body, not against it</p>
+          </div>
+          <div class="spec-card-body">
+            <p class="spec-card-desc">A programme designed specifically for women navigating perimenopause and menopause — addressing bone density, joint health, energy management, and the types of training that science shows work best at this life stage.</p>
+            <div class="spec-card-tags">
+              <span>Bone density</span>
+              <span>Joint health</span>
+              <span>Strength</span>
+              <span>Energy</span>
+            </div>
+            <div class="spec-card-footer">
+              <div class="spec-card-price">Coming soon</div>
+              <span class="spec-coming-label">Notify me</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- WHY SPECIALIST -->
+    <section id="why-specialist">
+      <div class="section-inner">
+        <p class="section-label">Our Approach</p>
+        <h2>Why specialist<br>matters</h2>
+        <div class="why-grid">
+          <div class="why-item">
+            <h4>Built for your body</h4>
+            <p>Generic programmes give generic results. Specialist programmes address the specific demands your body faces — whether that's returning to sport, recovering from birth, or training through hormonal change.</p>
+          </div>
+          <div class="why-item">
+            <h4>Expert-led</h4>
+            <p>Every programme is designed and taught by specialists who understand the physiology behind what you're going through — not just instructors following a template.</p>
+          </div>
+          <div class="why-item">
+            <h4>Progressive by design</h4>
+            <p>Each session builds on the last. You're not just doing exercises — you're building capacity, session by session, in a sequence that's been designed to get you results safely.</p>
+          </div>
+          <div class="why-item">
+            <h4>Return as often as you need</h4>
+            <p>Bodies change. Seasons change. The programme you did before a ski trip is the same one you'll want before the next one. Our specialist programmes are built to be revisited.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <img src="assets/ys-favicon-white.png" alt="YS" class="footer-mark">
+            <div>
+              <p class="footer-name">YourSpace Wellbeing</p>
+              <p class="footer-sub">by HerSpace London</p>
+            </div>
+          </div>
+          <nav class="footer-nav">
+            <a href="index.html#programmes">Programmes</a>
+            <a href="index.html#about">About</a>
+            <a href="#">Sign In</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 HerSpace London Ltd. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
+    });
+  </script>
+
+</body>
+</html>

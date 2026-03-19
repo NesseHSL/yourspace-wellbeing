@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restore — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/ys-monogram.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    /* ── PAGE HERO ─────────────────────────────── */
+    .prog-hero {
+      background: #1A5F7A;
+      padding: 120px 48px 100px;
+      text-align: center;
+    }
+    .prog-hero .kicker { color: rgba(255,255,255,0.55); margin-bottom: 20px; }
+    .prog-hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(56px, 8vw, 96px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.02;
+      margin-bottom: 16px;
+    }
+    .prog-hero-sub {
+      font-family: var(--font-serif);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      font-style: italic;
+      margin-bottom: 44px;
+    }
+    .prog-hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── MEDICAL NOTE ──────────────────────────── */
+    .medical-note {
+      background: #FFF8EC;
+      border-left: 3px solid #E8A838;
+      padding: 20px 28px;
+      max-width: 800px;
+      margin: 0 auto;
+      border-radius: 0 8px 8px 0;
+    }
+    .medical-note p {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #7A5C1E;
+      font-weight: 300;
+    }
+    .medical-note strong { font-weight: 500; }
+    #medical-banner {
+      background: #FFFBF2;
+      padding: 40px 48px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* ── WHO IT'S FOR ──────────────────────────── */
+    #who {
+      background: var(--off-white);
+      padding: 100px 48px;
+    }
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 52px;
+    }
+    .who-card {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 12px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .who-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+    }
+    .who-icon { font-size: 32px; margin-bottom: 14px; }
+    .who-card h4 {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .who-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--grey-mid);
+      font-weight: 300;
+    }
+
+    /* ── WHAT YOU'LL BUILD ─────────────────────── */
+    #outcomes {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-top: 56px;
+    }
+    .outcome-item { display: flex; gap: 20px; align-items: flex-start; }
+    .outcome-num {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      font-weight: 300;
+      color: var(--teal);
+      opacity: 0.4;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 48px;
+    }
+    .outcome-text h4 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .outcome-text p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--grey-mid);
+      font-weight: 300;
+    }
+
+    /* ── THE PROGRAMME ─────────────────────────── */
+    #the-programme {
+      background: var(--off-white);
+      padding: 100px 48px;
+    }
+    .video-list { display: flex; flex-direction: column; gap: 20px; margin-top: 56px; }
+    .video-card {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 36px 40px;
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 32px;
+      align-items: center;
+      transition: box-shadow 0.2s;
+    }
+    .video-card:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
+    .video-num {
+      font-family: var(--font-serif);
+      font-size: 56px;
+      font-weight: 300;
+      color: var(--navy);
+      opacity: 0.15;
+      line-height: 1;
+      text-align: center;
+    }
+    .video-info h3 {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .video-info p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--grey-mid);
+      font-weight: 300;
+      max-width: 560px;
+      margin-bottom: 14px;
+    }
+    .video-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .video-tags span {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: var(--teal-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .video-meta { text-align: right; flex-shrink: 0; }
+    .video-duration {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--navy);
+      white-space: nowrap;
+      margin-bottom: 6px;
+    }
+    .video-week {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    /* ── SCHEDULE ──────────────────────────────── */
+    #schedule {
+      background: #1A5F7A;
+      padding: 100px 48px;
+    }
+    #schedule .section-label { color: rgba(255,255,255,0.4); }
+    #schedule h2 { color: var(--white); }
+    #schedule .section-sub { color: rgba(255,255,255,0.55); }
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .schedule-week {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 28px 24px;
+    }
+    .schedule-week-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 16px;
+    }
+    .schedule-week h4 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .schedule-sessions { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .schedule-sessions li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 300;
+      padding-left: 16px;
+      position: relative;
+    }
+    .schedule-sessions li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: rgba(255,255,255,0.3);
+    }
+    .schedule-note {
+      margin-top: 40px;
+      padding: 24px 32px;
+      background: rgba(255,255,255,0.07);
+      border-left: 3px solid rgba(255,255,255,0.3);
+      border-radius: 0 8px 8px 0;
+    }
+    .schedule-note p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .schedule-note strong { color: rgba(255,255,255,0.8); font-weight: 400; }
+
+    /* ── PRICING ───────────────────────────────── */
+    #pricing { background: var(--white); padding: 100px 48px; }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      max-width: 800px;
+      margin: 56px auto 0;
+    }
+    .pricing-card {
+      border: 1px solid rgba(0,0,0,0.09);
+      border-radius: 16px;
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .pricing-card.featured { background: var(--navy); border-color: var(--navy); }
+    .pricing-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--teal); }
+    .pricing-card.featured .pricing-label { color: rgba(255,255,255,0.45); }
+    .pricing-amount {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--navy);
+      line-height: 1;
+    }
+    .pricing-card.featured .pricing-amount { color: var(--white); }
+    .pricing-period { font-size: 15px; font-weight: 300; color: var(--grey-mid); margin-top: 6px; }
+    .pricing-card.featured .pricing-period { color: rgba(255,255,255,0.5); }
+    .pricing-divider { border: none; border-top: 1px solid rgba(0,0,0,0.07); }
+    .pricing-card.featured .pricing-divider { border-color: rgba(255,255,255,0.1); }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
+    .pricing-features li {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--grey-mid);
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.6); }
+    .pricing-features li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-size: 12px; }
+    .pricing-note { font-size: 12px; color: var(--grey); font-weight: 300; text-align: center; margin-top: 24px; }
+
+    /* ── RESPONSIVE ────────────────────────────── */
+    @media (max-width: 900px) {
+      .prog-hero, #medical-banner, #who, #outcomes, #the-programme, #schedule, #pricing { padding: 72px 24px; }
+      .video-card { grid-template-columns: 48px 1fr; gap: 20px; }
+      .video-meta { display: none; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
+    }
+    @media (max-width: 600px) {
+      .who-grid { grid-template-columns: 1fr 1fr; }
+      .video-card { grid-template-columns: 1fr; }
+      .video-num { display: none; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="site" class="visible">
+
+    <!-- HEADER -->
+    <header id="header">
+      <div class="header-inner">
+        <a href="index.html" class="header-logo">
+          <img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing">
+        </a>
+        <nav>
+          <a href="specialist.html">Specialist</a>
+          <a href="index.html#about">About</a>
+          <a href="#" class="nav-btn">Sign In</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- PROGRAMME HERO -->
+    <section class="prog-hero">
+      <div class="hero-inner">
+        <p class="kicker">Specialist Programme · Post-natal</p>
+        <h1>Restore</h1>
+        <p class="prog-hero-sub">For new mums finding their way back to movement</p>
+        <p class="hero-sub" style="color:rgba(255,255,255,0.55); max-width:560px;">A gentle, expert-led programme designed to help you recover, rebuild, and return to the studio — safely, progressively, and at exactly your pace.</p>
+        <div class="prog-hero-btns">
+          <a href="#pricing" class="btn-primary">Get access — £24.99</a>
+          <a href="#the-programme" class="btn-ghost-light">See the programme</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEDICAL NOTE -->
+    <section id="medical-banner">
+      <div class="medical-note">
+        <p><strong>A note before you begin:</strong> Every postnatal body is different. We recommend getting clearance from your GP or midwife before starting any exercise programme after birth — typically at your 6-week check, or 8–12 weeks following a C-section. If you experience any pain, heaviness, or leaking during exercise, please stop and seek guidance from a women's health physiotherapist.</p>
+      </div>
+    </section>
+
+    <!-- WHO IT'S FOR -->
+    <section id="who">
+      <div class="section-inner">
+        <p class="section-label">Who it's for</p>
+        <h2>Wherever you are in your recovery</h2>
+        <p class="section-sub">Restore is designed for new mums who've been cleared to begin gentle exercise and want to return to movement — and eventually the studio — with confidence.</p>
+        <div class="who-grid">
+          <div class="who-card">
+            <div class="who-icon">🌸</div>
+            <h4>6+ weeks post-birth</h4>
+            <p>Post GP clearance, ready to begin gentle reconnection with your body.</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">🌿</div>
+            <h4>C-section recovery</h4>
+            <p>Adapted for women recovering from caesarean — we go at your pace, not ours.</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">💙</div>
+            <h4>Diastasis recti</h4>
+            <p>Every exercise is safe for abdominal separation — we prioritise reconnection over loading.</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">✨</div>
+            <h4>Studio returners</h4>
+            <p>Planning to come back to HerSpace? This programme gets you ready to walk in feeling strong.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUTCOMES -->
+    <section id="outcomes">
+      <div class="section-inner">
+        <p class="section-label">What you'll build</p>
+        <h2>Recovery that's<br>built to last.</h2>
+        <div class="outcomes-grid">
+          <div class="outcome-item">
+            <div class="outcome-num">01</div>
+            <div class="outcome-text">
+              <h4>Pelvic Floor</h4>
+              <p>Awareness, activation, and progressive strengthening of the pelvic floor — the foundation of every movement that follows.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">02</div>
+            <div class="outcome-text">
+              <h4>Deep Core</h4>
+              <p>Gentle rehabilitation of the transverse abdominis — safe for diastasis recti, essential for everything else.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">03</div>
+            <div class="outcome-text">
+              <h4>Posture & Alignment</h4>
+              <p>Addressing the postural patterns that pregnancy and feeding create — especially in the upper back, neck, and hips.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">04</div>
+            <div class="outcome-text">
+              <h4>Hip & Glute Strength</h4>
+              <p>Rebuilding the strength and stability you need to move well — progressively, without overloading a recovering body.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">05</div>
+            <div class="outcome-text">
+              <h4>Full Body Strength</h4>
+              <p>Progressive return to functional movement — the kind that supports life with a baby and prepares you for the studio.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">06</div>
+            <div class="outcome-text">
+              <h4>Confidence</h4>
+              <p>The quiet but important outcome nobody talks about — feeling at home in your body again, ready for whatever comes next.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE PROGRAMME -->
+    <section id="the-programme">
+      <div class="section-inner">
+        <p class="section-label">The Programme</p>
+        <h2>Six sessions.<br>Eight weeks.</h2>
+        <p class="section-sub">Restore is deliberately gradual. Each session is shorter than you might expect — because recovery isn't about effort, it's about consistency. We progress only when your body is ready.</p>
+        <div class="video-list">
+
+          <div class="video-card">
+            <div class="video-num">1</div>
+            <div class="video-info">
+              <h3>Breathe & Reconnect</h3>
+              <p>We begin with breath — because diaphragmatic breathing is the first step in restoring the relationship between your breath, your core, and your pelvic floor. This session is gentle, meditative, and more powerful than it looks. Everything starts here.</p>
+              <div class="video-tags">
+                <span>Diaphragmatic breathing</span>
+                <span>Pelvic floor awareness</span>
+                <span>Gentle mobility</span>
+                <span>C-section safe</span>
+              </div>
+            </div>
+            <div class="video-meta">
+              <div class="video-duration">15 mins</div>
+              <div class="video-week">Weeks 1–2</div>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-num">2</div>
+            <div class="video-info">
+              <h3>Pelvic Floor First</h3>
+              <p>A dedicated session focused entirely on pelvic floor activation and progressive strengthening. We cover the full spectrum — activation, coordination, endurance, and relaxation — because a pelvic floor that can't let go is just as problematic as one that can't hold on.</p>
+              <div class="video-tags">
+                <span>Pelvic floor activation</span>
+                <span>Coordination</span>
+                <span>Endurance & release</span>
+                <span>C-section safe</span>
+              </div>
+            </div>
+            <div class="video-meta">
+              <div class="video-duration">20 mins</div>
+              <div class="video-week">Weeks 2–3</div>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-num">3</div>
+            <div class="video-info">
+              <h3>Core Reconnect</h3>
+              <p>Now we introduce the deep core — specifically the transverse abdominis, which acts as your body's natural corset. Every exercise here is safe for diastasis recti and focused on reconnection rather than loading. No crunches. No sit-ups. Just intelligent, progressive core work.</p>
+              <div class="video-tags">
+                <span>Transverse abdominis</span>
+                <span>Diastasis recti safe</span>
+                <span>Deep core</span>
+                <span>Spinal alignment</span>
+              </div>
+            </div>
+            <div class="video-meta">
+              <div class="video-duration">20 mins</div>
+              <div class="video-week">Weeks 3–4</div>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-num">4</div>
+            <div class="video-info">
+              <h3>Posture Reset</h3>
+              <p>Pregnancy, birth, and feeding all leave their mark on posture — rounded shoulders, tight hip flexors, a pelvis tipped forward or back. This session addresses those patterns directly, releasing what's tight and strengthening what's weak, so you can stand tall again.</p>
+              <div class="video-tags">
+                <span>Upper back</span>
+                <span>Hip flexors</span>
+                <span>Pelvic alignment</span>
+                <span>Neck & shoulders</span>
+              </div>
+            </div>
+            <div class="video-meta">
+              <div class="video-duration">20 mins</div>
+              <div class="video-week">Weeks 4–5</div>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-num">5</div>
+            <div class="video-info">
+              <h3>Rebuild Strength</h3>
+              <p>With your foundations in place, we begin rebuilding functional strength — glutes, hips, and legs through progressive, supported movements. This session introduces load gradually, always with pelvic floor connection as the foundation. You'll feel strong — and you'll be surprised how much you've already rebuilt.</p>
+              <div class="video-tags">
+                <span>Glute strength</span>
+                <span>Hip stability</span>
+                <span>Functional movement</span>
+                <span>Progressive load</span>
+              </div>
+            </div>
+            <div class="video-meta">
+              <div class="video-duration">25 mins</div>
+              <div class="video-week">Weeks 5–7</div>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-num">6</div>
+            <div class="video-info">
+              <h3>Studio Ready</h3>
+              <p>The final session brings everything together in a full-body workout that mirrors what you'll experience back at the studio — with the awareness, connection, and strength you've spent eight weeks building. This isn't just a workout. It's the moment you realise you're ready.</p>
+              <div class="video-tags">
+                <span>Full body</span>
+                <span>Studio preparation</span>
+                <span>Integration</span>
+                <span>Confidence building</span>
+              </div>
+            </div>
+            <div class="video-meta">
+              <div class="video-duration">25 mins</div>
+              <div class="video-week">Weeks 7–8</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section id="schedule">
+      <div class="section-inner">
+        <p class="section-label">Your Plan</p>
+        <h2>Eight weeks.<br>Your pace.</h2>
+        <p class="section-sub">Two sessions a week — short enough to fit around a baby's schedule, consistent enough to build real results. Never push through pain or discomfort.</p>
+        <div class="schedule-grid">
+          <div class="schedule-week">
+            <div class="schedule-week-label">Weeks 1–2</div>
+            <h4>Breathe</h4>
+            <ul class="schedule-sessions">
+              <li>Session 1: Breathe & Reconnect</li>
+              <li>Session 2: Breathe & Reconnect</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Weeks 2–3</div>
+            <h4>Activate</h4>
+            <ul class="schedule-sessions">
+              <li>Session 1: Pelvic Floor First</li>
+              <li>Session 2: Breathe & Reconnect</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Weeks 3–4</div>
+            <h4>Reconnect</h4>
+            <ul class="schedule-sessions">
+              <li>Session 1: Core Reconnect</li>
+              <li>Session 2: Pelvic Floor First</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Weeks 4–5</div>
+            <h4>Reset</h4>
+            <ul class="schedule-sessions">
+              <li>Session 1: Posture Reset</li>
+              <li>Session 2: Core Reconnect</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Weeks 5–7</div>
+            <h4>Rebuild</h4>
+            <ul class="schedule-sessions">
+              <li>Session 1: Rebuild Strength</li>
+              <li>Session 2: Posture Reset</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Weeks 7–8</div>
+            <h4>Restore</h4>
+            <ul class="schedule-sessions">
+              <li>Session 1: Studio Ready</li>
+              <li>Session 2: Rebuild Strength</li>
+            </ul>
+          </div>
+        </div>
+        <div class="schedule-note">
+          <p><strong>Go at your own pace.</strong> If a week feels too much, repeat it. If something doesn't feel right, stop. Your body has done something extraordinary — this programme respects that. There is no rush, and no judgement.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing">
+      <div class="section-inner">
+        <p class="section-label">Get Access</p>
+        <h2>Begin your Restore</h2>
+        <p class="section-sub">90 days of access — giving you the full eight weeks, plus time to revisit any sessions you want to repeat.</p>
+        <div class="pricing-grid">
+
+          <div class="pricing-card">
+            <div class="pricing-label">Restore Only</div>
+            <div>
+              <div class="pricing-amount">£24.99</div>
+              <div class="pricing-period">90 days access</div>
+            </div>
+            <hr class="pricing-divider">
+            <ul class="pricing-features">
+              <li>All 6 Restore sessions</li>
+              <li>Full 8-week progression plan</li>
+              <li>90 days to complete at your pace</li>
+              <li>Revisit any session as often as you need</li>
+            </ul>
+            <a href="#" class="btn-ghost">Get Restore — £24.99</a>
+          </div>
+
+          <div class="pricing-card featured">
+            <div class="pricing-label">Best Value</div>
+            <div>
+              <div class="pricing-amount">£19.99</div>
+              <div class="pricing-period">/month · All Access</div>
+            </div>
+            <hr class="pricing-divider">
+            <ul class="pricing-features">
+              <li>Restore — all 6 sessions</li>
+              <li>Prehab — all 6 sessions</li>
+              <li>The Home Studio — all classes</li>
+              <li>Sofa to Strong 30-day programme</li>
+              <li>All future specialist programmes</li>
+              <li>Cancel anytime</li>
+            </ul>
+            <a href="#" class="btn-primary">Start All Access — £19.99/mo</a>
+          </div>
+
+        </div>
+        <p class="pricing-note">All Access also available annually — £179/year (save £61). · HerSpace London Unlimited Members get free access to The Home Studio.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <img src="assets/ys-favicon-white.png" alt="YS" class="footer-mark">
+            <div>
+              <p class="footer-name">YourSpace Wellbeing</p>
+              <p class="footer-sub">by HerSpace London</p>
+            </div>
+          </div>
+          <nav class="footer-nav">
+            <a href="specialist.html">Specialist</a>
+            <a href="index.html#programmes">Programmes</a>
+            <a href="#">Sign In</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 HerSpace London Ltd. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
+    });
+  </script>
+
+</body>
+</html>
