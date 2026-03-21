@@ -169,16 +169,27 @@ header nav a.nav-btn:hover { background: var(--teal); }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--off-white);
+  background: url('assets/studio-hero.png') center center / cover no-repeat;
+  position: relative;
   padding: 100px 48px;
   text-align: center;
 }
-.hero-inner { max-width: 720px; }
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 52, 97, 0.62);
+}
+.hero-inner {
+  max-width: 720px;
+  position: relative;
+  z-index: 1;
+}
 .kicker {
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--teal-light);
   margin-bottom: 28px;
 }
 .hero-inner h1 {
@@ -186,16 +197,24 @@ header nav a.nav-btn:hover { background: var(--teal); }
   font-size: clamp(54px, 8vw, 92px);
   font-weight: 300;
   line-height: 1.06;
-  color: var(--navy);
+  color: var(--white);
   margin-bottom: 32px;
 }
 .hero-sub {
   font-size: 17px;
   line-height: 1.75;
-  color: var(--grey-mid);
+  color: rgba(255,255,255,0.82);
   font-weight: 300;
   max-width: 500px;
-  margin: 0 auto 44px;
+  margin: 0 auto 20px;
+}
+.hero-tagline {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-style: italic;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 44px;
+  font-weight: 300;
 }
 .hero-btns {
   display: flex;
