@@ -27,7 +27,7 @@
         <nav>
           <a href="#programmes">Programmes</a>
           <a href="#about">About</a>
-          <a href="#" class="nav-btn">Sign In</a>
+          <a href="login.html" class="nav-btn" id="authNavBtn">Sign In</a>
         </nav>
       </div>
     </header>
@@ -181,5 +181,25 @@
     });
   </script>
 
+
+  <!-- Auth state: update nav Sign In → My Account if logged in -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    (async () => {
+      try {
+        const res = await fetch('/api/ys-config');
+        const config = await res.json();
+        const sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) {
+          const btn = document.getElementById('authNavBtn');
+          if (btn) {
+            btn.textContent = 'My Account';
+            btn.href = 'dashboard.html';
+          }
+        }
+      } catch(e) { /* fail silently */ }
+    })();
+  </script>
 </body>
 </html>

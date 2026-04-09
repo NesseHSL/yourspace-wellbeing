@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receipt — YourSpace Wellbeing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1C3461;
+      --teal: #2A9DB5;
+      --grey: #AAAAAA;
+      --off-white: #F8F8F6;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--off-white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 24px;
+      min-height: 100vh;
+    }
+
+    .print-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 24px;
+      transition: background 0.2s;
+    }
+
+    .print-btn:hover { background: #16294d; }
+
+    .receipt {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 48px;
+      width: 100%;
+      max-width: 540px;
+      box-shadow: 0 2px 20px rgba(28,52,97,0.08);
+    }
+
+    .receipt-logo { height: 28px; margin-bottom: 32px; }
+
+    .receipt-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .receipt-subtitle {
+      font-size: 13px;
+      color: var(--grey);
+      margin-bottom: 32px;
+    }
+
+    .receipt-divider {
+      border: none;
+      border-top: 1px solid #EFEFEF;
+      margin: 24px 0;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .receipt-label {
+      font-size: 13px;
+      color: var(--grey);
+      font-weight: 400;
+    }
+
+    .receipt-value {
+      font-size: 14px;
+      color: var(--navy);
+      font-weight: 500;
+      text-align: right;
+      max-width: 60%;
+    }
+
+    .receipt-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0 0;
+      border-top: 2px solid var(--navy);
+      margin-top: 8px;
+    }
+
+    .receipt-total-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .receipt-total-amount {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    .receipt-footer {
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--grey);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .error-state {
+      text-align: center;
+      color: #c0392b;
+      font-size: 14px;
+      padding: 48px;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .print-btn { display: none; }
+      .receipt {
+        box-shadow: none;
+        border-radius: 0;
+        padding: 32px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-btn" onclick="window.print()">
+    🖨 Print / Save as PDF
+  </button>
+
+  <div class="receipt" id="receipt">
+    <div style="text-align:center;padding:40px;color:#AAAAAA;font-size:14px;">Loading receipt...</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const purchaseId = params.get('id');
+
+      if (!purchaseId) {
+        showError('No receipt found.');
+        return;
+      }
+
+      const res = await fetch('/api/ys-config');
+      const config = await res.json();
+      const sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+
+      // Verify user is logged in
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Fetch purchase (RLS ensures user can only see their own)
+      const { data: purchase, error } = await sb
+        .from('purchases')
+        .select('*')
+        .eq('id', purchaseId)
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (error || !purchase) {
+        showError('Receipt not found or you do not have permission to view it.');
+        return;
+      }
+
+      renderReceipt(purchase, session.user);
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      });
+    }
+
+    function renderReceipt(p, user) {
+      const receiptNumber = `YS-${String(p.id).padStart(6, '0')}`;
+      const isHerMember = p.access_type === 'her-member';
+      const amount = isHerMember ? '£0.00 (HER Member)' : `£${parseFloat(p.amount_paid).toFixed(2)}`;
+
+      document.getElementById('receipt').innerHTML = `
+        <img src="assets/yourspace-logo-dark.png" alt="YourSpace Wellbeing" class="receipt-logo">
+
+        <h1 class="receipt-title">Receipt</h1>
+        <p class="receipt-subtitle">Thank you for your purchase.</p>
+
+        <hr class="receipt-divider">
+
+        <div class="receipt-row">
+          <span class="receipt-label">Receipt number</span>
+          <span class="receipt-value">${receiptNumber}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Date</span>
+          <span class="receipt-value">${formatDate(p.purchased_at)}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Email</span>
+          <span class="receipt-value">${user.email}</span>
+        </div>
+
+        <hr class="receipt-divider">
+
+        <div class="receipt-row">
+          <span class="receipt-label">Programme</span>
+          <span class="receipt-value">${p.programme_name}</span>
+        </div>
+        <div class="receipt-row">
+          <span class="receipt-label">Access period</span>
+          <span class="receipt-value">${p.expires_at ? `Until ${formatDate(p.expires_at)}` : isHerMember ? 'Active with HER Membership' : 'Lifetime access'}</span>
+        </div>
+
+        <div class="receipt-total-row">
+          <span class="receipt-total-label">Total paid</span>
+          <span class="receipt-total-amount">${amount}</span>
+        </div>
+
+        <p class="receipt-footer">
+          YourSpace Wellbeing · A HerSpace London product<br>
+          info@herspaceldn.com · yourspacewellbeing.com<br><br>
+          This receipt confirms your purchase of the above programme.<br>
+          For queries, please contact us at info@herspaceldn.com.
+        </p>`;
+    }
+
+    function showError(msg) {
+      document.getElementById('receipt').innerHTML =
+        `<div class="error-state">${msg}<br><br><a href="dashboard.html" style="color:#2A9DB5;">Back to my account</a></div>`;
+    }
+
+    init();
+  </script>
+</body>
+</html>

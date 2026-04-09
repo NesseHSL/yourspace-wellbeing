@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1C3461;
+      --teal: #2A9DB5;
+      --teal-light: #E8F6FA;
+      --grey: #AAAAAA;
+      --off-white: #F8F8F6;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--off-white);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid rgba(28,52,97,0.08);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo img { height: 30px; }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-nav a {
+      font-size: 14px;
+      color: var(--navy);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .header-nav a:hover { opacity: 1; }
+
+    .btn-signout {
+      padding: 8px 18px;
+      border: 1.5px solid rgba(28,52,97,0.2);
+      border-radius: 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--navy);
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-signout:hover {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* MAIN LAYOUT */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* WELCOME BANNER */
+    .welcome-banner {
+      background: var(--navy);
+      border-radius: 16px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+      color: var(--white);
+    }
+
+    .welcome-label {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 8px;
+    }
+
+    .welcome-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .welcome-sub {
+      font-size: 14px;
+      opacity: 0.65;
+      line-height: 1.6;
+    }
+
+    /* SECTIONS */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--navy);
+    }
+
+    .section-count {
+      font-size: 13px;
+      color: var(--grey);
+    }
+
+    /* PROGRAMME CARDS */
+    .programmes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .programme-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(28,52,97,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .programme-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--teal-light);
+      color: var(--teal);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .programme-badge.expiring {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .programme-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+    }
+
+    .programme-meta {
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.6;
+    }
+
+    .programme-meta span { display: block; }
+
+    .programme-expiry {
+      font-size: 12px;
+      color: var(--grey);
+      padding-top: 4px;
+      border-top: 1px solid #F0F0F0;
+    }
+
+    .programme-expiry.soon { color: #e65100; }
+
+    .btn-continue {
+      display: block;
+      text-align: center;
+      padding: 11px;
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s;
+      margin-top: auto;
+    }
+
+    .btn-continue:hover { background: #16294d; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 48px 32px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(28,52,97,0.06);
+    }
+
+    .empty-icon { font-size: 36px; margin-bottom: 12px; }
+
+    .empty-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .empty-sub {
+      font-size: 14px;
+      color: var(--grey);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .btn-browse {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--teal);
+      color: var(--white);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .btn-browse:hover { background: #228fa5; }
+
+    /* PURCHASE HISTORY TABLE */
+    .history-table {
+      width: 100%;
+      background: var(--white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(28,52,97,0.06);
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--grey);
+      background: var(--off-white);
+      border-bottom: 1px solid #EFEFEF;
+    }
+
+    .history-table td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: var(--navy);
+      border-bottom: 1px solid #F5F5F5;
+      vertical-align: middle;
+    }
+
+    .history-table tr:last-child td { border-bottom: none; }
+
+    .history-table tr:hover td { background: #FAFAFA; }
+
+    .receipt-btn {
+      padding: 6px 14px;
+      border: 1.5px solid rgba(42,157,181,0.3);
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--teal);
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .receipt-btn:hover {
+      background: var(--teal);
+      color: var(--white);
+      border-color: var(--teal);
+    }
+
+    /* LOADING STATE */
+    .loading {
+      text-align: center;
+      padding: 48px;
+      color: var(--grey);
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 0 20px; }
+      .welcome-banner { padding: 28px 24px; }
+      .welcome-name { font-size: 32px; }
+      .history-table th:nth-child(3),
+      .history-table td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="header-logo">
+      <img src="assets/yourspace-logo-dark.png" alt="YourSpace Wellbeing">
+    </a>
+    <nav class="header-nav">
+      <a href="index.html">Browse Programmes</a>
+      <button class="btn-signout" onclick="handleSignOut()">Sign Out</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- WELCOME BANNER -->
+    <div class="welcome-banner">
+      <p class="welcome-label">My Account</p>
+      <h1 class="welcome-name" id="welcomeName">Welcome back.</h1>
+      <p class="welcome-sub" id="welcomeSub">Loading your account...</p>
+    </div>
+
+    <!-- ACTIVE PROGRAMMES -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Active Programmes</h2>
+        <span class="section-count" id="activeCount"></span>
+      </div>
+      <div id="activeProgrammes">
+        <div class="loading">Loading your programmes...</div>
+      </div>
+    </div>
+
+    <!-- PURCHASE HISTORY -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Purchase History</h2>
+      </div>
+      <div id="purchaseHistory">
+        <div class="loading">Loading your purchase history...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    let sb;
+
+    // Programme routes (add more as pages are built)
+    const programmeRoutes = {
+      'prehab': 'prehab-content.html',
+      'sofa-to-studio': 'sofa-content.html',
+      'home-studio': 'studio-content.html',
+    };
+
+    async function init() {
+      const res = await fetch('/api/ys-config');
+      const config = await res.json();
+      sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+
+      // Check auth — redirect to login if not signed in
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      loadDashboard(session.user);
+    }
+
+    async function loadDashboard(user) {
+      // Get first name from user metadata or profile table
+      const firstName = user.user_metadata?.first_name || user.email.split('@')[0];
+
+      document.getElementById('welcomeName').textContent = `Welcome back, ${firstName}.`;
+      document.getElementById('welcomeSub').textContent =
+        `Great to see you. Here's everything in your account.`;
+
+      // Load purchases from Supabase
+      const { data: purchases, error } = await sb
+        .from('purchases')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('purchased_at', { ascending: false });
+
+      if (error) {
+        console.error(error);
+        document.getElementById('activeProgrammes').innerHTML =
+          '<p style="color:#c0392b;font-size:14px;">There was a problem loading your account. Please refresh the page.</p>';
+        return;
+      }
+
+      renderActiveProgrammes(purchases || []);
+      renderPurchaseHistory(purchases || []);
+    }
+
+    function isActive(purchase) {
+      if (!purchase.expires_at) return purchase.is_active;
+      return purchase.is_active && new Date(purchase.expires_at) > new Date();
+    }
+
+    function daysUntilExpiry(expiresAt) {
+      if (!expiresAt) return null;
+      const diff = new Date(expiresAt) - new Date();
+      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      });
+    }
+
+    function renderActiveProgrammes(purchases) {
+      const active = purchases.filter(isActive);
+      const container = document.getElementById('activeProgrammes');
+      const countEl = document.getElementById('activeCount');
+
+      if (active.length === 0) {
+        countEl.textContent = '';
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🎯</div>
+            <h3 class="empty-title">No active programmes yet</h3>
+            <p class="empty-sub">Browse our programmes and find the one that's right for you.</p>
+            <a href="index.html" class="btn-browse">Browse Programmes</a>
+          </div>`;
+        return;
+      }
+
+      countEl.textContent = `${active.length} active`;
+
+      container.innerHTML = `<div class="programmes-grid">${active.map(p => {
+        const days = daysUntilExpiry(p.expires_at);
+        const expiringSoon = days !== null && days <= 14;
+        const expiryText = p.access_type === 'her-member'
+          ? 'Active with HER Membership'
+          : p.expires_at
+            ? `Expires ${formatDate(p.expires_at)}${expiringSoon ? ` (${days} days)` : ''}`
+            : 'Lifetime access';
+        const route = programmeRoutes[p.programme_id] || '#';
+
+        return `
+          <div class="programme-card">
+            <span class="programme-badge${expiringSoon ? ' expiring' : ''}">
+              ${expiringSoon ? 'Expiring soon' : 'Active'}
+            </span>
+            <h3 class="programme-name">${p.programme_name}</h3>
+            <p class="programme-expiry${expiringSoon ? ' soon' : ''}">${expiryText}</p>
+            <a href="${route}" class="btn-continue">Continue →</a>
+          </div>`;
+      }).join('')}</div>`;
+    }
+
+    function renderPurchaseHistory(purchases) {
+      const container = document.getElementById('purchaseHistory');
+
+      if (purchases.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🧾</div>
+            <h3 class="empty-title">No purchases yet</h3>
+            <p class="empty-sub">Your purchase history will appear here once you've bought a programme.</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Programme</th>
+              <th>Purchased</th>
+              <th>Expires</th>
+              <th>Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${purchases.map(p => `
+              <tr>
+                <td><strong>${p.programme_name}</strong></td>
+                <td>${formatDate(p.purchased_at)}</td>
+                <td>${p.expires_at ? formatDate(p.expires_at) : p.access_type === 'her-member' ? 'With membership' : 'Lifetime'}</td>
+                <td>${p.access_type === 'her-member' ? 'Free' : `£${parseFloat(p.amount_paid).toFixed(2)}`}</td>
+                <td><a href="receipt.html?id=${p.id}" target="_blank" class="receipt-btn">Receipt</a></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    async function handleSignOut() {
+      await sb.auth.signOut();
+      window.location.href = 'index.html';
+    }
+
+    init();
+  </script>
+</body>
+</html>

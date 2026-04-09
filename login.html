@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1C3461;
+      --teal: #2A9DB5;
+      --teal-light: #E8F6FA;
+      --grey: #AAAAAA;
+      --off-white: #F8F8F6;
+      --white: #ffffff;
+      --error: #c0392b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--off-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .logo-wrap {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .logo-wrap img { height: 36px; }
+
+    .auth-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 4px 24px rgba(28,52,97,0.08);
+    }
+
+    .tab-switcher {
+      display: flex;
+      background: var(--off-white);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: none;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--grey);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--white);
+      color: var(--navy);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    .form-group { margin-bottom: 16px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #E0E0E0;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--navy);
+      transition: border-color 0.2s;
+      outline: none;
+      background: var(--white);
+    }
+
+    input:focus { border-color: var(--teal); }
+
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 13px;
+      color: var(--teal);
+      text-decoration: none;
+      margin-top: 6px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      width: 100%;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-primary:hover { background: #16294d; }
+    .btn-primary:disabled { background: var(--grey); cursor: not-allowed; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: var(--grey);
+      font-size: 13px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #E0E0E0;
+    }
+
+    .oauth-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid #E0E0E0;
+      border-radius: 8px;
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--navy);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 10px;
+    }
+
+    .oauth-btn:hover {
+      border-color: var(--teal);
+      background: var(--teal-light);
+    }
+
+    .oauth-icon { width: 20px; height: 20px; }
+
+    .message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      background: #fdf0ef;
+      color: var(--error);
+      border: 1px solid #f5c6c2;
+      display: block;
+    }
+
+    .message.success {
+      background: #edf7f9;
+      color: #1a7a8e;
+      border: 1px solid #b8e4ed;
+      display: block;
+    }
+
+    .auth-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .auth-sub {
+      font-size: 14px;
+      color: var(--grey);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--teal);
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      padding: 0;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .auth-card { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo-wrap">
+    <a href="index.html">
+      <img src="assets/yourspace-logo-dark.png" alt="YourSpace Wellbeing">
+    </a>
+  </div>
+
+  <div class="auth-card">
+
+    <!-- MAIN VIEW: SIGN IN / CREATE ACCOUNT -->
+    <div id="mainView">
+      <div class="tab-switcher">
+        <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab-btn" onclick="switchTab('signup')">Create Account</button>
+      </div>
+
+      <div id="message" class="message"></div>
+
+      <!-- SIGN IN -->
+      <div id="signinPanel" class="form-panel active">
+        <form id="signinForm" onsubmit="handleSignIn(event)">
+          <div class="form-group">
+            <label for="signinEmail">Email address</label>
+            <input type="email" id="signinEmail" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="signinPassword">Password</label>
+            <input type="password" id="signinPassword" placeholder="Your password" required>
+            <button type="button" class="forgot-link" onclick="showForgotView()">Forgot password?</button>
+          </div>
+          <button type="submit" class="btn-primary" id="signinBtn">Sign In</button>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        <button class="oauth-btn" onclick="handleOAuth('google')">
+          <svg class="oauth-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <button class="oauth-btn" onclick="handleOAuth('apple')">
+          <svg class="oauth-icon" viewBox="0 0 24 24" fill="#000">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.55-1.32 3.08-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+          Continue with Apple
+        </button>
+      </div>
+
+      <!-- CREATE ACCOUNT -->
+      <div id="signupPanel" class="form-panel">
+        <form id="signupForm" onsubmit="handleSignUp(event)">
+          <div class="form-group">
+            <label for="firstName">First name</label>
+            <input type="text" id="firstName" placeholder="Your first name" required>
+          </div>
+          <div class="form-group">
+            <label for="signupEmail">Email address</label>
+            <input type="email" id="signupEmail" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" placeholder="At least 8 characters" minlength="8" required>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" id="confirmPassword" placeholder="Repeat your password" required>
+          </div>
+          <button type="submit" class="btn-primary" id="signupBtn">Create Account</button>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        <button class="oauth-btn" onclick="handleOAuth('google')">
+          <svg class="oauth-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Continue with Google
+        </button>
+
+        <button class="oauth-btn" onclick="handleOAuth('apple')">
+          <svg class="oauth-icon" viewBox="0 0 24 24" fill="#000">
+            <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.55-1.32 3.08-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+          </svg>
+          Continue with Apple
+        </button>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD VIEW -->
+    <div id="forgotView" style="display:none;">
+      <button class="back-link" onclick="showMainView()">← Back to sign in</button>
+      <h2 class="auth-title">Reset your password</h2>
+      <p class="auth-sub">Enter your email address and we'll send you a link to reset your password.</p>
+      <div id="forgotMessage" class="message"></div>
+      <form onsubmit="handleForgotPassword(event)">
+        <div class="form-group">
+          <label for="forgotEmail">Email address</label>
+          <input type="email" id="forgotEmail" placeholder="you@example.com" required>
+        </div>
+        <button type="submit" class="btn-primary">Send reset link</button>
+      </form>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    let sb;
+
+    async function init() {
+      const res = await fetch('/api/ys-config');
+      const config = await res.json();
+      sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+
+      // If already logged in, go straight to dashboard
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) window.location.href = 'dashboard.html';
+    }
+
+    init();
+
+    // --- TAB SWITCHING ---
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', (tab === 'signin' && i === 0) || (tab === 'signup' && i === 1));
+      });
+      document.getElementById('signinPanel').classList.toggle('active', tab === 'signin');
+      document.getElementById('signupPanel').classList.toggle('active', tab === 'signup');
+      clearMessage();
+    }
+
+    // --- VIEWS ---
+    function showForgotView() {
+      document.getElementById('mainView').style.display = 'none';
+      document.getElementById('forgotView').style.display = 'block';
+    }
+
+    function showMainView() {
+      document.getElementById('mainView').style.display = 'block';
+      document.getElementById('forgotView').style.display = 'none';
+    }
+
+    // --- MESSAGES ---
+    function showMessage(text, type, id = 'message') {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = `message ${type}`;
+    }
+
+    function clearMessage() {
+      const el = document.getElementById('message');
+      el.className = 'message';
+      el.textContent = '';
+    }
+
+    function setLoading(btnId, loading, defaultText) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.textContent = loading ? 'Please wait...' : defaultText;
+    }
+
+    // --- SIGN IN ---
+    async function handleSignIn(e) {
+      e.preventDefault();
+      setLoading('signinBtn', true, 'Sign In');
+      clearMessage();
+
+      const { error } = await sb.auth.signInWithPassword({
+        email: document.getElementById('signinEmail').value,
+        password: document.getElementById('signinPassword').value,
+      });
+
+      if (error) {
+        showMessage(
+          error.message.includes('Invalid login credentials')
+            ? 'Incorrect email or password. Please try again.'
+            : error.message,
+          'error'
+        );
+        setLoading('signinBtn', false, 'Sign In');
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    }
+
+    // --- SIGN UP ---
+    async function handleSignUp(e) {
+      e.preventDefault();
+      const password = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+
+      if (password !== confirm) {
+        return showMessage('Passwords do not match.', 'error');
+      }
+
+      setLoading('signupBtn', true, 'Create Account');
+      clearMessage();
+
+      const { error } = await sb.auth.signUp({
+        email: document.getElementById('signupEmail').value,
+        password,
+        options: {
+          data: { first_name: document.getElementById('firstName').value.trim() },
+          emailRedirectTo: `${window.location.origin}/dashboard.html`,
+        },
+      });
+
+      if (error) {
+        showMessage(error.message, 'error');
+      } else {
+        showMessage(
+          'Almost there! Check your email and click the confirmation link to activate your account.',
+          'success'
+        );
+      }
+      setLoading('signupBtn', false, 'Create Account');
+    }
+
+    // --- OAUTH ---
+    async function handleOAuth(provider) {
+      await sb.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: `${window.location.origin}/dashboard.html` },
+      });
+    }
+
+    // --- FORGOT PASSWORD ---
+    async function handleForgotPassword(e) {
+      e.preventDefault();
+      const { error } = await sb.auth.resetPasswordForEmail(
+        document.getElementById('forgotEmail').value,
+        { redirectTo: `${window.location.origin}/login.html` }
+      );
+
+      showMessage(
+        error ? error.message : 'Reset link sent! Check your inbox.',
+        error ? 'error' : 'success',
+        'forgotMessage'
+      );
+    }
+  </script>
+</body>
+</html>
