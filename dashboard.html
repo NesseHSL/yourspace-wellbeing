@@ -85,7 +85,8 @@
 
     /* WELCOME BANNER */
     .welcome-banner {
-      background: var(--navy);
+      background: linear-gradient(rgba(28,52,97,0.85), rgba(28,52,97,0.85)),
+                  url('assets/studio-hero.png') center/cover no-repeat;
       border-radius: 16px;
       padding: 36px 40px;
       margin-bottom: 40px;
@@ -400,7 +401,7 @@
 
       document.getElementById('welcomeName').textContent = `Welcome back, ${firstName}.`;
       document.getElementById('welcomeSub').textContent =
-        `Great to see you. Here's everything in your account.`;
+        `Great to see you — you're looking healthier already. Here's everything in your account.`;
 
       // Load purchases from Supabase
       const { data: purchases, error } = await sb
