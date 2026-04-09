@@ -1065,6 +1065,51 @@
       </div>
     </section>
 
+    <!-- WAITLIST — REMOVE BEFORE LAUNCH -->
+    <section id="waitlist" style="background:var(--navy);padding:100px 48px;">
+      <div style="max-width:580px;margin:0 auto;text-align:center;">
+        <p style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Coming Soon</p>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:300;color:#fff;line-height:1.1;margin-bottom:20px;">Be the first to know.</h2>
+        <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:40px;">Register your interest and we'll let you know the moment Sofa to Studio is available — plus early access and a little something extra for our founding members.</p>
+        <form id="waitlistForm" style="display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto;">
+          <input type="text" id="wlFirstName" placeholder="Your first name" style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
+          <input type="email" id="wlEmail" placeholder="Your email address" required style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
+          <button type="submit" id="wlBtn" style="padding:15px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background 0.2s;">Register my interest</button>
+        </form>
+        <p id="wlMessage" style="margin-top:16px;font-size:14px;color:rgba(255,255,255,0.7);display:none;"></p>
+        <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.3);">No spam, ever. Just the good stuff.</p>
+      </div>
+    </section>
+    <script>
+      document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('wlBtn');
+        const msg = document.getElementById('wlMessage');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+        const res = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('wlEmail').value,
+            firstName: document.getElementById('wlFirstName').value,
+          }),
+        });
+        const data = await res.json();
+        msg.style.display = 'block';
+        if (res.ok) {
+          msg.textContent = "You're on the list! We'll be in touch very soon. 🎉";
+          msg.style.color = '#2A9DB5';
+          document.getElementById('waitlistForm').style.display = 'none';
+        } else {
+          msg.textContent = data.error || 'Something went wrong. Please try again.';
+          msg.style.color = '#e74c3c';
+          btn.disabled = false;
+          btn.textContent = 'Register my interest';
+        }
+      });
+    </script>
+
     <!-- FOOTER -->
     <footer>
       <div class="footer-inner">
