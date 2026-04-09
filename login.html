@@ -453,13 +453,20 @@
 
       if (error) {
         showMessage(error.message, 'error');
+        setLoading('signupBtn', false, 'Create Account');
       } else {
-        showMessage(
-          'Almost there! Check your email and click the confirmation link to activate your account.',
-          'success'
-        );
+        // If email confirmation is off, session exists immediately
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) {
+          window.location.href = 'dashboard.html';
+        } else {
+          showMessage(
+            'Almost there! Check your email and click the confirmation link to activate your account.',
+            'success'
+          );
+          setLoading('signupBtn', false, 'Create Account');
+        }
       }
-      setLoading('signupBtn', false, 'Create Account');
     }
 
     // --- OAUTH ---
