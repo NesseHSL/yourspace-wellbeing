@@ -1,0 +1,15 @@
+# Word temp files
+~$*
+*.tmp
+
+# Word documents (keep locally, don't deploy)
+*.docx
+
+# Draft files
+*.md
+
+# Mac
+.DS_Store
+
+# Node
+node_modules/
