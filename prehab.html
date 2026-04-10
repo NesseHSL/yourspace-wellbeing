@@ -701,7 +701,7 @@
               <li>90 days to complete at your pace</li>
               <li>Return as often as you need</li>
             </ul>
-            <a href="#" class="btn-ghost">Get Prehab — £19.99</a>
+            <a href="#" class="btn-ghost" onclick="handleCheckout(event,'price_1TKgTb3qlwzbgcp90SbfgCx6','payment')">Get Prehab — £19.99</a>
           </div>
 
           <div class="pricing-card featured">
@@ -718,11 +718,11 @@
               <li>All future specialist programmes</li>
               <li>Cancel anytime</li>
             </ul>
-            <a href="#" class="btn-primary">Start All Access — £19.99/mo</a>
+            <a href="#" class="btn-primary" onclick="handleCheckout(event,'price_1TKga13qlwzbgcp91FW2aAUs','subscription')">Start All Access — £24.99/mo</a>
           </div>
 
         </div>
-        <p class="pricing-note">All Access also available annually — £179/year (save £61). · HerSpace London members get free access to The Home Studio.</p>
+        <p class="pricing-note">All Access also available annually — £199/year (save £101). · HerSpace London members get free access to The Home Studio.</p>
       </div>
     </section>
 
@@ -805,6 +805,54 @@
     window.addEventListener('scroll', () => {
       document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
     });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    let _supabase;
+    async function getSupabase() {
+      if (_supabase) return _supabase;
+      const config = await fetch('/api/ys-config').then(r => r.json());
+      _supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+      return _supabase;
+    }
+
+    async function handleCheckout(e, priceId, mode) {
+      e.preventDefault();
+      const supabase = await getSupabase();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}&price=${priceId}&mode=${mode}`;
+        return;
+      }
+
+      const btn = e.target;
+      const original = btn.textContent;
+      btn.textContent = 'Loading...';
+      btn.style.pointerEvents = 'none';
+
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId, mode,
+          userId: session.user.id,
+          userEmail: session.user.email,
+          successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: window.location.href
+        })
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        btn.textContent = original;
+        btn.style.pointerEvents = 'auto';
+        alert('Something went wrong. Please try again.');
+      }
+    }
   </script>
 
 </body>

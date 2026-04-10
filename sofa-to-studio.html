@@ -1036,7 +1036,7 @@
               <li>Nutrition guide &amp; macro calculator</li>
               <li>Access on any device</li>
             </ul>
-            <a href="#" class="btn-ghost-light">Buy now — £24.99</a>
+            <a href="#" class="btn-ghost-light" onclick="handleCheckout(event,'price_1TKgUA3qlwzbgcp9ri4kF42a','payment')">Buy now — £24.99</a>
           </div>
 
           <!-- All Access -->
@@ -1045,7 +1045,7 @@
             <div class="pricing-label">All Access</div>
             <div>
               <div class="pricing-amount">£19.99<span style="font-size:22px; opacity:0.5;">/mo</span></div>
-              <div class="pricing-amount-alt">or £179/year</div>
+              <div class="pricing-amount-alt">or £199/year</div>
               <div class="pricing-period">Includes everything in YourSpace Wellbeing</div>
             </div>
             <hr class="pricing-divider">
@@ -1056,7 +1056,7 @@
               <li>All future specialist programmes</li>
               <li>Nutrition guides</li>
             </ul>
-            <a href="#" class="btn-primary">Start All Access</a>
+            <a href="#" class="btn-primary" onclick="handleCheckout(event,'price_1TKga13qlwzbgcp91FW2aAUs','subscription')">Start All Access</a>
             <p style="font-size:11px; color:var(--grey-mid); text-align:center; margin-top:-4px;">HerSpace London members get free access to The Home Studio</p>
           </div>
 
@@ -1220,6 +1220,54 @@
       });
     });
 
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    let _supabase;
+    async function getSupabase() {
+      if (_supabase) return _supabase;
+      const config = await fetch('/api/ys-config').then(r => r.json());
+      _supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+      return _supabase;
+    }
+
+    async function handleCheckout(e, priceId, mode) {
+      e.preventDefault();
+      const supabase = await getSupabase();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}&price=${priceId}&mode=${mode}`;
+        return;
+      }
+
+      const btn = e.target;
+      const original = btn.textContent;
+      btn.textContent = 'Loading...';
+      btn.style.pointerEvents = 'none';
+
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId, mode,
+          userId: session.user.id,
+          userEmail: session.user.email,
+          successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: window.location.href
+        })
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        btn.textContent = original;
+        btn.style.pointerEvents = 'auto';
+        alert('Something went wrong. Please try again.');
+      }
+    }
   </script>
 
 </body>
