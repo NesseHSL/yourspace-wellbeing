@@ -5,6 +5,18 @@ export default async function handler(req, res) {
 
   const { priceId, mode, userId, userEmail, successUrl, cancelUrl } = req.body;
 
+  // Dynamic statement descriptors per product
+  const DESCRIPTORS = {
+    'price_1TKgTb3qlwzbgcp90SbfgCx6': 'YOURSPACE',
+    'price_1TKgUA3qlwzbgcp9ri4kF42a': 'YOURSPACE',
+    'price_1TKgVa3qlwzbgcp90PqK6EvG': 'YOURSPACE',
+    'price_1TKgVa3qlwzbgcp9Bjt9s6yg': 'YOURSPACE',
+    'price_1TKga13qlwzbgcp91FW2aAUs': 'YOURSPACE',
+    'price_1TKga13qlwzbgcp9VINFmvVQ': 'YOURSPACE',
+    'price_1TKgT63qlwzbgcp9IBc6QrcA': 'CITE THE APP',
+    'price_1TKgT63qlwzbgcp9K2PRVMac': 'CITE THE APP',
+  };
+
   try {
     const params = new URLSearchParams({
       'line_items[0][price]': priceId,
@@ -14,6 +26,7 @@ export default async function handler(req, res) {
       'cancel_url': cancelUrl,
       'metadata[user_id]': userId || '',
       'metadata[price_id]': priceId,
+      'payment_intent_data[statement_descriptor]': DESCRIPTORS[priceId] || 'HERSPACE LONDON',
     });
 
     if (userEmail) params.append('customer_email', userEmail);
