@@ -18,6 +18,8 @@ export default async function handler(req, res) {
   };
 
   try {
+    const descriptor = DESCRIPTORS[priceId] || 'HERSPACE LONDON';
+
     const params = new URLSearchParams({
       'line_items[0][price]': priceId,
       'line_items[0][quantity]': '1',
@@ -26,8 +28,14 @@ export default async function handler(req, res) {
       'cancel_url': cancelUrl,
       'metadata[user_id]': userId || '',
       'metadata[price_id]': priceId,
-      'payment_intent_data[statement_descriptor]': DESCRIPTORS[priceId] || 'HERSPACE LONDON',
     });
+
+    // statement_descriptor param differs by payment mode
+    if (mode === 'subscription') {
+      params.append('subscription_data[description]', descriptor);
+    } else {
+      params.append('payment_intent_data[statement_descriptor]', descriptor);
+    }
 
     if (userEmail) params.append('customer_email', userEmail);
 
