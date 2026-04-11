@@ -375,9 +375,15 @@
 
     // Programme routes (add more as pages are built)
     const programmeRoutes = {
-      'prehab': 'prehab-content.html',
+      // Slugs (current)
+      'prehab':         'prehab-content.html',
       'sofa-to-studio': 'sofa-content.html',
-      'home-studio': 'studio-content.html',
+      'home-studio':    'studio-content.html',
+      // Legacy price IDs (in case of old purchases)
+      'price_1TKgTb3qlwzbgcp90SbfgCx6': 'prehab-content.html',
+      'price_1TKgUA3qlwzbgcp9ri4kF42a': 'sofa-content.html',
+      'price_1TKgVa3qlwzbgcp90PqK6EvG': 'studio-content.html',
+      'price_1TKgVa3qlwzbgcp9Bjt9s6yg': 'studio-content.html',
     };
 
     async function init() {
@@ -492,6 +498,27 @@
         return;
       }
 
+      // Consolidate All Access entries — show one row per unique stripe_payment_id
+      const historyRows = [];
+      const seenAllAccessPayments = new Set();
+
+      for (const p of purchases) {
+        if (p.access_type === 'all-access') {
+          if (seenAllAccessPayments.has(p.stripe_payment_id)) continue;
+          seenAllAccessPayments.add(p.stripe_payment_id);
+          // Push a consolidated All Access row using the non-zero amount entry
+          historyRows.push({
+            ...p,
+            programme_name: 'All Access (all programmes)',
+            amount_paid: purchases
+              .filter(r => r.access_type === 'all-access' && r.stripe_payment_id === p.stripe_payment_id)
+              .reduce((sum, r) => sum + parseFloat(r.amount_paid || 0), 0),
+          });
+        } else {
+          historyRows.push(p);
+        }
+      }
+
       container.innerHTML = `
         <table class="history-table">
           <thead>
@@ -504,13 +531,13 @@
             </tr>
           </thead>
           <tbody>
-            ${purchases.map(p => `
+            ${historyRows.map(p => `
               <tr>
                 <td><strong>${p.programme_name}</strong></td>
                 <td>${formatDate(p.purchased_at)}</td>
                 <td>${p.expires_at ? formatDate(p.expires_at) : p.access_type === 'her-member' ? 'With membership' : 'Lifetime'}</td>
                 <td>${p.access_type === 'her-member' ? 'Free' : `£${parseFloat(p.amount_paid).toFixed(2)}`}</td>
-                <td><a href="receipt.html?id=${p.id}" target="_blank" class="receipt-btn">Receipt</a></td>
+                <td></td>
               </tr>`).join('')}
           </tbody>
         </table>`;

@@ -120,7 +120,7 @@
                 <span class="prog-price">£24.99<span class="prog-per">/month</span></span>
                 <span class="prog-annual">3-month minimum, then cancel any time</span>
               </div>
-              <a href="prehab.html#pricing" class="btn-primary btn-sm">Get All Access</a>
+              <a href="#" class="btn-primary btn-sm" onclick="handleCheckout(event,'price_1TKga13qlwzbgcp91FW2aAUs','subscription')">Get All Access</a>
             </div>
           </div>
 
@@ -251,7 +251,7 @@
     });
   </script>
 
-  <!-- Auth state: update nav Sign In → My Account if logged in -->
+  <!-- Checkout handler -->\n  <script>\n    let _supabase;\n    async function getSupabase() {\n      if (_supabase) return _supabase;\n      const config = await fetch('/api/ys-config').then(r => r.json());\n      _supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);\n      return _supabase;\n    }\n\n    async function handleCheckout(e, priceId, mode) {\n      e.preventDefault();\n      const supabase = await getSupabase();\n      const { data: { session } } = await supabase.auth.getSession();\n\n      if (!session) {\n        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}&price=${priceId}&mode=${mode}`;\n        return;\n      }\n\n      const btn = e.target;\n      const original = btn.textContent;\n      btn.textContent = 'Loading...';\n      btn.style.pointerEvents = 'none';\n\n      try {\n        const res = await fetch('/api/create-checkout', {\n          method: 'POST',\n          headers: { 'Content-Type': 'application/json' },\n          body: JSON.stringify({\n            priceId, mode,\n            userId: session.user.id,\n            userEmail: session.user.email,\n            successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,\n            cancelUrl: window.location.href,\n          })\n        });\n        const data = await res.json();\n        if (data.url) {\n          window.location.href = data.url;\n        } else {\n          alert(data.error || 'Something went wrong. Please try again.');\n          btn.textContent = original;\n          btn.style.pointerEvents = 'auto';\n        }\n      } catch (err) {\n        alert('Something went wrong. Please try again.');\n        btn.textContent = original;\n        btn.style.pointerEvents = 'auto';\n      }\n    }\n  </script>\n\n  <!-- Auth state: update nav Sign In → My Account if logged in -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
     (async () => {
