@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 
     const supabaseHeaders = {
       'apikey':        process.env.SUPABASE_PUBLISHABLE_KEY,
-      'Authorization': `Bearer ${process.env.SUPABASE_SECRET_KEY}`,
+      'Authorization': `Bearer ${process.env.SUPABASE_SECRET_SERVICE_KEY}`,
       'Content-Type':  'application/json',
       'Prefer':        'return=minimal',
     };
