@@ -84,7 +84,7 @@ export default async function handler(req, res) {
       if (!supabaseRes.ok) {
         const errText = await supabaseRes.text();
         console.error('Supabase error (All Access):', errText);
-        throw new Error('Failed to record All Access purchase');
+        throw new Error(`Supabase All Access insert failed: ${errText}`);
       }
 
       return res.status(200).json({ success: true, programme: 'All Access' });
@@ -123,6 +123,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Record purchase error:', error);
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message, detail: error.stack });
   }
 }
