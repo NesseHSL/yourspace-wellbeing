@@ -29,6 +29,7 @@ export default async function handler(req, res) {
       'metadata[user_id]': userId || '',
       'metadata[price_id]': priceId,
       'allow_promotion_codes': 'true',
+      'payment_method_collection': 'if_required',
     });
 
     // statement_descriptor param differs by payment mode
