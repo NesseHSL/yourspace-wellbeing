@@ -360,7 +360,7 @@
 
       // If already logged in, go straight to dashboard
       const { data: { session } } = await sb.auth.getSession();
-      if (session) window.location.href = 'dashboard.html';
+      if (session) window.location.href = 'index.html';
     }
 
     init();
@@ -425,7 +425,7 @@
         );
         setLoading('signinBtn', false, 'Sign In');
       } else {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'index.html';
       }
     }
 
@@ -447,7 +447,7 @@
         password,
         options: {
           data: { first_name: document.getElementById('firstName').value.trim() },
-          emailRedirectTo: `${window.location.origin}/dashboard.html`,
+          emailRedirectTo: `${window.location.origin}/index.html`,
         },
       });
 
@@ -458,7 +458,7 @@
         // If email confirmation is off, session exists immediately
         const { data: { session } } = await sb.auth.getSession();
         if (session) {
-          window.location.href = 'dashboard.html';
+          window.location.href = 'index.html';
         } else {
           showMessage(
             'Almost there! Check your email and click the confirmation link to activate your account.',
@@ -473,7 +473,7 @@
     async function handleOAuth(provider) {
       await sb.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}/dashboard.html` },
+        options: { redirectTo: `${window.location.origin}/index.html` },
       });
     }
 
