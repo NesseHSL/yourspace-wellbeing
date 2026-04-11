@@ -28,6 +28,7 @@ export default async function handler(req, res) {
       'cancel_url': cancelUrl,
       'metadata[user_id]': userId || '',
       'metadata[price_id]': priceId,
+      'allow_promotion_codes': 'true',
     });
 
     // statement_descriptor param differs by payment mode
