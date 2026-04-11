@@ -29,7 +29,9 @@ export default async function handler(req, res) {
     );
     const session = await stripeRes.json();
 
-    if (session.payment_status !== 'paid') {
+    // 'no_payment_required' occurs when a 100% coupon brings the total to £0
+    const validStatuses = ['paid', 'no_payment_required'];
+    if (!validStatuses.includes(session.payment_status)) {
       return res.status(400).json({ error: 'Payment not completed' });
     }
 
