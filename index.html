@@ -251,15 +251,65 @@
     });
   </script>
 
-  <!-- Checkout handler -->\n  <script>\n    let _supabase;\n    async function getSupabase() {\n      if (_supabase) return _supabase;\n      const config = await fetch('/api/ys-config').then(r => r.json());\n      _supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);\n      return _supabase;\n    }\n\n    async function handleCheckout(e, priceId, mode) {\n      e.preventDefault();\n      const supabase = await getSupabase();\n      const { data: { session } } = await supabase.auth.getSession();\n\n      if (!session) {\n        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}&price=${priceId}&mode=${mode}`;\n        return;\n      }\n\n      const btn = e.target;\n      const original = btn.textContent;\n      btn.textContent = 'Loading...';\n      btn.style.pointerEvents = 'none';\n\n      try {\n        const res = await fetch('/api/create-checkout', {\n          method: 'POST',\n          headers: { 'Content-Type': 'application/json' },\n          body: JSON.stringify({\n            priceId, mode,\n            userId: session.user.id,\n            userEmail: session.user.email,\n            successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,\n            cancelUrl: window.location.href,\n          })\n        });\n        const data = await res.json();\n        if (data.url) {\n          window.location.href = data.url;\n        } else {\n          alert(data.error || 'Something went wrong. Please try again.');\n          btn.textContent = original;\n          btn.style.pointerEvents = 'auto';\n        }\n      } catch (err) {\n        alert('Something went wrong. Please try again.');\n        btn.textContent = original;\n        btn.style.pointerEvents = 'auto';\n      }\n    }\n  </script>\n\n  <!-- Auth state: update nav Sign In → My Account if logged in -->
+  <!-- Supabase + checkout + auth nav -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
+    let _supabase;
+    async function getSupabase() {
+      if (_supabase) return _supabase;
+      const config = await fetch('/api/ys-config').then(r => r.json());
+      _supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+      return _supabase;
+    }
+
+    // Checkout handler — used by programme buttons across the page
+    async function handleCheckout(e, priceId, mode) {
+      e.preventDefault();
+      const supabase = await getSupabase();
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}&price=${priceId}&mode=${mode}`;
+        return;
+      }
+
+      const btn = e.target;
+      const original = btn.textContent;
+      btn.textContent = 'Loading...';
+      btn.style.pointerEvents = 'none';
+
+      try {
+        const res = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            priceId, mode,
+            userId: session.user.id,
+            userEmail: session.user.email,
+            successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+            cancelUrl: window.location.href,
+          })
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          alert(data.error || 'Something went wrong. Please try again.');
+          btn.textContent = original;
+          btn.style.pointerEvents = 'auto';
+        }
+      } catch (err) {
+        alert('Something went wrong. Please try again.');
+        btn.textContent = original;
+        btn.style.pointerEvents = 'auto';
+      }
+    }
+
+    // Auth state: update nav Sign In → My Account if logged in
     (async () => {
       try {
-        const res = await fetch('/api/ys-config');
-        const config = await res.json();
-        const sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
-        const { data: { session } } = await sb.auth.getSession();
+        const supabase = await getSupabase();
+        const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           const btn = document.getElementById('authNavBtn');
           if (btn) {
