@@ -409,7 +409,7 @@
         <p class="prog-hero-sub">Stability & strength for injury prevention</p>
         <p class="hero-sub" style="color:rgba(255,255,255,0.55); max-width:560px;">Six progressive sessions designed to build the foundations your body needs to train harder, move better, and stay injury-free — whatever your sport.</p>
         <div class="prog-hero-btns">
-          <a href="#pricing" class="btn-primary">Get access — £19.99</a>
+          <a href="#waitlist" class="btn-primary">Register your interest</a>
           <a href="#the-programme" class="btn-ghost-light">See the programme</a>
         </div>
       </div>
@@ -680,58 +680,12 @@
       </div>
     </section>
 
-    <!-- PRICING -->
-    <section id="pricing">
-      <div class="section-inner">
-        <p class="section-label">Get Access</p>
-        <h2>Start your Prehab</h2>
-        <p class="section-sub">90 days of access — enough time to complete the programme twice and establish it as a habit.</p>
-        <div class="pricing-grid">
-
-          <div class="pricing-card">
-            <div class="pricing-label">Prehab Only</div>
-            <div>
-              <div class="pricing-amount">£19.99</div>
-              <div class="pricing-period">90 days access</div>
-            </div>
-            <hr class="pricing-divider">
-            <ul class="pricing-features">
-              <li>All 5 Prehab sessions</li>
-              <li>Full 4-week progression plan</li>
-              <li>90 days to complete at your pace</li>
-              <li>Return as often as you need</li>
-            </ul>
-            <a href="#" class="btn-ghost" onclick="handleCheckout(event,'price_1TKgTb3qlwzbgcp90SbfgCx6','payment')">Get Prehab — £19.99</a>
-          </div>
-
-          <div class="pricing-card featured">
-            <div class="pricing-label">Best Value</div>
-            <div>
-              <div class="pricing-amount">£24.99</div>
-              <div class="pricing-period">/month · All Access</div>
-            </div>
-            <hr class="pricing-divider">
-            <ul class="pricing-features">
-              <li>Prehab — all 6 sessions</li>
-              <li>The Home Studio — all classes</li>
-              <li>Sofa to Studio 30-day programme</li>
-              <li>All future specialist programmes</li>
-              <li>3-month minimum, then cancel any time</li>
-            </ul>
-            <a href="#" class="btn-primary" onclick="handleCheckout(event,'price_1TKga13qlwzbgcp91FW2aAUs','subscription')">Start All Access — £24.99/mo</a>
-          </div>
-
-        </div>
-        <p class="pricing-note">HerSpace London Unlimited Members get free access to The Home Studio — ask us for your code.</p>
-      </div>
-    </section>
-
-    <!-- WAITLIST — REMOVE BEFORE LAUNCH -->
+    <!-- WAITLIST -->
     <section id="waitlist" style="background:var(--navy);padding:100px 48px;">
       <div style="max-width:580px;margin:0 auto;text-align:center;">
         <p style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Coming Soon</p>
         <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:300;color:#fff;line-height:1.1;margin-bottom:20px;">Be the first to know.</h2>
-        <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:40px;">Register your interest and we'll let you know the moment Prehab is available — plus early access and a little something extra for our founding members.</p>
+        <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:40px;">Register your interest and we'll let you know the moment Prehab is available — including an exclusive <strong style="color:var(--teal);">15% early-bird discount</strong> for everyone on this list.</p>
         <form id="waitlistForm" style="display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto;">
           <input type="text" id="wlFirstName" placeholder="Your first name" style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
           <input type="email" id="wlEmail" placeholder="Your email address" required style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
@@ -759,8 +713,8 @@
         const data = await res.json();
         msg.style.display = 'block';
         if (res.ok) {
-          msg.textContent = "You're on the list! We'll be in touch very soon. 🎉";
-          msg.style.color = '#2A9DB5';
+          msg.innerHTML = "You're on the list! 🎉<br><br>One more thing — please add <strong>hello@yourspacewellbeing.com</strong> to your safe senders list so our launch email doesn't end up in your spam folder.";
+          msg.style.color = 'rgba(255,255,255,0.75)';
           document.getElementById('waitlistForm').style.display = 'none';
         } else {
           msg.textContent = data.error || 'Something went wrong. Please try again.';

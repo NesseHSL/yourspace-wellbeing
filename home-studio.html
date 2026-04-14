@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Home Studio — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    /* ── PAGE HERO ─────────────────────────────── */
+    .prog-hero {
+      background: var(--navy);
+      padding: 130px 48px 110px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .prog-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 40% 50%, rgba(42,157,181,0.16) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .prog-hero .kicker { color: var(--teal); margin-bottom: 20px; }
+    .prog-hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(58px, 9vw, 104px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.0;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .prog-hero-sub {
+      font-family: var(--font-serif);
+      font-size: clamp(18px, 2.5vw, 26px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      font-style: italic;
+      margin-bottom: 52px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.55;
+    }
+    .prog-hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── THE HONEST BIT ─────────────────────────── */
+    #honest {
+      background: var(--off-white);
+      padding: 100px 48px;
+    }
+    .honest-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .honest-inner h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 300;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 32px;
+    }
+    .honest-body {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--grey-mid);
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+    .honest-standout {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--navy);
+      margin: 32px 0;
+      padding: 28px 40px;
+      border-left: 3px solid var(--teal);
+      text-align: left;
+      background: var(--white);
+      border-radius: 0 12px 12px 0;
+    }
+
+    /* ── WHAT'S INSIDE ──────────────────────────── */
+    #inside {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+    .inside-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 52px;
+    }
+    .inside-card {
+      background: var(--off-white);
+      border-radius: 14px;
+      padding: 32px 28px;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .inside-icon { font-size: 28px; margin-bottom: 14px; }
+    .inside-card h4 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .inside-card p {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--grey-mid);
+      font-weight: 300;
+    }
+
+    /* ── VIDEO SECTION ──────────────────────────── */
+    #classes {
+      background: var(--navy);
+      padding: 100px 48px;
+    }
+    #classes .section-label { color: rgba(255,255,255,0.4); }
+    #classes h2 { color: var(--white); }
+    #classes .section-sub { color: rgba(255,255,255,0.5); }
+
+    .video-placeholder {
+      margin-top: 52px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      aspect-ratio: 16/9;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      color: rgba(255,255,255,0.3);
+    }
+    .video-placeholder-icon { font-size: 48px; }
+    .video-placeholder p {
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+    /* When Vimeo is ready — replace .video-placeholder with this iframe wrapper:
+       <div class="vimeo-wrap">
+         <iframe src="https://player.vimeo.com/video/YOUR_ID" ... allowfullscreen></iframe>
+       </div>
+    */
+    .vimeo-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 900px;
+      margin: 52px auto 0;
+    }
+    .vimeo-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+    }
+
+    /* ── WAITLIST ───────────────────────────────── */
+    #waitlist { background: var(--navy); padding: 100px 48px; }
+
+    @media (max-width: 900px) {
+      .prog-hero { padding: 88px 24px 72px; }
+      #honest, #inside, #classes, #waitlist { padding: 72px 24px; }
+      .honest-standout { padding: 20px 24px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH -->
+  <div id="splash" style="position:fixed;inset:0;background:#0F2240;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s ease;">
+    <img src="assets/yorspace-logo-light.png" alt="YourSpace" style="height:60px;opacity:0;transition:opacity 0.4s ease;" id="splashLogo">
+  </div>
+
+  <!-- SITE WRAPPER -->
+  <div id="site" style="opacity:0;transition:opacity 0.5s ease;">
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo-link">
+        <img src="assets/yourspace-logo-dark.png" alt="YourSpace Wellbeing" class="header-logo">
+      </a>
+      <nav class="header-nav">
+        <a href="index.html#programmes">Programmes</a>
+        <a href="index.html#about">About</a>
+        <a id="authNavBtn" href="login.html" class="btn-nav">Sign In</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="prog-hero">
+    <div style="position:relative;z-index:1;">
+      <p class="kicker" style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;">The Home Studio</p>
+      <h1>Studio quality.<br>Anywhere.</h1>
+      <p class="prog-hero-sub">A growing collection of classes you can do at home, with minimal kit — led by the HerSpace London team.</p>
+      <div class="prog-hero-btns">
+        <a href="#waitlist" class="btn-primary">Register your interest</a>
+        <a href="#classes" class="btn-ghost-light">See what's inside</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE HONEST BIT -->
+  <section id="honest">
+    <div class="honest-inner">
+      <p class="section-label">Before we go any further</p>
+      <h2>Nothing replaces the room.</h2>
+      <p class="honest-body">There is a reason we built a studio before we built an app. When you move with other people — in the same space, breathing the same air, being seen by the same instructor — something different happens in your brain. Your mirror neurons fire. Your motivation lifts. Your effort increases, often without you even noticing. This is not a marketing claim. It is neuroscience.</p>
+
+      <div class="honest-standout">
+        "Studies show that exercising with others can increase pain tolerance, performance, and motivation — even when working at the same intensity as solo training."<br>
+        <span style="font-size:14px; font-style:normal; opacity:0.6; display:block; margin-top:10px;">Oxford University, 2009 — and replicated many times since.</span>
+      </div>
+
+      <p class="honest-body">The Home Studio is not a replacement for that. It is for the days when life gets in the way. When you travel. When the class is full. When you need to move but you cannot get to the studio — and you refuse to let the streak die.</p>
+      <p class="honest-body">Use it wisely. Use it regularly. And when you can, come and move with us in person.</p>
+    </div>
+  </section>
+
+  <!-- WHAT'S INSIDE -->
+  <section id="inside">
+    <div class="section-inner" style="text-align:center;">
+      <p class="section-label">What's included</p>
+      <h2>Everything you need. Nothing you don't.</h2>
+      <p class="section-sub">A curated collection of classes — not an overwhelming library. Updated twice a year with new content.</p>
+      <div class="inside-grid">
+        <div class="inside-card">
+          <div class="inside-icon">🎬</div>
+          <h4>4–5 classes to start</h4>
+          <p>A focused starting collection across different styles and intensities. New classes added twice a year.</p>
+        </div>
+        <div class="inside-card">
+          <div class="inside-icon">🏠</div>
+          <h4>Minimal equipment</h4>
+          <p>No reformer. No gym. A mat, a small space, and the occasional resistance band is all you need.</p>
+        </div>
+        <div class="inside-card">
+          <div class="inside-icon">📱</div>
+          <h4>Any device</h4>
+          <p>Watch on your phone, tablet, or laptop. Stream anywhere — no downloads required.</p>
+        </div>
+        <div class="inside-card">
+          <div class="inside-icon">👑</div>
+          <h4>Free for Unlimited Members</h4>
+          <p>HerSpace London Unlimited Members get The Home Studio included. Ask us for your access code.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSES / VIDEO -->
+  <section id="classes">
+    <div class="section-inner" style="text-align:center;">
+      <p class="section-label">A preview</p>
+      <h2>See it in action.</h2>
+      <p class="section-sub">A taster of what's waiting for you inside.</p>
+
+      <!-- VIDEO PLACEHOLDER — replace with Vimeo embed when ready -->
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon">▶</div>
+        <p>Class preview coming soon</p>
+      </div>
+      <!-- Vimeo embed (uncomment and replace YOUR_VIMEO_ID when ready):
+      <div class="vimeo-wrap">
+        <iframe src="https://player.vimeo.com/video/YOUR_VIMEO_ID?badge=0&autopause=0&player_id=0&app_id=58479"
+          frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+          title="The Home Studio — YourSpace Wellbeing" allowfullscreen></iframe>
+      </div>
+      -->
+    </div>
+  </section>
+
+  <!-- WAITLIST -->
+  <section id="waitlist" style="background:var(--navy);padding:100px 48px;">
+    <div style="max-width:580px;margin:0 auto;text-align:center;">
+      <p style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Coming Soon</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:300;color:#fff;line-height:1.1;margin-bottom:20px;">Be the first in.</h2>
+      <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:40px;">Register your interest and we'll let you know the moment The Home Studio is live — including your <strong style="color:var(--teal);">first month free</strong> as a founding member.</p>
+      <form id="waitlistForm" style="display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto;">
+        <input type="text" id="wlFirstName" placeholder="Your first name" style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
+        <input type="email" id="wlEmail" placeholder="Your email address" required style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
+        <button type="submit" id="wlBtn" style="padding:15px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background 0.2s;">Register my interest</button>
+      </form>
+      <p id="wlMessage" style="margin-top:16px;font-size:14px;color:rgba(255,255,255,0.7);display:none;line-height:1.7;"></p>
+      <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.3);">No spam, ever. Just the good stuff.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="background:#0a1929;padding:48px;text-align:center;">
+    <img src="assets/yorspace-logo-light.png" alt="YourSpace Wellbeing" style="height:36px;opacity:0.5;margin-bottom:20px;display:block;margin-left:auto;margin-right:auto;">
+    <p style="font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:0.05em;">© 2026 YourSpace Wellbeing · Part of HerSpace London Ltd · <a href="index.html" style="color:rgba(255,255,255,0.35);text-decoration:none;">Home</a></p>
+  </footer>
+
+  </div><!-- end #site -->
+
+  <script>
+    // Splash screen
+    window.addEventListener('load', () => {
+      const logo = document.getElementById('splashLogo');
+      logo.style.opacity = '1';
+      setTimeout(() => {
+        document.getElementById('splash').style.opacity = '0';
+        document.getElementById('site').style.opacity = '1';
+        setTimeout(() => document.getElementById('splash').style.display = 'none', 500);
+      }, 800);
+    });
+
+    // Header scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    let _supabase;
+    async function getSupabase() {
+      if (_supabase) return _supabase;
+      const config = await fetch('/api/ys-config').then(r => r.json());
+      _supabase = supabase.createClient(config.supabaseUrl, config.supabaseKey);
+      return _supabase;
+    }
+
+    // Auth nav
+    (async () => {
+      const sb = await getSupabase();
+      const { data: { user } } = await sb.auth.getUser();
+      if (user) {
+        const btn = document.getElementById('authNavBtn');
+        btn.textContent = 'My Account';
+        btn.href = 'dashboard.html';
+      }
+    })();
+
+    // Waitlist form
+    document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('wlBtn');
+      const msg = document.getElementById('wlMessage');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('wlEmail').value,
+          firstName: document.getElementById('wlFirstName').value,
+          source: 'home-studio'
+        }),
+      });
+      const data = await res.json();
+      msg.style.display = 'block';
+      if (res.ok) {
+        msg.innerHTML = "You're on the list! 🎉<br><br>One more thing — please add <strong>hello@yourspacewellbeing.com</strong> to your safe senders list so our launch email doesn't end up in your spam folder.";
+        msg.style.color = 'rgba(255,255,255,0.75)';
+        document.getElementById('waitlistForm').style.display = 'none';
+      } else {
+        msg.textContent = data.error || 'Something went wrong. Please try again.';
+        msg.style.color = '#ff6b6b';
+        btn.disabled = false;
+        btn.textContent = 'Register my interest';
+      }
+    });
+  </script>
+
+</body>
+</html>
