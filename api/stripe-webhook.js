@@ -33,9 +33,10 @@ function verifyStripeSignature(rawBody, sigHeader, secret) {
 }
 
 // Every row from the same subscription (including each All Access programme
-// row — see api/record-purchase.js) shares one stripe_payment_id, so one
-// PATCH keeps them all in sync.
-async function updatePurchasesForSubscription(subscriptionId, { isActive, expiresAt }) {
+// row — see api/record-purchase.js) shares one stripe_payment_id. Pass
+// programmeIds to scope the update to specific programmes only — used to
+// keep Sofa to Studio's fixed one-time window from being extended on renewal.
+async function updatePurchasesForSubscription(subscriptionId, { isActive, expiresAt, programmeIds }) {
   const supabaseHeaders = {
     'apikey':        process.env.SUPABASE_PUBLISHABLE_KEY,
     'Authorization': `Bearer ${process.env.SUPABASE_SECRET_SERVICE_KEY}`,
@@ -46,10 +47,12 @@ async function updatePurchasesForSubscription(subscriptionId, { isActive, expire
   const body = { is_active: isActive };
   if (expiresAt !== undefined) body.expires_at = expiresAt;
 
-  const res = await fetch(
-    `${process.env.SUPABASE_URL}/rest/v1/purchases?stripe_payment_id=eq.${subscriptionId}`,
-    { method: 'PATCH', headers: supabaseHeaders, body: JSON.stringify(body) }
-  );
+  let url = `${process.env.SUPABASE_URL}/rest/v1/purchases?stripe_payment_id=eq.${subscriptionId}`;
+  if (programmeIds) {
+    url += `&programme_id=in.(${programmeIds.join(',')})`;
+  }
+
+  const res = await fetch(url, { method: 'PATCH', headers: supabaseHeaders, body: JSON.stringify(body) });
 
   if (!res.ok) {
     const errText = await res.text();
@@ -88,7 +91,14 @@ export default async function handler(req, res) {
         const subscription = await subRes.json();
         const expiresAt = new Date(subscription.current_period_end * 1000).toISOString();
 
-        await updatePurchasesForSubscription(subscriptionId, { isActive: true, expiresAt });
+        // Sofa to Studio is deliberately excluded — it keeps the fixed
+        // 60-day window set at purchase (api/record-purchase.js) rather than
+        // renewing indefinitely alongside the subscription.
+        await updatePurchasesForSubscription(subscriptionId, {
+          isActive: true,
+          expiresAt,
+          programmeIds: ['home-studio', 'prehab'],
+        });
         break;
       }
 

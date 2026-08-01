@@ -58,9 +58,21 @@ export default async function handler(req, res) {
     // Only the first row carries the real amount_paid; the rest are £0
     // so the purchase history can show one consolidated "All Access" entry.
     if (programme.id === 'all-access') {
-      const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 30);
-      const expiresAtStr = expiresAt.toISOString();
+      // Home Studio and Pre-Hab renew with the subscription (see the
+      // invoice.paid handler in api/stripe-webhook.js). Sofa to Studio is a
+      // one-time onboarding programme — it gets a fixed window instead and
+      // is deliberately excluded from that renewal so it doesn't run forever
+      // alongside an ongoing All Access subscription.
+      const SOFA_TO_STUDIO_CAP_DAYS = 60;
+
+      const subscriptionExpiresAt = new Date();
+      subscriptionExpiresAt.setDate(subscriptionExpiresAt.getDate() + 30);
+      const subscriptionExpiresAtStr = subscriptionExpiresAt.toISOString();
+
+      const sofaExpiresAt = new Date();
+      sofaExpiresAt.setDate(sofaExpiresAt.getDate() + SOFA_TO_STUDIO_CAP_DAYS);
+      const sofaExpiresAtStr = sofaExpiresAt.toISOString();
+
       const totalPaid = session.amount_total / 100;
 
       const rows = ALL_ACCESS_PROGRAMMES.map((p, i) => ({
@@ -70,7 +82,7 @@ export default async function handler(req, res) {
         amount_paid:      i === 0 ? totalPaid : 0,
         currency:         session.currency,
         purchased_at:     purchasedAt,
-        expires_at:       expiresAtStr,
+        expires_at:       p.id === 'sofa-to-studio' ? sofaExpiresAtStr : subscriptionExpiresAtStr,
         stripe_payment_id: stripePaymentId,
         is_active:        true,
         access_type:      'all-access',
