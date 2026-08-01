@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Home Studio — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1C3461;
+      --teal: #2A9DB5;
+      --teal-light: #E8F6FA;
+      --grey: #AAAAAA;
+      --off-white: #F8F8F6;
+      --white: #ffffff;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'DM Sans', sans-serif;
+      --radius: 40px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--off-white);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid rgba(28,52,97,0.08);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo img { height: 44px; }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-nav a {
+      font-size: 14px;
+      color: var(--navy);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .header-nav a:hover { opacity: 1; }
+
+    .btn-signout {
+      padding: 8px 18px;
+      border: 1.5px solid rgba(28,52,97,0.2);
+      border-radius: 20px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--navy);
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-signout:hover {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* HERO BANNER */
+    .prog-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%);
+      padding: 56px 48px 48px;
+    }
+
+    .prog-banner-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .prog-kicker {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+
+    .prog-banner h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(40px, 5vw, 64px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.05;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .prog-banner p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    .prog-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .prog-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .prog-meta-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .prog-meta-value {
+      font-size: 15px;
+      color: var(--white);
+      font-weight: 400;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--navy);
+      margin-bottom: 24px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .content-section {
+      margin-bottom: 56px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .video-card {
+      background: var(--white);
+      border: 1px solid rgba(28,52,97,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .video-card:hover {
+      box-shadow: 0 4px 20px rgba(28,52,97,0.1);
+    }
+
+    .video-card.card-wide {
+      grid-column: 1 / -1;
+    }
+
+    .video-thumb {
+      background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%);
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .video-thumb.playable { cursor: pointer; }
+
+    .video-thumb-label {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .video-thumb.playable:hover .video-thumb-label { color: var(--white); }
+
+    .coming-soon-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .coming-soon-badge {
+      background: rgba(42,157,181,0.2);
+      border: 1px solid rgba(42,157,181,0.4);
+      color: var(--teal);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
+
+    .video-card-body {
+      padding: 20px 24px 24px;
+    }
+
+    .video-phase {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .video-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .video-desc {
+      font-size: 14px;
+      color: rgba(28,52,97,0.6);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .video-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .video-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .video-tag {
+      font-size: 11px;
+      color: rgba(28,52,97,0.5);
+      background: var(--off-white);
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
+
+    .video-duration {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--navy);
+      opacity: 0.4;
+      white-space: nowrap;
+    }
+
+    /* VIDEO MODAL */
+    .video-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,20,40,0.92);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .video-modal-overlay.open { display: flex; }
+
+    .video-modal-inner {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .video-modal-close {
+      position: absolute;
+      top: -44px;
+      right: 0;
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.8;
+    }
+
+    .video-modal-close:hover { opacity: 1; }
+
+    .video-modal-frame-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .video-modal-frame-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy);
+      padding: 40px 48px;
+    }
+
+    .footer-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-mark { height: 32px; }
+
+    .footer-name {
+      font-size: 14px;
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .footer-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 680px) {
+      header { padding: 0 20px; }
+      .prog-banner { padding: 40px 20px 36px; }
+      main { padding: 32px 16px 60px; }
+      .content-grid { grid-template-columns: 1fr; }
+      footer { padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="dashboard.html" class="header-logo">
+      <img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing">
+    </a>
+    <nav class="header-nav">
+      <a href="dashboard.html">My Account</a>
+      <button class="btn-signout" id="btnSignOut">Sign out</button>
+    </nav>
+  </header>
+
+  <!-- PROGRAMME BANNER -->
+  <div class="prog-banner">
+    <div class="prog-banner-inner">
+      <p class="prog-kicker">Subscription · Updated Twice a Year</p>
+      <h1>The Home Studio</h1>
+      <p>Studio-quality classes you can do at home — a growing collection led by the HerSpace London team.</p>
+      <div class="prog-meta">
+        <div class="prog-meta-item">
+          <span class="prog-meta-label">Access</span>
+          <span class="prog-meta-value">Unlimited streaming</span>
+        </div>
+        <div class="prog-meta-item">
+          <span class="prog-meta-label">Style</span>
+          <span class="prog-meta-value">Barre, Pilates &amp; more</span>
+        </div>
+        <div class="prog-meta-item">
+          <span class="prog-meta-label">Equipment</span>
+          <span class="prog-meta-value">Minimal</span>
+        </div>
+        <div class="prog-meta-item">
+          <span class="prog-meta-label">Device</span>
+          <span class="prog-meta-value">Phone, tablet or laptop</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+    <section class="content-section">
+      <p class="section-label">Your Classes</p>
+      <h2 class="section-title">The Collection</h2>
+
+      <div class="content-grid">
+
+        <!-- Ritual — LIVE -->
+        <div class="video-card card-wide">
+          <div class="video-thumb playable" onclick="openVideoModal('1214837575', 'Ritual — The Home Studio')">
+            <div class="video-thumb-label">▶ Play Ritual</div>
+          </div>
+          <div class="video-card-body">
+            <p class="video-phase">Class 1</p>
+            <h3 class="video-title">Ritual</h3>
+            <p class="video-desc">PLACEHOLDER — add a short description of this class.</p>
+            <div class="video-footer">
+              <div class="video-tags">
+                <span class="video-tag">No equipment</span>
+              </div>
+              <div class="video-duration">PLACEHOLDER min</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Class 2 -->
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="coming-soon-overlay">
+              <span class="coming-soon-badge">Coming soon</span>
+            </div>
+          </div>
+          <div class="video-card-body">
+            <p class="video-phase">Class 2</p>
+            <h3 class="video-title">TBC</h3>
+            <p class="video-desc">More classes are on their way.</p>
+          </div>
+        </div>
+
+        <!-- Class 3 -->
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="coming-soon-overlay">
+              <span class="coming-soon-badge">Coming soon</span>
+            </div>
+          </div>
+          <div class="video-card-body">
+            <p class="video-phase">Class 3</p>
+            <h3 class="video-title">TBC</h3>
+            <p class="video-desc">More classes are on their way.</p>
+          </div>
+        </div>
+
+        <!-- Class 4 -->
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="coming-soon-overlay">
+              <span class="coming-soon-badge">Coming soon</span>
+            </div>
+          </div>
+          <div class="video-card-body">
+            <p class="video-phase">Class 4</p>
+            <h3 class="video-title">TBC</h3>
+            <p class="video-desc">More classes are on their way.</p>
+          </div>
+        </div>
+
+        <!-- Class 5 -->
+        <div class="video-card">
+          <div class="video-thumb">
+            <div class="coming-soon-overlay">
+              <span class="coming-soon-badge">Coming soon</span>
+            </div>
+          </div>
+          <div class="video-card-body">
+            <p class="video-phase">Class 5</p>
+            <h3 class="video-title">TBC</h3>
+            <p class="video-desc">More classes are on their way.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- VIDEO MODAL -->
+  <div class="video-modal-overlay" id="videoModalOverlay" onclick="if(event.target===this) closeVideoModal()">
+    <div class="video-modal-inner">
+      <button class="video-modal-close" onclick="closeVideoModal()" aria-label="Close">&times;</button>
+      <div class="video-modal-frame-wrap" id="videoModalFrameWrap"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="assets/ys-favicon-white.png" alt="YS" class="footer-mark">
+        <div>
+          <p class="footer-name">YourSpace Wellbeing</p>
+          <p class="footer-sub">by HerSpace London</p>
+        </div>
+      </div>
+      <p class="footer-copy">© 2026 HerSpace London Ltd. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    let sb;
+
+    function openVideoModal(vimeoId, title) {
+      const wrap = document.getElementById('videoModalFrameWrap');
+      wrap.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479"
+        frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+        title="${title}" allowfullscreen></iframe>`;
+      document.getElementById('videoModalOverlay').classList.add('open');
+    }
+
+    function closeVideoModal() {
+      document.getElementById('videoModalOverlay').classList.remove('open');
+      document.getElementById('videoModalFrameWrap').innerHTML = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeVideoModal();
+    });
+
+    async function init() {
+      const res = await fetch('/api/ys-config');
+      const config = await res.json();
+      sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html?redirect=/studio-content';
+        return;
+      }
+
+      // Entitlement check — must have an active Home Studio purchase
+      // (direct subscription, All Access, or HerSpace member access all
+      // insert a 'home-studio' row into purchases — see api/record-purchase.js)
+      const { data: purchases } = await sb
+        .from('purchases')
+        .select('is_active, expires_at')
+        .eq('user_id', session.user.id)
+        .eq('programme_id', 'home-studio');
+
+      const hasAccess = (purchases || []).some(p =>
+        p.is_active && (!p.expires_at || new Date(p.expires_at) > new Date())
+      );
+
+      if (!hasAccess) {
+        window.location.href = 'home-studio.html';
+        return;
+      }
+    }
+
+    document.getElementById('btnSignOut').addEventListener('click', async () => {
+      if (sb) await sb.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    init();
+  </script>
+
+</body>
+</html>
