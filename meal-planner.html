@@ -198,41 +198,6 @@
     }
     .checkbox-item .cb-icon { font-size: 18px; }
 
-    /* Week selector */
-    .week-selector {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-    }
-    .week-selector input[type="radio"] { display: none; }
-    .week-selector label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      border: 1.5px solid rgba(0,0,0,0.10);
-      border-radius: 10px;
-      padding: 14px 8px;
-      cursor: pointer;
-      text-align: center;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .week-selector label:hover { border-color: var(--teal); }
-    .week-selector input[type="radio"]:checked + label {
-      border-color: var(--teal);
-      background: rgba(42,157,181,0.06);
-    }
-    .week-selector .week-num {
-      font-size: 20px;
-      font-weight: 500;
-      color: var(--navy);
-    }
-    .week-selector .week-label {
-      font-size: 11px;
-      color: #999;
-      letter-spacing: 0.3px;
-    }
-
     /* Generate button */
     .generate-btn {
       display: block;
@@ -445,7 +410,6 @@
       #planner-form-section, #results-section { padding: 60px 24px; }
       .form-card { padding: 28px 24px; }
       .input-row { grid-template-columns: 1fr; }
-      .week-selector { grid-template-columns: repeat(3, 1fr); }
       .checkbox-grid { grid-template-columns: 1fr 1fr; }
       .results-header { flex-direction: column; }
     }
@@ -610,24 +574,9 @@
         </div>
       </div>
 
-      <!-- Step 3: Programme week -->
+      <!-- Step 3: Dietary preferences -->
       <div class="form-card">
         <p class="step-label">Step 3</p>
-        <p class="step-title">Which week of the programme are you on?</p>
-        <p class="step-sub">We vary the recipes each week so you're never eating the same thing twice.</p>
-        <div class="week-selector">
-          <div><input type="radio" name="week" id="w1" value="1" checked><label for="w1"><span class="week-num">1</span><span class="week-label">Week 1</span></label></div>
-          <div><input type="radio" name="week" id="w2" value="2"><label for="w2"><span class="week-num">2</span><span class="week-label">Week 2</span></label></div>
-          <div><input type="radio" name="week" id="w3" value="3"><label for="w3"><span class="week-num">3</span><span class="week-label">Week 3</span></label></div>
-          <div><input type="radio" name="week" id="w4" value="4"><label for="w4"><span class="week-num">4</span><span class="week-label">Week 4</span></label></div>
-          <div class="week-opt-extra"><input type="radio" name="week" id="w5" value="5"><label for="w5"><span class="week-num">5</span><span class="week-label">Week 5</span></label></div>
-          <div class="week-opt-extra"><input type="radio" name="week" id="w6" value="6"><label for="w6"><span class="week-num">6</span><span class="week-label">Week 6</span></label></div>
-        </div>
-      </div>
-
-      <!-- Step 4: Dietary preferences -->
-      <div class="form-card">
-        <p class="step-label">Step 4</p>
         <p class="step-title">Dietary preferences</p>
         <p class="step-sub">Select everything that applies. You can combine options.</p>
         <div class="checkbox-grid">
@@ -662,9 +611,9 @@
         </div>
       </div>
 
-      <!-- Step 5: Allergies / dislikes -->
+      <!-- Step 4: Allergies / dislikes -->
       <div class="form-card">
-        <p class="step-label">Step 5</p>
+        <p class="step-label">Step 4</p>
         <p class="step-title">Anything else to avoid?</p>
         <p class="step-sub">Tell us about any other allergies, intolerances, or foods you simply don't like.</p>
         <div class="input-row single">
@@ -684,7 +633,7 @@
       <div class="loading-wrap" id="loadingWrap">
         <div class="spinner"></div>
         <p>Building your personalised plan…</p>
-        <span>This takes about 20–30 seconds — we're doing the hard work so you don't have to.</span>
+        <span>This can take up to a minute — we're writing full recipes, not just meal names.</span>
       </div>
 
       <!-- Error -->
@@ -748,16 +697,14 @@
   });
 
   // ── PROGRAMME CONTEXT ─────────────────────────────────────────────────────
-  // This planner is shared across programmes. Read ?programme= and ?week=
-  // from the URL to adjust framing without duplicating the whole page.
+  // This planner is shared across programmes. Read ?programme= from the URL
+  // to adjust framing without duplicating the whole page.
   const urlParams = new URLSearchParams(window.location.search);
   const currentProgramme = urlParams.get('programme') || 'sofa-to-studio';
-  const presetWeek = urlParams.get('week');
 
   if (currentProgramme === 'back-to-it') {
     document.getElementById('plannerKicker').textContent = 'Back to It — Nutrition Guide';
     document.getElementById('activeDaySub').textContent = 'Includes a studio class';
-    document.querySelectorAll('.week-opt-extra').forEach(el => el.style.display = 'none');
   } else if (currentProgramme === 'nutrition-guide') {
     document.getElementById('plannerKicker').textContent = 'Nutrition Guide';
     document.getElementById('activeDaySub').textContent = 'Includes a workout';
@@ -831,11 +778,6 @@
 
   checkNutritionAccess();
 
-  if (presetWeek) {
-    const weekInput = document.getElementById('w' + presetWeek);
-    if (weekInput) weekInput.checked = true;
-  }
-
   // ── MACRO CALCULATOR ─────────────────────────────────────────────────────
   // Mifflin-St Jeor BMR, same formula as the Sofa to Studio calculator, but
   // self-contained here — no cross-page dependency — and it fills the
@@ -900,7 +842,6 @@
     const calories = document.getElementById('calories').value.trim();
     const protein  = document.getElementById('protein').value.trim();
     const dayType  = document.querySelector('input[name="dayType"]:checked').value;
-    const week     = document.querySelector('input[name="week"]:checked').value;
 
     // Collect dietary frameworks
     const frameworks = [];
@@ -933,7 +874,7 @@
       const response = await fetch('/api/meal-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ calories, protein, dayType, frameworks, allergies, week, programme: currentProgramme })
+        body: JSON.stringify({ calories, protein, dayType, frameworks, allergies, programme: currentProgramme })
       });
 
       const data = await response.json();

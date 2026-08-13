@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { calories, protein, dayType, frameworks, allergies, week, programme } = req.body;
+  const { calories, protein, dayType, frameworks, allergies, programme } = req.body;
 
   // Basic validation
   if (!calories || !protein) {
@@ -20,17 +20,14 @@ export default async function handler(req, res) {
   // framing/duration. Default stays Sofa to Studio for backwards compatibility.
   const PROGRAMME_CONTEXT = {
     'sofa-to-studio': {
-      totalWeeks: 6,
       about: 'The user is following the Sofa to Studio barre fitness programme. Active sessions burn approximately 300–400 kcal. The full programme runs 42 days: 30 active days and 12 rest days.',
       disclaimerContext: 'YourSpace Wellbeing fitness programme',
     },
     'back-to-it': {
-      totalWeeks: 4,
       about: 'The user is following the Back to It Challenge — a 4-week programme combining 4 studio classes a week with this nutrition plan. Active sessions are a mix of Barre, Pilates, Strength, and Cardio classes at HerSpace London, burning approximately 300–450 kcal depending on class type. The challenge runs 28 days.',
       disclaimerContext: 'YourSpace Wellbeing Back to It Challenge',
     },
     'nutrition-guide': {
-      totalWeeks: 6,
       about: 'The user has subscribed to the standalone YourSpace Nutrition Guide — they are not necessarily on a specific fitness programme. Active sessions could be any kind of exercise (studio class, gym, home workout), burning approximately 300–400 kcal on average.',
       disclaimerContext: 'YourSpace Wellbeing Nutrition Guide',
     },
@@ -82,6 +79,8 @@ For each meal, include:
 - **Meal name** in bold
 - A one-line description of what it is
 - Approximate kcal and protein (g) in brackets, e.g. *(~420 kcal | 32g protein)*
+- **Ingredients**: a short bulleted list with realistic quantities for one serving (e.g. "120g chicken breast", "1 tbsp olive oil", "80g spinach"). If the meal is batch-cooked, quantities should reflect the full batch, with a note on how many portions it makes.
+- **Method**: 2–5 short, numbered steps. Assume a home cook with basic kitchen equipment (hob, oven, blender) and no professional technique. Be concrete and quick to follow, not padded.
 - A ⭐ **BATCH COOK** label for any meal that can be made in bulk and stored
 
 At the end of the day, include a **Day Total** showing total kcal and protein.
@@ -96,7 +95,7 @@ Grouped into: Produce | Protein | Dairy & Alternatives | Grains & Pulses | Store
 ---
 
 VARIETY
-Use the week number provided to introduce variety. Do not repeat the same meals from previous weeks. Rotate proteins, grains, and vegetable bases across weeks. By Week 3–4, introduce slightly more complex recipes as the user is likely more confident in the kitchen.
+Rotate proteins, grains, and vegetable bases across the week so nothing repeats within the plan itself. Keep it feeling fresh rather than defaulting to the same handful of "safe" recipes every time.
 
 ---
 
@@ -143,9 +142,8 @@ Daily protein target: ${protein}g
 Day type: ${dayType === 'active' ? 'ACTIVE day — please add 250–300 kcal on active days in the plan' : 'REST day — use base calorie target'}
 Dietary framework: ${frameworkList}
 Additional allergies or foods to avoid: ${allergies && allergies.trim() ? allergies.trim() : 'None'}
-Programme week: Week ${week} of ${ctx.totalWeeks}
 
-Please produce a varied, practical, and appetising 7-day plan with batch cooking clearly marked and a full shopping list at the end.`;
+Please produce a varied, practical, and appetising 7-day plan, with full recipes (ingredients and method) for every meal, batch cooking clearly marked, and a full shopping list at the end.`;
 
   // ── API CALL ───────────────────────────────────────────────────────────────
   // Model IDs eventually retire (this is what broke the generator last time —
@@ -157,12 +155,17 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
   const PRIMARY_MODEL = 'claude-sonnet-5';
   const FALLBACK_MODEL = 'claude-haiku-4-5';
 
+  // Full recipes push output well beyond what the old lighter format needed,
+  // so this is streamed — recommended practice for high max_tokens requests,
+  // and it avoids the whole response having to land in one long synchronous
+  // wait.
   async function callClaude(model) {
     const body = {
       model,
-      max_tokens: 8000,
+      max_tokens: 16000,
       system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }]
+      messages: [{ role: 'user', content: userMessage }],
+      stream: true
     };
 
     // Thinking isn't needed for this templated, rule-driven task, and
@@ -185,6 +188,36 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
     });
   }
 
+  // Reads an Anthropic SSE stream and returns the accumulated text content.
+  async function readStreamedText(response) {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let text = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      const lines = buffer.split('\n');
+      buffer = lines.pop(); // keep the last, possibly-partial line for next chunk
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const event = JSON.parse(line.slice(6));
+
+        if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+          text += event.delta.text;
+        } else if (event.type === 'error') {
+          throw new Error(event.error?.message || 'Streaming error from Anthropic');
+        }
+      }
+    }
+
+    return text;
+  }
+
   try {
     let response = await callClaude(PRIMARY_MODEL);
 
@@ -195,9 +228,8 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
       response = await callClaude(FALLBACK_MODEL);
     }
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const data = await response.json();
       console.error('Anthropic API error:', data);
       return res.status(500).json({
         error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.',
@@ -205,16 +237,17 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
       });
     }
 
-    const textBlock = data.content.find(block => block.type === 'text');
-    if (!textBlock) {
-      console.error('No text block in Anthropic response:', data);
+    const text = await readStreamedText(response);
+
+    if (!text) {
+      console.error('No text content received from Anthropic stream');
       return res.status(500).json({
         error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.',
-        detail: 'No text block in response'
+        detail: 'Empty response from stream'
       });
     }
 
-    return res.status(200).json({ plan: textBlock.text });
+    return res.status(200).json({ plan: text });
 
   } catch (error) {
     console.error('Meal plan generation error:', error.message);
