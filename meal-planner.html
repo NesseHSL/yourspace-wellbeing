@@ -692,6 +692,9 @@
     document.getElementById('plannerKicker').textContent = 'Back to It — Nutrition Guide';
     document.getElementById('activeDaySub').textContent = 'Includes a studio class';
     document.querySelectorAll('.week-opt-extra').forEach(el => el.style.display = 'none');
+  } else if (currentProgramme === 'nutrition-guide') {
+    document.getElementById('plannerKicker').textContent = 'Nutrition Guide';
+    document.getElementById('activeDaySub').textContent = 'Includes a workout';
   }
 
   // ── ENTITLEMENT CHECK ─────────────────────────────────────────────────────

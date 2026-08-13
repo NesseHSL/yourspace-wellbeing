@@ -29,6 +29,11 @@ export default async function handler(req, res) {
       about: 'The user is following the Back to It Challenge — a 4-week programme combining 4 studio classes a week with this nutrition plan. Active sessions are a mix of Barre, Pilates, Strength, and Cardio classes at HerSpace London, burning approximately 300–450 kcal depending on class type. The challenge runs 28 days.',
       disclaimerContext: 'YourSpace Wellbeing Back to It Challenge',
     },
+    'nutrition-guide': {
+      totalWeeks: 6,
+      about: 'The user has subscribed to the standalone YourSpace Nutrition Guide — they are not necessarily on a specific fitness programme. Active sessions could be any kind of exercise (studio class, gym, home workout), burning approximately 300–400 kcal on average.',
+      disclaimerContext: 'YourSpace Wellbeing Nutrition Guide',
+    },
   };
   const ctx = PROGRAMME_CONTEXT[programme] || PROGRAMME_CONTEXT['sofa-to-studio'];
 
