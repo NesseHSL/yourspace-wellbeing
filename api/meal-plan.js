@@ -153,6 +153,22 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
   const FALLBACK_MODEL = 'claude-haiku-4-5';
 
   async function callClaude(model) {
+    const body = {
+      model,
+      max_tokens: 8000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }]
+    };
+
+    // Thinking isn't needed for this templated, rule-driven task, and
+    // claude-sonnet-5 runs adaptive thinking by default when this is
+    // omitted — that adds a thinking block ahead of the text block below.
+    // Only set on the primary model; the fallback (Haiku) already defaults
+    // to no thinking and may not accept this shape.
+    if (model === PRIMARY_MODEL) {
+      body.thinking = { type: 'disabled' };
+    }
+
     return fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -160,12 +176,7 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
         'x-api-key': process.env.ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01'
       },
-      body: JSON.stringify({
-        model,
-        max_tokens: 8000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userMessage }]
-      })
+      body: JSON.stringify(body)
     });
   }
 
@@ -189,7 +200,16 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
       });
     }
 
-    return res.status(200).json({ plan: data.content[0].text });
+    const textBlock = data.content.find(block => block.type === 'text');
+    if (!textBlock) {
+      console.error('No text block in Anthropic response:', data);
+      return res.status(500).json({
+        error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.',
+        detail: 'No text block in response'
+      });
+    }
+
+    return res.status(200).json({ plan: textBlock.text });
 
   } catch (error) {
     console.error('Meal plan generation error:', error.message);
