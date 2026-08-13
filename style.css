@@ -293,6 +293,13 @@ section { padding: 112px 48px; }
 }
 .prog-badge.badge-teal { background: var(--teal); }
 .prog-badge.badge-grey { background: var(--grey-mid); }
+.prog-badge.badge-coming-soon { background: #fff3e0; color: #e65100; }
+
+.prog-badges-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
 .prog-card h3 {
   font-family: var(--font-serif);
