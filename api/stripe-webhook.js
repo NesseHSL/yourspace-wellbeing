@@ -97,7 +97,7 @@ export default async function handler(req, res) {
         await updatePurchasesForSubscription(subscriptionId, {
           isActive: true,
           expiresAt,
-          programmeIds: ['home-studio', 'prehab'],
+          programmeIds: ['home-studio', 'prehab', 'nutrition-guide'],
         });
         break;
       }

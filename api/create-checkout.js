@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     'price_1TKgVa3qlwzbgcp90PqK6EvG': 'YOURSPACE',
     'price_1TKgVa3qlwzbgcp9Bjt9s6yg': 'YOURSPACE',
     'price_1TKga13qlwzbgcp91FW2aAUs': 'YOURSPACE',
-    'price_1TKga13qlwzbgcp9VINFmvVQ': 'YOURSPACE',
+    'price_1U3wIK3qlwzbgcp9oC7W1lps': 'YOURSPACE',
     'price_1TKgT63qlwzbgcp9IBc6QrcA': 'CITE THE APP',
     'price_1TKgT63qlwzbgcp9K2PRVMac': 'CITE THE APP',
   };

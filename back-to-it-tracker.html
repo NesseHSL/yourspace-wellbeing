@@ -159,6 +159,45 @@
       white-space: nowrap;
     }
 
+    /* NUTRITION UPSELL */
+    .nutrition-upsell {
+      background: var(--white);
+      border: 1.5px dashed rgba(42,157,181,0.45);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .nutrition-upsell-title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .nutrition-upsell-sub {
+      font-size: 13px;
+      color: var(--grey);
+      max-width: 420px;
+    }
+    .nutrition-upsell-cta {
+      background: var(--teal);
+      color: var(--white);
+      padding: 12px 22px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .nutrition-upsell-cta:hover { background: #228fa5; }
+
     /* TRACKER TABLE */
     .tracker-card {
       background: var(--white);
@@ -168,23 +207,29 @@
       margin-bottom: 32px;
     }
 
-    .tracker-row {
-      display: grid;
-      grid-template-columns: 120px 1fr 1fr 140px;
-      align-items: center;
-      gap: 20px;
-      padding: 24px 28px;
+    .week-card {
+      padding: 28px;
       border-bottom: 1px solid #F0F0F0;
       transition: background 0.3s, color 0.3s;
     }
-    .tracker-row:last-child { border-bottom: none; }
+    .week-card:last-child { border-bottom: none; }
 
-    .tracker-row.complete {
+    .week-card.complete {
       background: var(--teal);
       color: var(--white);
     }
-    .tracker-row.complete .tracker-week-sub { color: rgba(255,255,255,0.7); }
-    .tracker-row.locked { opacity: 0.4; }
+    .week-card.complete .tracker-week-sub,
+    .week-card.complete .section-label-sm { color: rgba(255,255,255,0.75); }
+    .week-card.locked { opacity: 0.45; }
+
+    .week-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
 
     .tracker-week-label {
       font-family: var(--font-serif);
@@ -199,17 +244,49 @@
       margin-top: 4px;
     }
 
-    .tracker-metric-label {
+    .section-label-sm {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      opacity: 0.6;
-      margin-bottom: 8px;
+      color: var(--grey);
+      margin-bottom: 10px;
     }
+
+    .class-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .class-entry {
+      display: grid;
+      grid-template-columns: 1fr 160px;
+      gap: 8px;
+    }
+    .class-entry select,
+    .class-entry input[type="date"] {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(28,52,97,0.15);
+      background: var(--white);
+      color: var(--navy);
+    }
+    .week-card.complete .class-entry select,
+    .week-card.complete .class-entry input[type="date"] {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.35);
+      color: var(--white);
+    }
+    .week-card.complete .class-entry select option { color: var(--navy); }
+    .class-entry select:disabled,
+    .class-entry input:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .dots {
       display: flex;
       gap: 8px;
+      margin-bottom: 20px;
     }
     .dot {
       width: 26px;
@@ -221,17 +298,22 @@
       transition: all 0.15s;
       padding: 0;
     }
-    .tracker-row.complete .dot { border-color: rgba(255,255,255,0.4); }
+    .week-card.complete .dot { border-color: rgba(255,255,255,0.4); }
     .dot.filled { background: var(--navy); border-color: var(--navy); }
-    .tracker-row.complete .dot.filled { background: var(--white); border-color: var(--white); }
+    .week-card.complete .dot.filled { background: var(--white); border-color: var(--white); }
     .dot:disabled { cursor: not-allowed; }
 
-    .tracker-actions {
+    .week-card-footer {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-end;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(28,52,97,0.06);
     }
+    .week-card.complete .week-card-footer { border-top-color: rgba(255,255,255,0.18); }
+
     .status-badge {
       font-size: 10px;
       letter-spacing: 0.05em;
@@ -242,7 +324,7 @@
       color: var(--teal);
       white-space: nowrap;
     }
-    .tracker-row.complete .status-badge {
+    .week-card.complete .status-badge {
       background: rgba(255,255,255,0.2);
       color: var(--white);
     }
@@ -253,7 +335,7 @@
       font-weight: 500;
       white-space: nowrap;
     }
-    .tracker-row.complete .btn-nutrition { color: var(--white); }
+    .week-card.complete .btn-nutrition { color: var(--white); }
     .btn-nutrition:hover { text-decoration: underline; }
 
     .verify-note {
@@ -305,6 +387,14 @@
       <a href="mailto:info@herspaceldn.com?subject=Back%20to%20It%20—%20I've%20completed%20the%20challenge!">Claim my prizes</a>
     </div>
 
+    <div class="nutrition-upsell" id="nutritionUpsell" style="display:none;">
+      <div>
+        <p class="nutrition-upsell-title">Add the Nutrition Guide</p>
+        <p class="nutrition-upsell-sub">Personalised 7-day meal plans, rebuilt every week of your challenge — £4.99/month, cancel any time. Free if you already have Sofa to Studio or All Access.</p>
+      </div>
+      <button class="nutrition-upsell-cta" onclick="handleNutritionCheckout(event)">Add for £4.99/month</button>
+    </div>
+
     <p class="verify-note">Classes are checked against your booking history before prizes are handed out — so log honestly and you'll have nothing to worry about.</p>
 
     <div class="tracker-card" id="trackerCard">
@@ -316,8 +406,9 @@
   <script>
     let sb;
     let currentUser;
-    let progressByWeek = {}; // { 1: {classes_logged, nutrition_days_logged}, ... }
+    let progressByWeek = {}; // { 1: {classes_logged, nutrition_days_logged, classes_detail: [{type,date}, ...]}, ... }
     let currentWeekNumber = 1;
+    const CLASS_TYPES = ['Barre', 'Mat Pilates', 'Reformer Pilates', 'Strength', 'Cardio', 'Stretch', 'Bend', 'Other'];
 
     async function init() {
       const res = await fetch('/api/ys-config');
@@ -343,7 +434,53 @@
         `Started ${formatDate(startedAt)} · Week ${currentWeekNumber} of 4 · ${daysLeft} day${daysLeft === 1 ? '' : 's'} left`;
 
       await loadProgress();
+      await checkNutritionAccess();
       render();
+    }
+
+    async function checkNutritionAccess() {
+      const { data: purchases } = await sb
+        .from('purchases')
+        .select('is_active, expires_at')
+        .eq('user_id', currentUser.id)
+        .eq('programme_id', 'nutrition-guide');
+
+      const hasAccess = (purchases || []).some(p =>
+        p.is_active && (!p.expires_at || new Date(p.expires_at) > new Date())
+      );
+
+      document.getElementById('nutritionUpsell').style.display = hasAccess ? 'none' : 'flex';
+    }
+
+    async function handleNutritionCheckout(e) {
+      e.preventDefault();
+      const priceId = 'price_1U3wIK3qlwzbgcp9oC7W1lps';
+      const btn = e.target;
+      const original = btn.textContent;
+      btn.textContent = 'Loading...';
+      btn.disabled = true;
+
+      const res = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId,
+          mode: 'subscription',
+          userId: currentUser.id,
+          userEmail: currentUser.email,
+          successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: window.location.href
+        })
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        btn.textContent = original;
+        btn.disabled = false;
+        alert('Something went wrong. Please try again.');
+      }
     }
 
     async function getOrCreateEnrolment() {
@@ -376,7 +513,7 @@
     async function loadProgress() {
       const { data, error } = await sb
         .from('back_to_it_progress')
-        .select('week_number, classes_logged, nutrition_days_logged')
+        .select('week_number, classes_logged, nutrition_days_logged, classes_detail')
         .eq('user_id', currentUser.id);
 
       if (error) {
@@ -399,33 +536,56 @@
       let allComplete = true;
 
       card.innerHTML = [1, 2, 3, 4].map(week => {
-        const progress = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0 };
-        const isComplete = progress.classes_logged >= 4 && progress.nutrition_days_logged >= 4;
+        const progress = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0, classes_detail: [] };
+        const classesDetail = progress.classes_detail || [];
+        const filledClasses = classesDetail.filter(e => e && e.type && e.date).length;
+        const isComplete = filledClasses >= 4 && progress.nutrition_days_logged >= 4;
         const isLocked = week > currentWeekNumber;
         if (!isComplete) allComplete = false;
 
         return `
-          <div class="tracker-row${isComplete ? ' complete' : ''}${isLocked ? ' locked' : ''}">
-            <div>
-              <div class="tracker-week-label">Week ${week}</div>
-              <div class="tracker-week-sub">${weekLabels[week - 1]}</div>
-            </div>
-            <div>
-              <div class="tracker-metric-label">Classes</div>
-              ${renderDots(week, 'classes_logged', progress.classes_logged, isLocked)}
-            </div>
-            <div>
-              <div class="tracker-metric-label">Nutrition days</div>
-              ${renderDots(week, 'nutrition_days_logged', progress.nutrition_days_logged, isLocked)}
-            </div>
-            <div class="tracker-actions">
+          <div class="week-card${isComplete ? ' complete' : ''}${isLocked ? ' locked' : ''}">
+            <div class="week-card-header">
+              <div>
+                <div class="tracker-week-label">Week ${week}</div>
+                <div class="tracker-week-sub">${weekLabels[week - 1]}</div>
+              </div>
               <span class="status-badge">${isComplete ? 'Complete' : isLocked ? 'Not started' : 'In progress'}</span>
+            </div>
+
+            <div class="section-label-sm">Classes (${filledClasses}/4) — which class, and when</div>
+            ${renderClassRows(week, classesDetail, isLocked)}
+
+            <div class="section-label-sm">Nutrition days</div>
+            ${renderDots(week, 'nutrition_days_logged', progress.nutrition_days_logged, isLocked)}
+
+            <div class="week-card-footer">
               <a class="btn-nutrition" href="meal-planner?programme=back-to-it&week=${week}">Get week ${week} nutrition guide →</a>
             </div>
           </div>`;
       }).join('');
 
       document.getElementById('completionBanner').classList.toggle('visible', allComplete);
+    }
+
+    function renderClassRows(week, entries, disabled) {
+      let rows = '';
+      for (let i = 0; i < 4; i++) {
+        const entry = entries[i] || { type: '', date: '' };
+        const options = CLASS_TYPES.map(t =>
+          `<option value="${t}"${entry.type === t ? ' selected' : ''}>${t}</option>`
+        ).join('');
+        rows += `
+          <div class="class-entry">
+            <select ${disabled ? 'disabled' : ''} onchange="setClassDetail(${week}, ${i}, 'type', this.value)">
+              <option value=""${entry.type ? '' : ' selected'}>Class ${i + 1}…</option>
+              ${options}
+            </select>
+            <input type="date" value="${entry.date || ''}" ${disabled ? 'disabled' : ''}
+              onchange="setClassDetail(${week}, ${i}, 'date', this.value)">
+          </div>`;
+      }
+      return `<div class="class-entries">${rows}</div>`;
     }
 
     function renderDots(week, field, value, disabled) {
@@ -437,11 +597,35 @@
       return `<div class="dots">${dots}</div>`;
     }
 
+    async function setClassDetail(week, index, field, value) {
+      const existing = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0, classes_detail: [] };
+      const detail = [...(existing.classes_detail || [])];
+      while (detail.length < 4) detail.push({ type: '', date: '' });
+      detail[index] = { ...detail[index], [field]: value };
+
+      const filledCount = detail.filter(e => e.type && e.date).length;
+      const updated = { ...existing, week_number: week, user_id: currentUser.id, classes_detail: detail, classes_logged: filledCount };
+      progressByWeek[week] = updated;
+      render();
+
+      const { error } = await sb
+        .from('back_to_it_progress')
+        .upsert({
+          user_id: currentUser.id,
+          week_number: week,
+          classes_logged: filledCount,
+          classes_detail: detail,
+          nutrition_days_logged: updated.nutrition_days_logged,
+        }, { onConflict: 'user_id,week_number' });
+
+      if (error) console.error('Failed to save class detail:', error);
+    }
+
     async function setValue(week, field, clickedValue, currentValue) {
       // Clicking the currently-filled top dot clears back to 0, otherwise sets to that dot
       const newValue = (clickedValue === currentValue) ? clickedValue - 1 : clickedValue;
 
-      const existing = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0 };
+      const existing = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0, classes_detail: [] };
       const updated = { ...existing, week_number: week, user_id: currentUser.id, [field]: newValue };
       progressByWeek[week] = updated;
       render();
@@ -452,6 +636,7 @@
           user_id: currentUser.id,
           week_number: week,
           classes_logged: updated.classes_logged,
+          classes_detail: updated.classes_detail || [],
           nutrition_days_logged: updated.nutrition_days_logged,
         }, { onConflict: 'user_id,week_number' });
 

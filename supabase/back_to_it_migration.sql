@@ -45,3 +45,8 @@ create policy "update own back_to_it progress"
   on back_to_it_progress for update
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
+
+-- Added later: records which class + date for each of the 4 weekly slots,
+-- instead of just a count, so staff can verify against real booking history.
+alter table back_to_it_progress
+  add column if not exists classes_detail jsonb not null default '[]'::jsonb;

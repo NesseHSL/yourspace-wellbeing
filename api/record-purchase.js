@@ -12,15 +12,17 @@ export default async function handler(req, res) {
     'price_1TKgVa3qlwzbgcp90PqK6EvG': { id: 'home-studio',    name: 'The Home Studio',     days: 30,  type: 'subscription' },
     'price_1TKgVa3qlwzbgcp9Bjt9s6yg': { id: 'home-studio',    name: 'The Home Studio',     days: 365, type: 'subscription' },
     'price_1TKga13qlwzbgcp91FW2aAUs': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
+    'price_1U3wIK3qlwzbgcp9oC7W1lps': { id: 'nutrition-guide', name: 'Nutrition Guide',  days: 30,  type: 'subscription' },
   };
 
   // All Access unlocks all of these.
   // Back to It isn't listed here — it's free to join for any account, so
   // there's nothing for a purchase to unlock (see back-to-it-tracker.html).
   const ALL_ACCESS_PROGRAMMES = [
-    { id: 'prehab',         name: 'YourSpace Pre-Hab' },
-    { id: 'sofa-to-studio', name: 'Sofa to Studio' },
-    { id: 'home-studio',    name: 'The Home Studio' },
+    { id: 'prehab',          name: 'YourSpace Pre-Hab' },
+    { id: 'sofa-to-studio',  name: 'Sofa to Studio' },
+    { id: 'home-studio',     name: 'The Home Studio' },
+    { id: 'nutrition-guide', name: 'Nutrition Guide' },
   ];
 
   try {
@@ -107,24 +109,40 @@ export default async function handler(req, res) {
     // ── SINGLE PROGRAMME ─────────────────────────────────────────────
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + programme.days);
+    const expiresAtStr = expiresAt.toISOString();
+
+    const rows = [{
+      user_id:          resolvedUserId,
+      programme_id:     programme.id,
+      programme_name:   programme.name,
+      amount_paid:      session.amount_total / 100,
+      currency:         session.currency,
+      purchased_at:     purchasedAt,
+      expires_at:       expiresAtStr,
+      stripe_payment_id: stripePaymentId,
+      is_active:        true,
+    }];
+
+    // Sofa to Studio advertises the nutrition guide as part of its price —
+    // bundle it in free, same access window as the programme itself.
+    if (programme.id === 'sofa-to-studio') {
+      rows.push({
+        user_id:          resolvedUserId,
+        programme_id:     'nutrition-guide',
+        programme_name:   'Nutrition Guide',
+        amount_paid:      0,
+        currency:         session.currency,
+        purchased_at:     purchasedAt,
+        expires_at:       expiresAtStr,
+        stripe_payment_id: stripePaymentId,
+        is_active:        true,
+        access_type:      'sofa-to-studio-bundle',
+      });
+    }
 
     const supabaseRes = await fetch(
       `${process.env.SUPABASE_URL}/rest/v1/purchases`,
-      {
-        method:  'POST',
-        headers: supabaseHeaders,
-        body: JSON.stringify({
-          user_id:          resolvedUserId,
-          programme_id:     programme.id,
-          programme_name:   programme.name,
-          amount_paid:      session.amount_total / 100,
-          currency:         session.currency,
-          purchased_at:     purchasedAt,
-          expires_at:       expiresAt.toISOString(),
-          stripe_payment_id: stripePaymentId,
-          is_active:        true,
-        }),
-      }
+      { method: 'POST', headers: supabaseHeaders, body: JSON.stringify(rows) }
     );
 
     if (!supabaseRes.ok) {

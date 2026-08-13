@@ -481,7 +481,21 @@
 
   <!-- FORM SECTION -->
   <section id="planner-form-section">
-    <div class="planner-wrap">
+
+    <!-- PAYWALL (shown instead of the form when not entitled) -->
+    <div class="planner-wrap" id="plannerPaywall" style="display:none;">
+      <div class="form-card" style="text-align:center;">
+        <p class="step-label">Nutrition Guide</p>
+        <p class="step-title" style="font-size:32px;">Unlock your meal planner</p>
+        <p class="step-sub" style="max-width:480px;margin:0 auto 28px;">Personalised 7-day plans, rebuilt every week, tailored to your targets and dietary needs. Included free with Sofa to Studio and All Access — or add it on its own.</p>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--navy);margin-bottom:4px;">£4.99<span style="font-size:16px;font-weight:400;color:#777;">/month</span></div>
+        <p style="font-size:13px;color:#999;margin-bottom:28px;">Cancel any time</p>
+        <button class="generate-btn" id="paywallSubscribeBtn" onclick="handleNutritionCheckout(event)">Subscribe — £4.99/month</button>
+        <p style="font-size:13px;color:#999;margin-top:16px;">Already have Sofa to Studio or All Access? <a href="login.html" style="color:var(--teal);">Sign in</a> — it's included.</p>
+      </div>
+    </div>
+
+    <div class="planner-wrap" id="plannerForm" style="display:none;">
 
       <!-- Step 1: Targets -->
       <div class="form-card">
@@ -659,6 +673,7 @@
 
 </div><!-- /site -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 
   // Header scroll effect
@@ -678,6 +693,74 @@
     document.getElementById('activeDaySub').textContent = 'Includes a studio class';
     document.querySelectorAll('.week-opt-extra').forEach(el => el.style.display = 'none');
   }
+
+  // ── ENTITLEMENT CHECK ─────────────────────────────────────────────────────
+  // Nutrition Guide is its own paid add-on (free bundled with Sofa to Studio
+  // and All Access). Show the paywall unless the signed-in user has an
+  // active 'nutrition-guide' purchase row.
+  let sb;
+  async function checkNutritionAccess() {
+    const config = await fetch('/api/ys-config').then(r => r.json());
+    sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      document.getElementById('plannerPaywall').style.display = 'block';
+      return;
+    }
+
+    const { data: purchases } = await sb
+      .from('purchases')
+      .select('is_active, expires_at')
+      .eq('user_id', session.user.id)
+      .eq('programme_id', 'nutrition-guide');
+
+    const hasAccess = (purchases || []).some(p =>
+      p.is_active && (!p.expires_at || new Date(p.expires_at) > new Date())
+    );
+
+    document.getElementById(hasAccess ? 'plannerForm' : 'plannerPaywall').style.display = 'block';
+  }
+
+  async function handleNutritionCheckout(e) {
+    e.preventDefault();
+    const { data: { session } } = await sb.auth.getSession();
+    const priceId = 'price_1U3wIK3qlwzbgcp9oC7W1lps';
+
+    if (!session) {
+      window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}&price=${priceId}&mode=subscription`;
+      return;
+    }
+
+    const btn = document.getElementById('paywallSubscribeBtn');
+    const original = btn.textContent;
+    btn.textContent = 'Loading...';
+    btn.disabled = true;
+
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        priceId,
+        mode: 'subscription',
+        userId: session.user.id,
+        userEmail: session.user.email,
+        successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: window.location.href
+      })
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      btn.textContent = original;
+      btn.disabled = false;
+      alert('Something went wrong. Please try again.');
+    }
+  }
+
+  checkNutritionAccess();
 
   if (presetWeek) {
     const weekInput = document.getElementById('w' + presetWeek);
