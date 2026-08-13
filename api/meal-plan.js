@@ -183,7 +183,10 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
 
     if (!response.ok) {
       console.error('Anthropic API error:', data);
-      throw new Error(data.error?.message || 'API error');
+      return res.status(500).json({
+        error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.',
+        detail: `${response.status} ${data.error?.type || ''}: ${data.error?.message || 'Unknown error'}`
+      });
     }
 
     return res.status(200).json({ plan: data.content[0].text });
@@ -191,7 +194,8 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
   } catch (error) {
     console.error('Meal plan generation error:', error.message);
     return res.status(500).json({
-      error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.'
+      error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.',
+      detail: error.message
     });
   }
 }
