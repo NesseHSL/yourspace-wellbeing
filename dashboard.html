@@ -39,7 +39,7 @@
       z-index: 100;
     }
 
-    .header-logo img { height: 44px; }
+    .header-logo img { height: 120px; }
 
     .header-nav {
       display: flex;
@@ -113,32 +113,6 @@
       font-size: 14px;
       opacity: 0.65;
       line-height: 1.6;
-    }
-
-    /* BACK TO IT BANNER */
-    .back-to-it-banner {
-      display: flex;
-      align-items: center;
-      background: var(--teal);
-      color: var(--white);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 40px;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-    .back-to-it-banner:hover { background: #228fa5; }
-    .back-to-it-kicker {
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.75;
-      margin-bottom: 4px;
-    }
-    .back-to-it-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 400;
     }
 
     /* SECTIONS */
@@ -372,14 +346,6 @@
       <p class="welcome-sub" id="welcomeSub">Loading your account...</p>
     </div>
 
-    <!-- BACK TO IT BANNER -->
-    <a href="back-to-it-tracker.html" class="back-to-it-banner">
-      <div>
-        <p class="back-to-it-kicker">Free Challenge</p>
-        <p class="back-to-it-title">Back to It — track your 4 weeks →</p>
-      </div>
-    </a>
-
     <!-- ACTIVE PROGRAMMES -->
     <div class="section">
       <div class="section-header">
@@ -483,21 +449,19 @@
       const container = document.getElementById('activeProgrammes');
       const countEl = document.getElementById('activeCount');
 
-      if (active.length === 0) {
-        countEl.textContent = '';
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">🎯</div>
-            <h3 class="empty-title">No active programmes yet</h3>
-            <p class="empty-sub">Browse our programmes and find the one that's right for you.</p>
-            <a href="index.html" class="btn-browse">Browse Programmes</a>
-          </div>`;
-        return;
-      }
+      // Back to It is free for any account, so it's always shown here —
+      // not driven by the purchases table like the cards below it.
+      const backToItCard = `
+        <div class="programme-card">
+          <span class="programme-badge">Free</span>
+          <h3 class="programme-name">Back to It Challenge</h3>
+          <p class="programme-expiry">4-week tracker &amp; nutrition guide</p>
+          <a href="back-to-it-tracker.html" class="btn-continue">Continue →</a>
+        </div>`;
 
-      countEl.textContent = `${active.length} active`;
+      countEl.textContent = `${active.length + 1} active`;
 
-      container.innerHTML = `<div class="programmes-grid">${active.map(p => {
+      const purchasedCards = active.map(p => {
         const days = daysUntilExpiry(p.expires_at);
         const expiringSoon = days !== null && days <= 14;
         const expiryText = p.access_type === 'her-member'
@@ -516,7 +480,9 @@
             <p class="programme-expiry${expiringSoon ? ' soon' : ''}">${expiryText}</p>
             <a href="${route}" class="btn-continue">Continue →</a>
           </div>`;
-      }).join('')}</div>`;
+      }).join('');
+
+      container.innerHTML = `<div class="programmes-grid">${backToItCard}${purchasedCards}</div>`;
     }
 
     function renderPurchaseHistory(purchases) {

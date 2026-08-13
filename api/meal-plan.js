@@ -100,6 +100,7 @@ DIETARY FRAMEWORKS — STRICT RULES
 - **NUT-FREE**: no nuts or nut-derived products of any kind. Check sauces, pestos, dressings, and protein bars carefully.
 - **VEGAN**: no animal products whatsoever, including honey and gelatine. Prioritise protein combining at every meal. Include this note: "As a long-term vegan, a B12 supplement is strongly advisable — please speak to your GP or a dietitian."
 - **VEGETARIAN**: no meat or fish. Eggs and dairy are permitted unless the user has also specified dairy-free.
+- **PESCATARIAN**: no meat or poultry. Fish and seafood are permitted and encouraged as a primary protein source, alongside eggs and dairy unless otherwise restricted.
 - Multiple frameworks may apply simultaneously. Apply ALL rules at once — never suggest a workaround that violates any of them.
 
 ---
@@ -142,8 +143,17 @@ Programme week: Week ${week} of ${ctx.totalWeeks}
 Please produce a varied, practical, and appetising 7-day plan with batch cooking clearly marked and a full shopping list at the end.`;
 
   // ── API CALL ───────────────────────────────────────────────────────────────
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+  // Model IDs eventually retire (this is what broke the generator last time —
+  // it was still calling a model that no longer existed). PRIMARY_MODEL is the
+  // one actually used; FALLBACK_MODEL only kicks in if Anthropic retires the
+  // primary and this file hasn't been updated yet, so the feature degrades
+  // instead of failing outright. Still needs an occasional check against
+  // https://platform.claude.com/docs/en/about-claude/models/overview
+  const PRIMARY_MODEL = 'claude-sonnet-5';
+  const FALLBACK_MODEL = 'claude-haiku-4-5';
+
+  async function callClaude(model) {
+    return fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -151,12 +161,23 @@ Please produce a varied, practical, and appetising 7-day plan with batch cooking
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-5',
+        model,
         max_tokens: 8000,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }]
       })
     });
+  }
+
+  try {
+    let response = await callClaude(PRIMARY_MODEL);
+
+    // A retired/unknown model ID comes back as a 404 — retry once on the
+    // fallback rather than failing the whole request.
+    if (response.status === 404) {
+      console.error(`Primary model ${PRIMARY_MODEL} unavailable, retrying on ${FALLBACK_MODEL}`);
+      response = await callClaude(FALLBACK_MODEL);
+    }
 
     const data = await response.json();
 
