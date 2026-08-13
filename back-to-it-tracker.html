@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Back to It — Your Tracker — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1C3461;
+      --teal: #2A9DB5;
+      --teal-light: #E8F6FA;
+      --grey: #AAAAAA;
+      --off-white: #F8F8F6;
+      --white: #ffffff;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'DM Sans', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--off-white);
+      color: var(--navy);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid rgba(28,52,97,0.08);
+      padding: 0 48px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo img { height: 44px; }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .header-nav a {
+      font-size: 14px;
+      color: var(--navy);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .header-nav a:hover { opacity: 1; }
+
+    .btn-signout {
+      padding: 8px 18px;
+      border: 1.5px solid rgba(28,52,97,0.2);
+      border-radius: 20px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--navy);
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-signout:hover {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* HERO BANNER */
+    .prog-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, #2a4a7f 100%);
+      padding: 56px 48px 48px;
+    }
+
+    .prog-banner-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .prog-kicker {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+
+    .prog-banner h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .prog-banner p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+      max-width: 560px;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 48px;
+      color: var(--grey);
+      font-size: 14px;
+    }
+
+    /* COMPLETION BANNER */
+    .completion-banner {
+      display: none;
+      background: var(--teal);
+      border-radius: 16px;
+      padding: 32px 36px;
+      margin-bottom: 32px;
+      color: var(--white);
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .completion-banner.visible { display: flex; }
+    .completion-banner h3 {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+    .completion-banner p { font-size: 14px; opacity: 0.9; }
+    .completion-banner a {
+      background: var(--white);
+      color: var(--teal);
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* TRACKER TABLE */
+    .tracker-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(28,52,97,0.06);
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+
+    .tracker-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 1fr 140px;
+      align-items: center;
+      gap: 20px;
+      padding: 24px 28px;
+      border-bottom: 1px solid #F0F0F0;
+      transition: background 0.3s, color 0.3s;
+    }
+    .tracker-row:last-child { border-bottom: none; }
+
+    .tracker-row.complete {
+      background: var(--teal);
+      color: var(--white);
+    }
+    .tracker-row.complete .tracker-week-sub { color: rgba(255,255,255,0.7); }
+    .tracker-row.locked { opacity: 0.4; }
+
+    .tracker-week-label {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 400;
+    }
+    .tracker-week-sub {
+      font-size: 11px;
+      color: var(--grey);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .tracker-metric-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+      margin-bottom: 8px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+    .dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(28,52,97,0.25);
+      background: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .tracker-row.complete .dot { border-color: rgba(255,255,255,0.4); }
+    .dot.filled { background: var(--navy); border-color: var(--navy); }
+    .tracker-row.complete .dot.filled { background: var(--white); border-color: var(--white); }
+    .dot:disabled { cursor: not-allowed; }
+
+    .tracker-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+    }
+    .status-badge {
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--teal-light);
+      color: var(--teal);
+      white-space: nowrap;
+    }
+    .tracker-row.complete .status-badge {
+      background: rgba(255,255,255,0.2);
+      color: var(--white);
+    }
+    .btn-nutrition {
+      font-size: 12px;
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .tracker-row.complete .btn-nutrition { color: var(--white); }
+    .btn-nutrition:hover { text-decoration: underline; }
+
+    .verify-note {
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 640px) {
+      header { padding: 0 20px; }
+      .prog-banner { padding: 40px 20px 36px; }
+      .tracker-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        text-align: left;
+      }
+      .tracker-actions { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="dashboard.html" class="header-logo">
+      <img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing">
+    </a>
+    <nav class="header-nav">
+      <a href="dashboard.html">My Account</a>
+      <button class="btn-signout" id="btnSignOut">Sign out</button>
+    </nav>
+  </header>
+
+  <div class="prog-banner">
+    <div class="prog-banner-inner">
+      <p class="prog-kicker">Back to It Challenge</p>
+      <h1>Your Tracker</h1>
+      <p id="bannerSub">Loading your challenge...</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="completion-banner" id="completionBanner">
+      <div>
+        <h3>All four weeks, all turquoise. 🎉</h3>
+        <p>You've completed the Back to It Challenge — come and claim your 4 prizes.</p>
+      </div>
+      <a href="mailto:info@herspaceldn.com?subject=Back%20to%20It%20—%20I've%20completed%20the%20challenge!">Claim my prizes</a>
+    </div>
+
+    <p class="verify-note">Classes are checked against your booking history before prizes are handed out — so log honestly and you'll have nothing to worry about.</p>
+
+    <div class="tracker-card" id="trackerCard">
+      <div class="loading">Loading your tracker...</div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    let sb;
+    let currentUser;
+    let progressByWeek = {}; // { 1: {classes_logged, nutrition_days_logged}, ... }
+    let currentWeekNumber = 1;
+
+    async function init() {
+      const res = await fetch('/api/ys-config');
+      const config = await res.json();
+      sb = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
+        window.location.href = 'login.html?redirect=/back-to-it-tracker';
+        return;
+      }
+      currentUser = session.user;
+
+      // Back to It is free to join — no purchase needed, just a login.
+      // Rolling start is tracked by a lightweight enrolment row, created
+      // the first time someone opens their tracker.
+      const startedAt = await getOrCreateEnrolment();
+      const daysSinceStart = Math.floor((new Date() - startedAt) / (1000 * 60 * 60 * 24));
+      currentWeekNumber = Math.min(4, Math.max(1, Math.floor(daysSinceStart / 7) + 1));
+      const daysLeft = Math.max(0, 28 - daysSinceStart);
+
+      document.getElementById('bannerSub').textContent =
+        `Started ${formatDate(startedAt)} · Week ${currentWeekNumber} of 4 · ${daysLeft} day${daysLeft === 1 ? '' : 's'} left`;
+
+      await loadProgress();
+      render();
+    }
+
+    async function getOrCreateEnrolment() {
+      const { data: existing } = await sb
+        .from('back_to_it_enrolments')
+        .select('started_at')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (existing) return new Date(existing.started_at);
+
+      const startedAt = new Date();
+      const { error } = await sb
+        .from('back_to_it_enrolments')
+        .insert({ user_id: currentUser.id, started_at: startedAt.toISOString() });
+
+      // If two tabs raced and both tried to insert, fall back to whatever's stored
+      if (error) {
+        const { data: raceWinner } = await sb
+          .from('back_to_it_enrolments')
+          .select('started_at')
+          .eq('user_id', currentUser.id)
+          .maybeSingle();
+        if (raceWinner) return new Date(raceWinner.started_at);
+      }
+
+      return startedAt;
+    }
+
+    async function loadProgress() {
+      const { data, error } = await sb
+        .from('back_to_it_progress')
+        .select('week_number, classes_logged, nutrition_days_logged')
+        .eq('user_id', currentUser.id);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      progressByWeek = {};
+      (data || []).forEach(row => { progressByWeek[row.week_number] = row; });
+    }
+
+    function formatDate(date) {
+      return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function render() {
+      const card = document.getElementById('trackerCard');
+      const weekLabels = ['Get Going', 'Find Your Rhythm', 'Build Momentum', 'All Turquoise'];
+
+      let allComplete = true;
+
+      card.innerHTML = [1, 2, 3, 4].map(week => {
+        const progress = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0 };
+        const isComplete = progress.classes_logged >= 4 && progress.nutrition_days_logged >= 4;
+        const isLocked = week > currentWeekNumber;
+        if (!isComplete) allComplete = false;
+
+        return `
+          <div class="tracker-row${isComplete ? ' complete' : ''}${isLocked ? ' locked' : ''}">
+            <div>
+              <div class="tracker-week-label">Week ${week}</div>
+              <div class="tracker-week-sub">${weekLabels[week - 1]}</div>
+            </div>
+            <div>
+              <div class="tracker-metric-label">Classes</div>
+              ${renderDots(week, 'classes_logged', progress.classes_logged, isLocked)}
+            </div>
+            <div>
+              <div class="tracker-metric-label">Nutrition days</div>
+              ${renderDots(week, 'nutrition_days_logged', progress.nutrition_days_logged, isLocked)}
+            </div>
+            <div class="tracker-actions">
+              <span class="status-badge">${isComplete ? 'Complete' : isLocked ? 'Not started' : 'In progress'}</span>
+              <a class="btn-nutrition" href="meal-planner.html?programme=back-to-it&week=${week}">Get week ${week} nutrition guide →</a>
+            </div>
+          </div>`;
+      }).join('');
+
+      document.getElementById('completionBanner').classList.toggle('visible', allComplete);
+    }
+
+    function renderDots(week, field, value, disabled) {
+      let dots = '';
+      for (let i = 1; i <= 4; i++) {
+        dots += `<button class="dot${i <= value ? ' filled' : ''}" ${disabled ? 'disabled' : ''}
+          onclick="setValue(${week}, '${field}', ${i}, ${value})" aria-label="${i}"></button>`;
+      }
+      return `<div class="dots">${dots}</div>`;
+    }
+
+    async function setValue(week, field, clickedValue, currentValue) {
+      // Clicking the currently-filled top dot clears back to 0, otherwise sets to that dot
+      const newValue = (clickedValue === currentValue) ? clickedValue - 1 : clickedValue;
+
+      const existing = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0 };
+      const updated = { ...existing, week_number: week, user_id: currentUser.id, [field]: newValue };
+      progressByWeek[week] = updated;
+      render();
+
+      const { error } = await sb
+        .from('back_to_it_progress')
+        .upsert({
+          user_id: currentUser.id,
+          week_number: week,
+          classes_logged: updated.classes_logged,
+          nutrition_days_logged: updated.nutrition_days_logged,
+        }, { onConflict: 'user_id,week_number' });
+
+      if (error) console.error('Failed to save progress:', error);
+    }
+
+    document.getElementById('btnSignOut').addEventListener('click', async () => {
+      if (sb) await sb.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    init();
+  </script>
+
+</body>
+</html>

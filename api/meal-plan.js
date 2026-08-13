@@ -8,22 +8,39 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { calories, protein, dayType, frameworks, allergies, week } = req.body;
+  const { calories, protein, dayType, frameworks, allergies, week, programme } = req.body;
 
   // Basic validation
   if (!calories || !protein) {
     return res.status(400).json({ error: 'Calorie and protein targets are required.' });
   }
 
+  // ── PROGRAMME FRAMING ────────────────────────────────────────────────────
+  // Different YourSpace programmes reuse this same generator with different
+  // framing/duration. Default stays Sofa to Studio for backwards compatibility.
+  const PROGRAMME_CONTEXT = {
+    'sofa-to-studio': {
+      totalWeeks: 6,
+      about: 'The user is following the Sofa to Studio barre fitness programme. Active sessions burn approximately 300–400 kcal. The full programme runs 42 days: 30 active days and 12 rest days.',
+      disclaimerContext: 'YourSpace Wellbeing fitness programme',
+    },
+    'back-to-it': {
+      totalWeeks: 4,
+      about: 'The user is following the Back to It Challenge — a 4-week programme combining 4 studio classes a week with this nutrition plan. Active sessions are a mix of Barre, Pilates, Strength, and Cardio classes at HerSpace London, burning approximately 300–450 kcal depending on class type. The challenge runs 28 days.',
+      disclaimerContext: 'YourSpace Wellbeing Back to It Challenge',
+    },
+  };
+  const ctx = PROGRAMME_CONTEXT[programme] || PROGRAMME_CONTEXT['sofa-to-studio'];
+
   // ── SYSTEM PROMPT ──────────────────────────────────────────────────────────
-  const systemPrompt = `You are a nutrition assistant for YourSpace Wellbeing, supporting users through the 30 Days Sofa to Studio barre fitness programme. Your role is to generate practical, balanced, personalised 7-day meal plans to support exercise performance and general wellbeing.
+  const systemPrompt = `You are a nutrition assistant for YourSpace Wellbeing. Your role is to generate practical, balanced, personalised 7-day meal plans to support exercise performance and general wellbeing.
 
 You are NOT a clinical nutrition service. Do not make claims about treating, managing, or preventing any medical condition or disease. If a user's inputs suggest a complex medical condition (e.g. diabetes, eating disorder, kidney disease), acknowledge this warmly and advise them to consult a registered dietitian before following any meal plan.
 
 ---
 
 ABOUT THE PROGRAMME
-The user is following a barre-based fitness programme. Active sessions burn approximately 300–400 kcal. The full programme runs 42 days: 30 active days and 12 rest days.
+${ctx.about}
 
 ---
 
@@ -106,7 +123,7 @@ DISCLAIMER
 End every meal plan with:
 
 ---
-*This plan has been created to support your YourSpace Wellbeing fitness programme and is intended as general healthy eating guidance only. It is not a substitute for personalised advice from a registered dietitian or other healthcare professional. If you have a medical condition, complex dietary needs, or concerns about your nutrition, please consult a qualified professional before following this plan.*`;
+*This plan has been created to support your ${ctx.disclaimerContext} and is intended as general healthy eating guidance only. It is not a substitute for personalised advice from a registered dietitian or other healthcare professional. If you have a medical condition, complex dietary needs, or concerns about your nutrition, please consult a qualified professional before following this plan.*`;
 
   // ── USER MESSAGE ───────────────────────────────────────────────────────────
   const frameworkList = frameworks && frameworks.length > 0
@@ -120,7 +137,7 @@ Daily protein target: ${protein}g
 Day type: ${dayType === 'active' ? 'ACTIVE day — please add 250–300 kcal on active days in the plan' : 'REST day — use base calorie target'}
 Dietary framework: ${frameworkList}
 Additional allergies or foods to avoid: ${allergies && allergies.trim() ? allergies.trim() : 'None'}
-Programme week: Week ${week} of 6
+Programme week: Week ${week} of ${ctx.totalWeeks}
 
 Please produce a varied, practical, and appetising 7-day plan with batch cooking clearly marked and a full shopping list at the end.`;
 

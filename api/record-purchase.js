@@ -14,7 +14,9 @@ export default async function handler(req, res) {
     'price_1TKga13qlwzbgcp91FW2aAUs': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
   };
 
-  // All Access unlocks all of these
+  // All Access unlocks all of these.
+  // Back to It isn't listed here — it's free to join for any account, so
+  // there's nothing for a purchase to unlock (see back-to-it-tracker.html).
   const ALL_ACCESS_PROGRAMMES = [
     { id: 'prehab',         name: 'YourSpace Pre-Hab' },
     { id: 'sofa-to-studio', name: 'Sofa to Studio' },

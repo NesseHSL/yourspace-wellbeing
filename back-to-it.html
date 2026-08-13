@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Back to It Challenge — YourSpace Wellbeing</title>
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+    /* ── PAGE HERO ─────────────────────────────── */
+    .prog-hero {
+      background: var(--navy);
+      padding: 120px 48px 100px;
+      text-align: center;
+    }
+    .prog-hero .kicker {
+      color: var(--teal);
+      margin-bottom: 20px;
+    }
+    .prog-hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(56px, 8vw, 96px);
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1.02;
+      margin-bottom: 16px;
+    }
+    .prog-hero-sub {
+      font-family: var(--font-serif);
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      font-style: italic;
+      margin-bottom: 44px;
+    }
+    .prog-hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    /* Primary CTA needs a fill that isn't navy-on-navy against this hero */
+    .prog-hero-btns .btn-primary {
+      background: var(--teal);
+    }
+    .prog-hero-btns .btn-primary:hover {
+      background: #228fa5;
+    }
+
+    /* ── HOW IT WORKS ──────────────────────────── */
+    #how {
+      background: var(--off-white);
+      padding: 100px 48px;
+    }
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 52px;
+    }
+    .who-card {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 12px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .who-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-3px);
+    }
+    .who-icon {
+      font-size: 32px;
+      margin-bottom: 14px;
+    }
+    .who-card h4 {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .who-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--grey-mid);
+      font-weight: 300;
+    }
+
+    /* ── WHAT'S INCLUDED ────────────────────────── */
+    #outcomes {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      margin-top: 56px;
+    }
+    .outcome-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .outcome-num {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      font-weight: 300;
+      color: var(--teal);
+      opacity: 0.4;
+      line-height: 1;
+      flex-shrink: 0;
+      width: 48px;
+    }
+    .outcome-text h4 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .outcome-text p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--grey-mid);
+      font-weight: 300;
+    }
+
+    /* ── PRIZES ─────────────────────────────────── */
+    #prizes {
+      background: var(--off-white);
+      padding: 100px 48px;
+    }
+    .video-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .video-card {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 36px 40px;
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 32px;
+      align-items: center;
+      transition: box-shadow 0.2s;
+    }
+    .video-card:hover {
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .video-num {
+      font-family: var(--font-serif);
+      font-size: 56px;
+      font-weight: 300;
+      color: var(--navy);
+      opacity: 0.15;
+      line-height: 1;
+      text-align: center;
+    }
+    .video-info h3 {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .video-info p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--grey-mid);
+      font-weight: 300;
+      max-width: 560px;
+      margin-bottom: 14px;
+    }
+    .video-meta {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .video-week {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    /* ── THE 4 WEEKS ───────────────────────────── */
+    #schedule {
+      background: var(--navy);
+      padding: 100px 48px;
+    }
+    #schedule .section-label { color: rgba(255,255,255,0.4); }
+    #schedule h2 { color: var(--white); }
+    #schedule .section-sub { color: rgba(255,255,255,0.55); }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 56px;
+    }
+    .schedule-week {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 28px 24px;
+    }
+    .schedule-week-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+    .schedule-week h4 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .schedule-sessions {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .schedule-sessions li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 300;
+      padding-left: 16px;
+      position: relative;
+    }
+    .schedule-sessions li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      opacity: 0.6;
+    }
+    .schedule-note {
+      margin-top: 40px;
+      padding: 24px 32px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 8px 8px 0;
+    }
+    .schedule-note p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .schedule-note strong {
+      color: rgba(255,255,255,0.8);
+      font-weight: 400;
+    }
+
+    /* ── PRICING ───────────────────────────────── */
+    #pricing {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+    .pricing-grid {
+      display: flex;
+      justify-content: center;
+      margin: 56px auto 0;
+    }
+    .pricing-card {
+      border: 1px solid rgba(0,0,0,0.09);
+      border-radius: 16px;
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 420px;
+      width: 100%;
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+    .pricing-label {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+    .pricing-amount {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+    }
+    .pricing-period {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      margin-top: 6px;
+    }
+    .pricing-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+    .pricing-features li {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .pricing-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: 12px;
+    }
+    .pricing-note {
+      font-size: 12px;
+      color: var(--grey);
+      font-weight: 300;
+      text-align: center;
+      margin-top: 24px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .member-note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--grey-mid);
+      margin-top: 20px;
+    }
+    .member-note strong { color: var(--teal); }
+
+    /* ── RESPONSIVE ────────────────────────────── */
+    @media (max-width: 900px) {
+      .prog-hero { padding: 80px 24px 72px; }
+      #how, #outcomes, #prizes, #schedule, #pricing { padding: 72px 24px; }
+      .video-card { grid-template-columns: 48px 1fr; gap: 20px; }
+      .video-meta { display: none; }
+      .schedule-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .who-grid { grid-template-columns: 1fr 1fr; }
+      .schedule-grid { grid-template-columns: 1fr; }
+      .video-card { grid-template-columns: 1fr; }
+      .video-num { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="site" class="visible">
+
+    <!-- HEADER -->
+    <header id="header">
+      <div class="header-inner">
+        <a href="index.html" class="header-logo">
+          <img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing">
+        </a>
+        <nav>
+          <a href="index.html#programmes">Programmes</a>
+          <a href="index.html#about">About</a>
+          <a href="#" class="nav-btn">Sign In</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- PROGRAMME HERO -->
+    <section class="prog-hero">
+      <div class="hero-inner">
+        <p class="kicker">Launch Challenge · Rolling Start</p>
+        <h1>Back to It</h1>
+        <p class="prog-hero-sub">4 weeks. 4 classes a week. 4 sexy prizes.</p>
+        <p class="hero-sub" style="color:rgba(255,255,255,0.55); max-width:560px; margin:0 auto 44px;">Buy a class pack, book in with us, follow your nutrition guide, and track it all in one simple grid. Go all-turquoise across 4 weeks and the prizes are yours.</p>
+        <div class="prog-hero-btns">
+          <a href="#pricing" class="btn-primary">Join the challenge</a>
+          <a href="#how" class="btn-ghost-light">See how it works</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how">
+      <div class="section-inner">
+        <p class="section-label">How it works</p>
+        <h2>Simple. Trackable. Rewarding.</h2>
+        <p class="section-sub">Start any time — this isn't a fixed cohort. Your 4 weeks begin the day you join.</p>
+        <div class="who-grid">
+          <div class="who-card">
+            <div class="who-icon">🎟️</div>
+            <h4>1. Book in</h4>
+            <p>Buy a class pack and book your classes with us as usual — 4 a week is the target.</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">🥗</div>
+            <h4>2. Follow the plan</h4>
+            <p>Use your Back to It nutrition guide — 4 nutrition days a week, tailored and rotated weekly.</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">📋</div>
+            <h4>3. Log your week</h4>
+            <p>Tick off your classes and nutrition days in your tracker as you go.</p>
+          </div>
+          <div class="who-card">
+            <div class="who-icon">🏆</div>
+            <h4>4. Go all-turquoise</h4>
+            <p>Complete all 4 weeks and your row turns turquoise. Show us your grid, claim your prizes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT'S INCLUDED -->
+    <section id="outcomes">
+      <div class="section-inner">
+        <p class="section-label">What's included</p>
+        <h2>Everything you need<br>to get back into it.</h2>
+        <div class="outcomes-grid">
+          <div class="outcome-item">
+            <div class="outcome-num">01</div>
+            <div class="outcome-text">
+              <h4>Your Progress Tracker</h4>
+              <p>A simple weekly grid — log your classes and nutrition days, watch each week turn turquoise as you complete it.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">02</div>
+            <div class="outcome-text">
+              <h4>Back to It Nutrition Guide</h4>
+              <p>A personalised 7-day meal plan for every week of your challenge — protein-rich, batch-cook friendly, and never repeats.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">03</div>
+            <div class="outcome-text">
+              <h4>Rolling Start</h4>
+              <p>No fixed cohort — join whenever you're ready and your 4 weeks start from day one.</p>
+            </div>
+          </div>
+          <div class="outcome-item">
+            <div class="outcome-num">04</div>
+            <div class="outcome-text">
+              <h4>4 Prizes on Completion</h4>
+              <p>Go all-turquoise and you're in for all 4 prizes — see below.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRIZES -->
+    <section id="prizes">
+      <div class="section-inner">
+        <p class="section-label">The Prizes</p>
+        <h2>Complete the challenge,<br>claim the lot.</h2>
+        <p class="section-sub">All 4 weeks all-turquoise, all 4 prizes. We spot-check classes against your booking history, so no cheeky ticks — play fair and enjoy your rewards.</p>
+        <div class="video-list">
+          <div class="video-card">
+            <div class="video-num">1</div>
+            <div class="video-info">
+              <h3>HSL Socks</h3>
+              <p>A pair of our grippy HerSpace London studio socks — yours to keep.</p>
+            </div>
+            <div class="video-meta"><div class="video-week">Prize 1</div></div>
+          </div>
+          <div class="video-card">
+            <div class="video-num">2</div>
+            <div class="video-info">
+              <h3>Pilates Ball</h3>
+              <p>A small Pilates ball for home practice, between sessions with us.</p>
+            </div>
+            <div class="video-meta"><div class="video-week">Prize 2</div></div>
+          </div>
+          <div class="video-card">
+            <div class="video-num">3</div>
+            <div class="video-info">
+              <h3>A Free Class</h3>
+              <p>One class, on us — keep the momentum going into week 5.</p>
+            </div>
+            <div class="video-meta"><div class="video-week">Prize 3</div></div>
+          </div>
+          <div class="video-card">
+            <div class="video-num">4</div>
+            <div class="video-info">
+              <h3>Coffee, On Us</h3>
+              <p>A treat from a local coffee shop we love — details confirmed at launch.</p>
+            </div>
+            <div class="video-meta"><div class="video-week">Prize 4</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE 4 WEEKS -->
+    <section id="schedule">
+      <div class="section-inner">
+        <p class="section-label">The Challenge</p>
+        <h2>Four weeks. One simple rhythm.</h2>
+        <p class="section-sub">Every week looks the same — hit the target, and the row turns turquoise.</p>
+        <div class="schedule-grid">
+          <div class="schedule-week">
+            <div class="schedule-week-label">Week 1</div>
+            <h4>Get Going</h4>
+            <ul class="schedule-sessions">
+              <li>4 classes booked & attended</li>
+              <li>4 nutrition days followed</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Week 2</div>
+            <h4>Find Your Rhythm</h4>
+            <ul class="schedule-sessions">
+              <li>4 classes booked & attended</li>
+              <li>4 nutrition days followed</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Week 3</div>
+            <h4>Build Momentum</h4>
+            <ul class="schedule-sessions">
+              <li>4 classes booked & attended</li>
+              <li>4 nutrition days followed</li>
+            </ul>
+          </div>
+          <div class="schedule-week">
+            <div class="schedule-week-label">Week 4</div>
+            <h4>All Turquoise</h4>
+            <ul class="schedule-sessions">
+              <li>4 classes booked & attended</li>
+              <li>4 nutrition days followed</li>
+            </ul>
+          </div>
+        </div>
+        <div class="schedule-note">
+          <p><strong>Rolling start, remember.</strong> There's no fixed start date — your 4 weeks begin the moment you join, so jump in whenever suits you.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing">
+      <div class="section-inner">
+        <p class="section-label">Join the challenge</p>
+        <h2>Free to join.<br>Four weeks of accountability.</h2>
+        <p class="section-sub">Your class pack is booked separately with us as usual — the tracker and nutrition guide themselves are free for anyone with a YourSpace account.</p>
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <span class="pricing-label">Back to It Challenge</span>
+            <div>
+              <span class="pricing-amount">Free</span>
+              <p class="pricing-period">4 weeks of access, rolling start</p>
+            </div>
+            <hr class="pricing-divider">
+            <ul class="pricing-features">
+              <li>Weekly progress tracker</li>
+              <li>Personalised nutrition guide, rebuilt each week</li>
+              <li>Eligibility for all 4 completion prizes</li>
+              <li>Rolling start — begin any time</li>
+            </ul>
+            <a href="back-to-it-tracker.html" class="btn-primary" style="text-align:center;">Start the Challenge</a>
+          </div>
+        </div>
+        <p class="pricing-note">Class packs are booked separately through HerSpace London as usual — this covers app access to your tracker and nutrition guide only.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <img src="assets/ys-favicon-white.png" alt="YS" class="footer-mark">
+            <div>
+              <p class="footer-name">YourSpace Wellbeing</p>
+              <p class="footer-sub">by HerSpace London</p>
+            </div>
+          </div>
+          <nav class="footer-nav">
+            <a href="index.html#programmes">Programmes</a>
+            <a href="index.html#about">About</a>
+            <a href="#">Sign In</a>
+          </nav>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 HerSpace London Ltd. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
+    });
+  </script>
+
+</body>
+</html>

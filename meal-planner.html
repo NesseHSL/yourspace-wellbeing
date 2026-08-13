@@ -473,7 +473,7 @@
   <!-- HERO -->
   <section class="planner-hero">
     <div class="hero-inner">
-      <p class="kicker">Sofa to Studio — Nutrition</p>
+      <p class="kicker" id="plannerKicker">Sofa to Studio — Nutrition</p>
       <h1>Your Personal<br>Meal Planner</h1>
       <p>Tell us your targets and preferences, and we'll build you a practical, protein-rich 7-day plan — with batch cooking built in.</p>
     </div>
@@ -516,7 +516,7 @@
             <label for="active">
               <span class="toggle-icon">🏃‍♀️</span>
               <span class="toggle-title">Active days</span>
-              <span class="toggle-sub">Includes a barre session</span>
+              <span class="toggle-sub" id="activeDaySub">Includes a barre session</span>
             </label>
           </div>
           <div>
@@ -540,8 +540,8 @@
           <div><input type="radio" name="week" id="w2" value="2"><label for="w2"><span class="week-num">2</span><span class="week-label">Week 2</span></label></div>
           <div><input type="radio" name="week" id="w3" value="3"><label for="w3"><span class="week-num">3</span><span class="week-label">Week 3</span></label></div>
           <div><input type="radio" name="week" id="w4" value="4"><label for="w4"><span class="week-num">4</span><span class="week-label">Week 4</span></label></div>
-          <div><input type="radio" name="week" id="w5" value="5"><label for="w5"><span class="week-num">5</span><span class="week-label">Week 5</span></label></div>
-          <div><input type="radio" name="week" id="w6" value="6"><label for="w6"><span class="week-num">6</span><span class="week-label">Week 6</span></label></div>
+          <div class="week-opt-extra"><input type="radio" name="week" id="w5" value="5"><label for="w5"><span class="week-num">5</span><span class="week-label">Week 5</span></label></div>
+          <div class="week-opt-extra"><input type="radio" name="week" id="w6" value="6"><label for="w6"><span class="week-num">6</span><span class="week-label">Week 6</span></label></div>
         </div>
       </div>
 
@@ -662,6 +662,24 @@
     document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
   });
 
+  // ── PROGRAMME CONTEXT ─────────────────────────────────────────────────────
+  // This planner is shared across programmes. Read ?programme= and ?week=
+  // from the URL to adjust framing without duplicating the whole page.
+  const urlParams = new URLSearchParams(window.location.search);
+  const currentProgramme = urlParams.get('programme') || 'sofa-to-studio';
+  const presetWeek = urlParams.get('week');
+
+  if (currentProgramme === 'back-to-it') {
+    document.getElementById('plannerKicker').textContent = 'Back to It — Nutrition Guide';
+    document.getElementById('activeDaySub').textContent = 'Includes a studio class';
+    document.querySelectorAll('.week-opt-extra').forEach(el => el.style.display = 'none');
+  }
+
+  if (presetWeek) {
+    const weekInput = document.getElementById('w' + presetWeek);
+    if (weekInput) weekInput.checked = true;
+  }
+
   // ── GENERATE PLAN ──────────────────────────────────────────────────────────
   async function generatePlan() {
 
@@ -702,7 +720,7 @@
       const response = await fetch('/api/meal-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ calories, protein, dayType, frameworks, allergies, week })
+        body: JSON.stringify({ calories, protein, dayType, frameworks, allergies, week, programme: currentProgramme })
       });
 
       const data = await response.json();

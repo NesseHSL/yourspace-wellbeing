@@ -115,6 +115,32 @@
       line-height: 1.6;
     }
 
+    /* BACK TO IT BANNER */
+    .back-to-it-banner {
+      display: flex;
+      align-items: center;
+      background: var(--teal);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .back-to-it-banner:hover { background: #228fa5; }
+    .back-to-it-kicker {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      margin-bottom: 4px;
+    }
+    .back-to-it-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
     /* SECTIONS */
     .section {
       margin-bottom: 48px;
@@ -345,6 +371,14 @@
       <h1 class="welcome-name" id="welcomeName">Welcome back.</h1>
       <p class="welcome-sub" id="welcomeSub">Loading your account...</p>
     </div>
+
+    <!-- BACK TO IT BANNER -->
+    <a href="back-to-it-tracker.html" class="back-to-it-banner">
+      <div>
+        <p class="back-to-it-kicker">Free Challenge</p>
+        <p class="back-to-it-title">Back to It — track your 4 weeks →</p>
+      </div>
+    </a>
 
     <!-- ACTIVE PROGRAMMES -->
     <div class="section">
