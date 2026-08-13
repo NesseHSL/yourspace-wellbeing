@@ -497,14 +497,80 @@
 
     <div class="planner-wrap" id="plannerForm" style="display:none;">
 
+      <!-- Macro Calculator -->
+      <div class="form-card" style="border:1.5px dashed rgba(42,157,181,0.4);">
+        <p class="step-label">Not sure of your numbers?</p>
+        <p class="step-title">Calculate your macros</p>
+        <p class="step-sub">Answer a few quick questions and we'll work out your daily targets — they'll fill in below automatically.</p>
+
+        <div class="input-row">
+          <div class="field-wrap">
+            <label for="calcWeight">Weight (kg)</label>
+            <input type="number" id="calcWeight" placeholder="e.g. 65">
+          </div>
+          <div class="field-wrap">
+            <label for="calcHeight">Height (cm)</label>
+            <input type="number" id="calcHeight" placeholder="e.g. 165">
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field-wrap">
+            <label for="calcAge">Age</label>
+            <input type="number" id="calcAge" placeholder="e.g. 32">
+          </div>
+          <div class="field-wrap">
+            <label>Sex</label>
+            <div class="day-toggle">
+              <div>
+                <input type="radio" name="calcSex" id="calcSexFemale" value="female" checked>
+                <label for="calcSexFemale"><span class="toggle-title">Female</span></label>
+              </div>
+              <div>
+                <input type="radio" name="calcSex" id="calcSexMale" value="male">
+                <label for="calcSexMale"><span class="toggle-title">Male</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field-wrap">
+            <label for="calcActivity">Activity level</label>
+            <select id="calcActivity">
+              <option value="1.2">Sedentary (little to no exercise)</option>
+              <option value="1.375">Light (1–3 sessions/week)</option>
+              <option value="1.55" selected>Moderate (4–5 sessions/week)</option>
+              <option value="1.725">Very active (6–7 sessions/week)</option>
+              <option value="1.9">Extremely active (physical job + training)</option>
+            </select>
+          </div>
+          <div class="field-wrap">
+            <label for="calcGoal">Goal</label>
+            <select id="calcGoal">
+              <option value="lose">Lose fat</option>
+              <option value="maintain" selected>Maintain</option>
+              <option value="build">Build muscle</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="generate-btn" id="calcBtn" style="background:var(--navy);" onclick="calculateMacros()">Calculate My Macros</button>
+
+        <div id="calcResults" style="display:none; margin-top:24px; padding-top:24px; border-top:1px solid rgba(0,0,0,0.08);">
+          <p style="font-size:13px; color:var(--teal); font-weight:600; margin-bottom:12px;">✓ Applied to your targets below</p>
+          <div style="display:flex; gap:28px; flex-wrap:wrap;">
+            <div><span style="font-size:28px;font-weight:600;color:var(--navy);" id="calcResultCalories"></span><span style="font-size:12px;color:#999;display:block;">kcal / day</span></div>
+            <div><span style="font-size:28px;font-weight:600;color:var(--navy);" id="calcResultProtein"></span><span style="font-size:12px;color:#999;display:block;">protein</span></div>
+            <div><span style="font-size:18px;color:#777;" id="calcResultCarbs"></span><span style="font-size:12px;color:#999;display:block;">carbs</span></div>
+            <div><span style="font-size:18px;color:#777;" id="calcResultFat"></span><span style="font-size:12px;color:#999;display:block;">fat</span></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Step 1: Targets -->
       <div class="form-card">
         <p class="step-label">Step 1</p>
         <p class="step-title">Your daily targets</p>
-        <p class="step-sub">
-          Not sure what your targets are?
-          <a href="sofa-to-studio.html#calculator" class="calc-link">Use our macro calculator →</a>
-        </p>
+        <p class="step-sub">Already know your numbers? Enter them directly — or use the calculator above.</p>
         <div class="input-row">
           <div class="field-wrap">
             <label for="calories">Daily calories (kcal)</label>
@@ -769,6 +835,63 @@
     const weekInput = document.getElementById('w' + presetWeek);
     if (weekInput) weekInput.checked = true;
   }
+
+  // ── MACRO CALCULATOR ─────────────────────────────────────────────────────
+  // Mifflin-St Jeor BMR, same formula as the Sofa to Studio calculator, but
+  // self-contained here — no cross-page dependency — and it fills the
+  // targets below directly instead of requiring manual copy-over.
+  function calculateMacros() {
+    const weight   = parseFloat(document.getElementById('calcWeight').value);
+    const height   = parseFloat(document.getElementById('calcHeight').value);
+    const age      = parseFloat(document.getElementById('calcAge').value);
+    const sex      = document.querySelector('input[name="calcSex"]:checked').value;
+    const activity = parseFloat(document.getElementById('calcActivity').value);
+    const goal     = document.getElementById('calcGoal').value;
+
+    if (!weight || !height || !age || weight < 30 || height < 100 || age < 16) {
+      alert('Please fill in all fields with realistic values.');
+      return;
+    }
+
+    const bmr = sex === 'female'
+      ? (10 * weight) + (6.25 * height) - (5 * age) - 161
+      : (10 * weight) + (6.25 * height) - (5 * age) + 5;
+
+    const tdee = bmr * activity;
+
+    let calories;
+    if (goal === 'lose') calories = Math.round(tdee - 400);
+    else if (goal === 'build') calories = Math.round(tdee + 200);
+    else calories = Math.round(tdee);
+
+    const proteinPerKg = (goal === 'maintain') ? 1.6 : 2.0;
+    const protein = Math.round(weight * proteinPerKg);
+    const proteinCals = protein * 4;
+    const fat = Math.round(weight * 0.9);
+    const fatCals = fat * 9;
+    const carbCals = calories - proteinCals - fatCals;
+    const carbs = Math.max(0, Math.round(carbCals / 4));
+
+    // Auto-fill Step 1's targets
+    document.getElementById('calories').value = calories;
+    document.getElementById('protein').value = protein;
+
+    document.getElementById('calcResultCalories').textContent = calories.toLocaleString();
+    document.getElementById('calcResultProtein').textContent = protein + 'g';
+    document.getElementById('calcResultCarbs').textContent = carbs + 'g';
+    document.getElementById('calcResultFat').textContent = fat + 'g';
+    document.getElementById('calcResults').style.display = 'block';
+
+    setTimeout(() => {
+      document.getElementById('calories').closest('.form-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+  }
+
+  ['calcWeight', 'calcHeight', 'calcAge'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); calculateMacros(); }
+    });
+  });
 
   // ── GENERATE PLAN ──────────────────────────────────────────────────────────
   async function generatePlan() {
