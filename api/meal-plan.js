@@ -142,7 +142,7 @@ End every meal plan with:
 
 Daily calorie target: ${calories} kcal
 Daily protein target: ${protein}g
-Across the 7-day plan: ${activeDays} active day(s) and ${7 - activeDays} rest day(s). Distribute them naturally across the week (not all consecutive) unless the count makes that impossible. On active days, add 250–300 kcal to the stated daily target and include a pre-workout snack. On rest days, use the base calorie target exactly as provided.
+This week has exactly ${activeDays} ACTIVE day(s) and ${7 - activeDays} REST day(s) out of the 7 — this is a hard requirement, not a suggestion. Exactly ${activeDays} of the 7 days must include a pre-workout snack and the +250–300 kcal active-day boost on top of the base calorie target. Exactly ${7 - activeDays} days must use the base calorie target exactly as provided, with no pre-workout snack. Spread the active days naturally through the week rather than clustering them, unless the count makes that impossible (e.g. 0 or 7 active days). Before finishing, check your plan actually contains ${activeDays} active day(s) and ${7 - activeDays} rest day(s) — not a uniform week.
 Dietary framework: ${frameworkList}
 Additional allergies or foods to avoid: ${allergies && allergies.trim() ? allergies.trim() : 'None'}
 
