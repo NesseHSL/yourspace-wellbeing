@@ -213,6 +213,27 @@
 
     .btn-continue:hover { background: #16294d; }
 
+    .btn-manage {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 9px;
+      background: none;
+      border: 1.5px solid rgba(28,52,97,0.15);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--grey);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-manage:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+
     /* EMPTY STATE */
     .empty-state {
       background: var(--white);
@@ -471,6 +492,7 @@
             ? `Expires ${formatDate(p.expires_at)}${expiringSoon ? ` (${days} days)` : ''}`
             : 'Lifetime access';
         const route = programmeRoutes[p.programme_id] || '#';
+        const isSubscription = p.stripe_payment_id?.startsWith('sub_');
 
         return `
           <div class="programme-card">
@@ -480,6 +502,7 @@
             <h3 class="programme-name">${p.programme_name}</h3>
             <p class="programme-expiry${expiringSoon ? ' soon' : ''}">${expiryText}</p>
             <a href="${route}" class="btn-continue">Continue →</a>
+            ${isSubscription ? `<button class="btn-manage" onclick="handleManageSubscription('${p.stripe_payment_id}')">Manage subscription</button>` : ''}
           </div>`;
       }).join('');
 
@@ -547,6 +570,20 @@
     async function handleSignOut() {
       await sb.auth.signOut();
       window.location.href = 'index.html';
+    }
+
+    async function handleManageSubscription(subscriptionId) {
+      const res = await fetch('/api/create-portal-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscriptionId, returnUrl: window.location.href })
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Something went wrong opening your billing settings. Please try again.');
+      }
     }
 
     init();
