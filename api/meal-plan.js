@@ -8,11 +8,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { calories, protein, dayType, frameworks, allergies, programme } = req.body;
+  const { calories, protein, activeDays, frameworks, allergies, programme } = req.body;
 
   // Basic validation
   if (!calories || !protein) {
     return res.status(400).json({ error: 'Calorie and protein targets are required.' });
+  }
+  if (activeDays === undefined || activeDays === null || activeDays < 0 || activeDays > 7) {
+    return res.status(400).json({ error: 'Active days must be a number between 0 and 7.' });
   }
 
   // ── PROGRAMME FRAMING ────────────────────────────────────────────────────
@@ -139,7 +142,7 @@ End every meal plan with:
 
 Daily calorie target: ${calories} kcal
 Daily protein target: ${protein}g
-Day type: ${dayType === 'active' ? 'ACTIVE day — please add 250–300 kcal on active days in the plan' : 'REST day — use base calorie target'}
+Across the 7-day plan: ${activeDays} active day(s) and ${7 - activeDays} rest day(s). Distribute them naturally across the week (not all consecutive) unless the count makes that impossible. On active days, add 250–300 kcal to the stated daily target and include a pre-workout snack. On rest days, use the base calorie target exactly as provided.
 Dietary framework: ${frameworkList}
 Additional allergies or foods to avoid: ${allergies && allergies.trim() ? allergies.trim() : 'None'}
 

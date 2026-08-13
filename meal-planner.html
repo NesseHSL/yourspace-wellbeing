@@ -451,10 +451,10 @@
       <div class="form-card" style="text-align:center;">
         <p class="step-label">Nutrition Guide</p>
         <p class="step-title" style="font-size:32px;">Unlock your meal planner</p>
-        <p class="step-sub" style="max-width:480px;margin:0 auto 28px;">Personalised 7-day plans, rebuilt every week, tailored to your targets and dietary needs. Included free with Sofa to Studio and All Access — or add it on its own.</p>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--navy);margin-bottom:4px;">£4.99<span style="font-size:16px;font-weight:400;color:#777;">/month</span></div>
+        <p class="step-sub" style="max-width:480px;margin:0 auto 28px;">A new personalised 7-day plan every week (up to 4 a month), tailored to your targets and dietary needs, with full recipes included. Included free with Sofa to Studio and All Access — or add it on its own.</p>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--navy);margin-bottom:4px;">£9.99<span style="font-size:16px;font-weight:400;color:#777;">/month</span></div>
         <p style="font-size:13px;color:#999;margin-bottom:28px;">Cancel any time</p>
-        <button class="generate-btn" id="paywallSubscribeBtn" onclick="handleNutritionCheckout(event)">Subscribe — £4.99/month</button>
+        <button class="generate-btn" id="paywallSubscribeBtn" onclick="handleNutritionCheckout(event)">Subscribe — £9.99/month</button>
         <p style="font-size:13px;color:#999;margin-top:16px;">Already have Sofa to Studio or All Access? <a href="login.html" style="color:var(--teal);">Sign in</a> — it's included.</p>
       </div>
     </div>
@@ -549,27 +549,28 @@
         </div>
       </div>
 
-      <!-- Step 2: Day type -->
+      <!-- Step 2: Active vs rest days -->
       <div class="form-card">
         <p class="step-label">Step 2</p>
-        <p class="step-title">What kind of days are you planning for?</p>
-        <p class="step-sub">Your calorie needs are slightly higher on active days to fuel your session. We'll adjust automatically.</p>
-        <div class="day-toggle">
-          <div>
-            <input type="radio" name="dayType" id="active" value="active" checked>
-            <label for="active">
-              <span class="toggle-icon">🏃‍♀️</span>
-              <span class="toggle-title">Active days</span>
-              <span class="toggle-sub" id="activeDaySub">Includes a barre session</span>
-            </label>
+        <p class="step-title">How many active days this week?</p>
+        <p class="step-sub">Your calorie needs are slightly higher on active days to fuel your session. We'll spread this across your 7-day plan and adjust automatically.</p>
+        <div class="input-row">
+          <div class="field-wrap">
+            <label for="activeDays">Active days <span id="activeDaySub" style="font-weight:400;color:#999;">(includes a workout)</span></label>
+            <select id="activeDays">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
           </div>
-          <div>
-            <input type="radio" name="dayType" id="rest" value="rest">
-            <label for="rest">
-              <span class="toggle-icon">🛋️</span>
-              <span class="toggle-title">Rest days</span>
-              <span class="toggle-sub">Recovery & restoration</span>
-            </label>
+          <div class="field-wrap">
+            <label>Rest days</label>
+            <div id="restDaysDisplay" style="padding:12px 16px;border:1.5px solid rgba(0,0,0,0.10);border-radius:10px;background:rgba(0,0,0,0.02);color:#777;font-size:15px;">3</div>
           </div>
         </div>
       </div>
@@ -835,13 +836,19 @@
     });
   });
 
+  // ── ACTIVE / REST DAYS ────────────────────────────────────────────────────
+  document.getElementById('activeDays').addEventListener('change', () => {
+    const active = parseInt(document.getElementById('activeDays').value, 10);
+    document.getElementById('restDaysDisplay').textContent = 7 - active;
+  });
+
   // ── GENERATE PLAN ──────────────────────────────────────────────────────────
   async function generatePlan() {
 
     // Get values
-    const calories = document.getElementById('calories').value.trim();
-    const protein  = document.getElementById('protein').value.trim();
-    const dayType  = document.querySelector('input[name="dayType"]:checked').value;
+    const calories   = document.getElementById('calories').value.trim();
+    const protein    = document.getElementById('protein').value.trim();
+    const activeDays = parseInt(document.getElementById('activeDays').value, 10);
 
     // Collect dietary frameworks
     const frameworks = [];
@@ -874,7 +881,7 @@
       const response = await fetch('/api/meal-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ calories, protein, dayType, frameworks, allergies, programme: currentProgramme })
+        body: JSON.stringify({ calories, protein, activeDays, frameworks, allergies, programme: currentProgramme })
       });
 
       const data = await response.json();
