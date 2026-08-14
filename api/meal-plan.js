@@ -254,6 +254,38 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
     return issues;
   }
 
+  // Scans ingredient lines for common gluten sources when Coeliac is
+  // selected. The system prompt already instructs strict gluten-free
+  // handling, but for something with real allergy stakes we don't just
+  // trust the instruction was followed — we check the actual ingredients.
+  // Keyword-based, so it isn't a certified medical filter, but it catches
+  // the obvious, careless mistakes a written instruction alone might miss.
+  const GLUTEN_FLAGS = [
+    'wheat', 'barley', 'rye', 'malt', 'spelt', 'farro', 'semolina',
+    'couscous', 'bulgur', 'seitan', 'breadcrumbs', 'panko', 'orzo',
+    'soy sauce', 'beer', 'pretzel'
+  ];
+  function checkGlutenSafety(text, frameworks) {
+    const isCoeliac = (frameworks || []).some(f => /coeliac/i.test(f));
+    if (!isCoeliac) return [];
+
+    const issues = [];
+    for (const line of text.split('\n')) {
+      if (!/^\s*-\s/.test(line)) continue; // only ingredient bullet lines
+      const lower = line.toLowerCase();
+      if (lower.includes('gluten-free') || lower.includes('gluten free')) continue;
+      if (lower.includes('tamari')) continue; // gluten-free soy sauce alternative
+
+      for (const flag of GLUTEN_FLAGS) {
+        if (lower.includes(flag)) {
+          issues.push(line.trim());
+          break;
+        }
+      }
+    }
+    return issues;
+  }
+
   try {
     let response = await callClaude(PRIMARY_MODEL);
 
@@ -283,25 +315,42 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
       });
     }
 
-    // Accuracy check: confirm the plan's own day totals are actually close
-    // to what was asked for. A calorie deficit that arrives as a surplus
-    // defeats the point, so retry once before shipping it as-is.
-    let issues = checkPlanAccuracy(text, calories, protein);
-    if (issues.length > 0) {
-      console.error('Meal plan accuracy check flagged issues, retrying once:', issues);
+    // Two safety checks before this ships to anyone: the plan's own day
+    // totals should land close to what was actually asked for, and if
+    // Coeliac was selected, the ingredients shouldn't contain an obvious
+    // gluten source. If either fails, retry the whole generation once.
+    let accuracyIssues = checkPlanAccuracy(text, calories, protein);
+    let glutenIssues = checkGlutenSafety(text, frameworks);
+
+    if (accuracyIssues.length > 0 || glutenIssues.length > 0) {
+      console.error('Meal plan check flagged issues, retrying once:', { accuracyIssues, glutenIssues });
       const retryResponse = await callClaude(PRIMARY_MODEL);
       if (retryResponse.ok) {
         const retryText = await readStreamedText(retryResponse);
-        const retryIssues = retryText ? checkPlanAccuracy(retryText, calories, protein) : issues;
-        if (retryText && retryIssues.length < issues.length) {
-          text = retryText;
-          issues = retryIssues;
+        if (retryText) {
+          const retryAccuracyIssues = checkPlanAccuracy(retryText, calories, protein);
+          const retryGlutenIssues = checkGlutenSafety(retryText, frameworks);
+          // Only switch to the retry if it's a genuine improvement on both fronts.
+          if (retryAccuracyIssues.length <= accuracyIssues.length && retryGlutenIssues.length <= glutenIssues.length) {
+            text = retryText;
+            accuracyIssues = retryAccuracyIssues;
+            glutenIssues = retryGlutenIssues;
+          }
         }
       }
     }
 
-    if (issues.length > 0) {
-      console.error('Meal plan accuracy check still flagged issues after retry:', issues);
+    if (glutenIssues.length > 0) {
+      // A missed allergen is a real safety issue, not just an inconvenience —
+      // ship it with an unmissable warning naming exactly what to double-check,
+      // rather than either hiding it in a footnote or blocking the plan outright
+      // on a keyword filter that isn't a certified medical check.
+      console.error('Meal plan gluten check still flagged issues after retry:', glutenIssues);
+      text = `> ⚠️ **Please check before following this plan:** our gluten filter flagged the following ingredient line(s) as possibly not gluten-free: ${glutenIssues.map(i => `"${i}"`).join(', ')}. Please double-check these yourself, or swap them for a certified gluten-free alternative, before following this plan.\n\n---\n\n${text}`;
+    }
+
+    if (accuracyIssues.length > 0) {
+      console.error('Meal plan accuracy check still flagged issues after retry:', accuracyIssues);
       text += `\n\n---\n*A note on accuracy: a couple of days in this plan came out slightly off your exact target. The recipes are still a great guide, but treat the numbers as close estimates rather than exact.*`;
     }
 
