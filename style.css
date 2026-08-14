@@ -397,6 +397,11 @@ section { padding: 112px 48px; }
   max-width: 420px;
   opacity: 0.85;
 }
+.about-visual iframe {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 12px;
+}
 
 /* ======================================
    FOOTER
@@ -592,6 +597,7 @@ footer {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
 }
 .instructor-photo-wrap img {
   width: 100%;
@@ -602,7 +608,24 @@ footer {
   transition: filter 0.4s ease;
   display: block;
 }
-.instructor-photo-wrap img:hover { filter: grayscale(0%); }
+.instructor-photo-wrap:hover img { filter: grayscale(0%); }
+.instructor-bio {
+  position: absolute;
+  inset: 0;
+  background: rgba(28,52,97,0.88);
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 18px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.instructor-photo-wrap:hover .instructor-bio { opacity: 1; }
 .instructor-name {
   font-family: var(--font-serif);
   font-size: 22px;
