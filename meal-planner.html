@@ -449,7 +449,7 @@
     <!-- PAYWALL (shown instead of the form when not entitled) -->
     <div class="planner-wrap" id="plannerPaywall" style="display:none;">
       <div class="form-card" style="text-align:center;">
-        <p class="step-label">Nutrition Guide</p>
+        <p class="step-label">The Menu</p>
         <p class="step-title" style="font-size:32px;">Unlock your meal planner</p>
         <p class="step-sub" style="max-width:480px;margin:0 auto 28px;">A new personalised 7-day plan every week (up to 4 a month), tailored to your targets and dietary needs, with full recipes included. Included free with Sofa to Studio and All Access — or add it on its own.</p>
         <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--navy);margin-bottom:4px;">£9.99<span style="font-size:16px;font-weight:400;color:#777;">/month</span></div>
@@ -704,15 +704,15 @@
   const currentProgramme = urlParams.get('programme') || 'sofa-to-studio';
 
   if (currentProgramme === 'back-to-it') {
-    document.getElementById('plannerKicker').textContent = 'Back to It — Nutrition Guide';
+    document.getElementById('plannerKicker').textContent = 'Back to It — The Menu';
     document.getElementById('activeDaySub').textContent = 'Includes a studio class';
   } else if (currentProgramme === 'nutrition-guide') {
-    document.getElementById('plannerKicker').textContent = 'Nutrition Guide';
+    document.getElementById('plannerKicker').textContent = 'The Menu';
     document.getElementById('activeDaySub').textContent = 'Includes a workout';
   }
 
   // ── ENTITLEMENT CHECK ─────────────────────────────────────────────────────
-  // Nutrition Guide is its own paid add-on (free bundled with Sofa to Studio
+  // The Menu is its own paid add-on (free bundled with Sofa to Studio
   // and All Access). Show the paywall unless the signed-in user has an
   // active 'nutrition-guide' purchase row.
   let sb;

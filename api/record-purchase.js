@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     'price_1TKgVa3qlwzbgcp90PqK6EvG': { id: 'home-studio',    name: 'The Home Studio',     days: 30,  type: 'subscription' },
     'price_1TKgVa3qlwzbgcp9Bjt9s6yg': { id: 'home-studio',    name: 'The Home Studio',     days: 365, type: 'subscription' },
     'price_1TKga13qlwzbgcp91FW2aAUs': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
-    'price_1U3wIK3qlwzbgcp9oC7W1lps': { id: 'nutrition-guide', name: 'Nutrition Guide',  days: 30,  type: 'subscription' },
+    'price_1U3wIK3qlwzbgcp9oC7W1lps': { id: 'nutrition-guide', name: 'The Menu',  days: 30,  type: 'subscription' },
   };
 
   // All Access unlocks all of these.
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     { id: 'prehab',          name: 'YourSpace Pre-Hab' },
     { id: 'sofa-to-studio',  name: 'Sofa to Studio' },
     { id: 'home-studio',     name: 'The Home Studio' },
-    { id: 'nutrition-guide', name: 'Nutrition Guide' },
+    { id: 'nutrition-guide', name: 'The Menu' },
   ];
 
   try {
@@ -129,7 +129,7 @@ export default async function handler(req, res) {
       rows.push({
         user_id:          resolvedUserId,
         programme_id:     'nutrition-guide',
-        programme_name:   'Nutrition Guide',
+        programme_name:   'The Menu',
         amount_paid:      0,
         currency:         session.currency,
         purchased_at:     purchasedAt,

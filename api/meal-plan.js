@@ -31,8 +31,8 @@ export default async function handler(req, res) {
       disclaimerContext: 'YourSpace Wellbeing Back to It Challenge',
     },
     'nutrition-guide': {
-      about: 'The user has subscribed to the standalone YourSpace Nutrition Guide — they are not necessarily on a specific fitness programme. Active sessions could be any kind of exercise (studio class, gym, home workout), burning approximately 300–400 kcal on average.',
-      disclaimerContext: 'YourSpace Wellbeing Nutrition Guide',
+      about: 'The user has subscribed to The Menu, YourSpace\'s standalone nutrition subscription — they are not necessarily on a specific fitness programme. Active sessions could be any kind of exercise (studio class, gym, home workout), burning approximately 300–400 kcal on average.',
+      disclaimerContext: 'YourSpace Wellbeing Menu subscription',
     },
   };
   const ctx = PROGRAMME_CONTEXT[programme] || PROGRAMME_CONTEXT['sofa-to-studio'];
