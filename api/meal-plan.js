@@ -221,6 +221,39 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
     return text;
   }
 
+  // Confirms the plan's own stated day totals are actually close to what
+  // was asked for — catches the model drifting off target rather than
+  // silently shipping a "1800 kcal" plan that's actually 2100.
+  function checkPlanAccuracy(text, targetCalories, targetProtein) {
+    const cal = parseInt(targetCalories, 10);
+    const pro = parseInt(targetProtein, 10);
+    const issues = [];
+
+    const dayBlocks = text.split(/(?=## Day \d)/);
+    for (const block of dayBlocks) {
+      const headerMatch = block.match(/## Day (\d+)[^\n]*\((Active|Rest) Day\)/i);
+      const totalMatch = block.match(/Day Total:\s*~?([\d,]+)\s*kcal\s*\|\s*~?([\d,]+)\s*g?\s*protein/i);
+      if (!headerMatch || !totalMatch) continue;
+
+      const dayNum = headerMatch[1];
+      const isActive = /active/i.test(headerMatch[2]);
+      const actualKcal = parseInt(totalMatch[1].replace(/,/g, ''), 10);
+      const actualProtein = parseInt(totalMatch[2].replace(/,/g, ''), 10);
+
+      const targetKcal = isActive ? cal + 275 : cal;
+      const kcalTolerance = Math.max(150, targetKcal * 0.12);
+
+      if (Math.abs(actualKcal - targetKcal) > kcalTolerance) {
+        issues.push(`Day ${dayNum}: ${actualKcal} kcal vs target ~${targetKcal} kcal`);
+      }
+      if (actualProtein < pro - 10) {
+        issues.push(`Day ${dayNum}: ${actualProtein}g protein vs target ${pro}g`);
+      }
+    }
+
+    return issues;
+  }
+
   try {
     let response = await callClaude(PRIMARY_MODEL);
 
@@ -240,7 +273,7 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
       });
     }
 
-    const text = await readStreamedText(response);
+    let text = await readStreamedText(response);
 
     if (!text) {
       console.error('No text content received from Anthropic stream');
@@ -248,6 +281,28 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
         error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.',
         detail: 'Empty response from stream'
       });
+    }
+
+    // Accuracy check: confirm the plan's own day totals are actually close
+    // to what was asked for. A calorie deficit that arrives as a surplus
+    // defeats the point, so retry once before shipping it as-is.
+    let issues = checkPlanAccuracy(text, calories, protein);
+    if (issues.length > 0) {
+      console.error('Meal plan accuracy check flagged issues, retrying once:', issues);
+      const retryResponse = await callClaude(PRIMARY_MODEL);
+      if (retryResponse.ok) {
+        const retryText = await readStreamedText(retryResponse);
+        const retryIssues = retryText ? checkPlanAccuracy(retryText, calories, protein) : issues;
+        if (retryText && retryIssues.length < issues.length) {
+          text = retryText;
+          issues = retryIssues;
+        }
+      }
+    }
+
+    if (issues.length > 0) {
+      console.error('Meal plan accuracy check still flagged issues after retry:', issues);
+      text += `\n\n---\n*A note on accuracy: a couple of days in this plan came out slightly off your exact target. The recipes are still a great guide, but treat the numbers as close estimates rather than exact.*`;
     }
 
     return res.status(200).json({ plan: text });
