@@ -338,6 +338,13 @@
     .week-card.complete .btn-nutrition { color: var(--white); }
     .btn-nutrition:hover { text-decoration: underline; }
 
+    .nutrition-tip {
+      font-size: 12px;
+      color: var(--grey);
+      max-width: 320px;
+    }
+    .week-card.complete .nutrition-tip { color: rgba(255,255,255,0.75); }
+
     .verify-note {
       font-size: 13px;
       color: var(--grey);
@@ -536,10 +543,10 @@
       let allComplete = true;
 
       card.innerHTML = [1, 2, 3, 4].map(week => {
-        const progress = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0, classes_detail: [] };
+        const progress = progressByWeek[week] || { classes_logged: 0, classes_detail: [] };
         const classesDetail = progress.classes_detail || [];
         const filledClasses = classesDetail.filter(e => e && e.type && e.date).length;
-        const isComplete = filledClasses >= 4 && progress.nutrition_days_logged >= 4;
+        const isComplete = filledClasses >= 4;
         const isLocked = week > currentWeekNumber;
         if (!isComplete) allComplete = false;
 
@@ -556,10 +563,8 @@
             <div class="section-label-sm">Classes (${filledClasses}/4) — which class, and when</div>
             ${renderClassRows(week, classesDetail, isLocked)}
 
-            <div class="section-label-sm">Nutrition days</div>
-            ${renderDots(week, 'nutrition_days_logged', progress.nutrition_days_logged, isLocked)}
-
             <div class="week-card-footer">
+              <p class="nutrition-tip">Maximise your challenge, plan your meals to support your active days.</p>
               <a class="btn-nutrition" href="meal-planner?programme=back-to-it">Get your nutrition guide →</a>
             </div>
           </div>`;
@@ -588,17 +593,8 @@
       return `<div class="class-entries">${rows}</div>`;
     }
 
-    function renderDots(week, field, value, disabled) {
-      let dots = '';
-      for (let i = 1; i <= 4; i++) {
-        dots += `<button class="dot${i <= value ? ' filled' : ''}" ${disabled ? 'disabled' : ''}
-          onclick="setValue(${week}, '${field}', ${i}, ${value})" aria-label="${i}"></button>`;
-      }
-      return `<div class="dots">${dots}</div>`;
-    }
-
     async function setClassDetail(week, index, field, value) {
-      const existing = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0, classes_detail: [] };
+      const existing = progressByWeek[week] || { classes_logged: 0, classes_detail: [] };
       const detail = [...(existing.classes_detail || [])];
       while (detail.length < 4) detail.push({ type: '', date: '' });
       detail[index] = { ...detail[index], [field]: value };
@@ -615,32 +611,9 @@
           week_number: week,
           classes_logged: filledCount,
           classes_detail: detail,
-          nutrition_days_logged: updated.nutrition_days_logged,
         }, { onConflict: 'user_id,week_number' });
 
       if (error) console.error('Failed to save class detail:', error);
-    }
-
-    async function setValue(week, field, clickedValue, currentValue) {
-      // Clicking the currently-filled top dot clears back to 0, otherwise sets to that dot
-      const newValue = (clickedValue === currentValue) ? clickedValue - 1 : clickedValue;
-
-      const existing = progressByWeek[week] || { classes_logged: 0, nutrition_days_logged: 0, classes_detail: [] };
-      const updated = { ...existing, week_number: week, user_id: currentUser.id, [field]: newValue };
-      progressByWeek[week] = updated;
-      render();
-
-      const { error } = await sb
-        .from('back_to_it_progress')
-        .upsert({
-          user_id: currentUser.id,
-          week_number: week,
-          classes_logged: updated.classes_logged,
-          classes_detail: updated.classes_detail || [],
-          nutrition_days_logged: updated.nutrition_days_logged,
-        }, { onConflict: 'user_id,week_number' });
-
-      if (error) console.error('Failed to save progress:', error);
     }
 
     document.getElementById('btnSignOut').addEventListener('click', async () => {
