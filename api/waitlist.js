@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, firstName } = req.body;
+  const { email, firstName, programme } = req.body;
 
   if (!email) {
     return res.status(400).json({ error: 'Email is required' });
@@ -17,7 +17,11 @@ export default async function handler(req, res) {
 
   const { error } = await sb
     .from('waitlist')
-    .insert({ email: email.toLowerCase().trim(), first_name: firstName || null });
+    .insert({
+      email: email.toLowerCase().trim(),
+      first_name: firstName || null,
+      programme: programme || null,
+    });
 
   if (error) {
     if (error.code === '23505') {

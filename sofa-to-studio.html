@@ -871,6 +871,7 @@
           body: JSON.stringify({
             email: document.getElementById('wlEmail').value,
             firstName: document.getElementById('wlFirstName').value,
+            programme: 'sofa-to-studio',
           }),
         });
         const data = await res.json();

@@ -709,6 +709,7 @@
           body: JSON.stringify({
             email: document.getElementById('wlEmail').value,
             firstName: document.getElementById('wlFirstName').value,
+            programme: 'prehab',
           }),
         });
         const data = await res.json();
