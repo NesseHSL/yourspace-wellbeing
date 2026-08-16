@@ -32,5 +32,31 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 
+  await notifyAdmin(
+    'New YourSpace waitlist signup',
+    `<p><strong>${email}</strong> just joined the waitlist${programme ? ` for <strong>${programme}</strong>` : ''}.</p>` +
+      (firstName ? `<p>Name: ${firstName}</p>` : '')
+  );
+
   return res.status(200).json({ message: 'success' });
+}
+
+async function notifyAdmin(subject, html) {
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'YourSpace <notifications@yourspacewellbeing.com>',
+        to: process.env.NOTIFY_EMAIL,
+        subject,
+        html,
+      }),
+    });
+  } catch (err) {
+    console.error('Notification email failed:', err);
+  }
 }

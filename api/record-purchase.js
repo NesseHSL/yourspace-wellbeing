@@ -103,6 +103,11 @@ export default async function handler(req, res) {
         throw new Error(`Supabase All Access insert failed: ${errText}`);
       }
 
+      await notifyAdmin(
+        'New YourSpace purchase — All Access',
+        `<p>New <strong>All Access</strong> purchase: <strong>£${totalPaid.toFixed(2)} ${session.currency?.toUpperCase()}</strong></p>`
+      );
+
       return res.status(200).json({ success: true, programme: 'All Access' });
     }
 
@@ -151,10 +156,35 @@ export default async function handler(req, res) {
       throw new Error('Failed to record purchase');
     }
 
+    await notifyAdmin(
+      `New YourSpace purchase — ${programme.name}`,
+      `<p>New <strong>${programme.name}</strong> purchase: <strong>£${(session.amount_total / 100).toFixed(2)} ${session.currency?.toUpperCase()}</strong></p>`
+    );
+
     return res.status(200).json({ success: true, programme: programme.name });
 
   } catch (error) {
     console.error('Record purchase error:', error);
     return res.status(500).json({ error: error.message, detail: error.stack });
+  }
+}
+
+async function notifyAdmin(subject, html) {
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'YourSpace <notifications@yourspacewellbeing.com>',
+        to: process.env.NOTIFY_EMAIL,
+        subject,
+        html,
+      }),
+    });
+  } catch (err) {
+    console.error('Notification email failed:', err);
   }
 }
