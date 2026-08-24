@@ -1,0 +1,14 @@
+{
+  "name": "YourSpace Wellbeing",
+  "short_name": "YourSpace",
+  "description": "Barre, Pilates and wellbeing programmes from HerSpace London.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#1C3461",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

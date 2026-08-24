@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YourSpace Wellbeing — by HerSpace London</title>
-  <link rel="icon" type="image/png" href="assets/ys-monogram.png">
+  <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#1C3461">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="YourSpace">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -321,6 +327,21 @@
         const target = document.querySelector(a.getAttribute('href'));
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
       });
+    });
+
+    // Instructor bios: tap-to-toggle for touch devices (CSS :hover alone doesn't work reliably on mobile)
+    document.querySelectorAll('.instructor-photo-wrap').forEach(wrap => {
+      wrap.addEventListener('click', e => {
+        const wasActive = wrap.classList.contains('is-active');
+        document.querySelectorAll('.instructor-photo-wrap.is-active').forEach(el => el.classList.remove('is-active'));
+        if (!wasActive) {
+          wrap.classList.add('is-active');
+          e.stopPropagation();
+        }
+      });
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.instructor-photo-wrap.is-active').forEach(el => el.classList.remove('is-active'));
     });
   </script>
 
