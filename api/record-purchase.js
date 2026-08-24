@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     'price_1TKgUA3qlwzbgcp9ri4kF42a': { id: 'sofa-to-studio', name: 'Sofa to Studio',      days: 90,  type: 'one-off' },
     'price_1TKgVa3qlwzbgcp90PqK6EvG': { id: 'home-studio',    name: 'The Home Studio',     days: 30,  type: 'subscription' },
     'price_1TKgVa3qlwzbgcp9Bjt9s6yg': { id: 'home-studio',    name: 'The Home Studio',     days: 365, type: 'subscription' },
-    'price_1TKga13qlwzbgcp91FW2aAUs': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
+    'price_1U7zGl3qlwzbgcp9sNjlcIYu': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
     'price_1U3wIK3qlwzbgcp9oC7W1lps': { id: 'nutrition-guide', name: 'The Menu',  days: 30,  type: 'subscription' },
   };
 
