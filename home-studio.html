@@ -176,12 +176,93 @@
       border: 0;
     }
 
-    /* ── WAITLIST ───────────────────────────────── */
-    #waitlist { background: var(--navy); padding: 100px 48px; }
+    /* ── PRICING ───────────────────────────────── */
+    #pricing { background: var(--navy); padding: 100px 48px; }
+    #pricing .section-label { color: rgba(255,255,255,0.4); }
+    #pricing h2 { color: var(--white); }
+    #pricing .section-sub { color: rgba(255,255,255,0.55); max-width: 540px; margin-left: auto; margin-right: auto; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 760px;
+      margin: 56px auto 0;
+    }
+    @media (max-width: 700px) {
+      .pricing-grid { grid-template-columns: 1fr; max-width: 420px; }
+    }
+    .pricing-card {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 420px;
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      text-align: left;
+    }
+    .pricing-label {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+    .pricing-amount {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+    }
+    .pricing-period {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      margin-top: 6px;
+    }
+    .pricing-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .pricing-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+    .pricing-features li {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+    .pricing-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: 12px;
+    }
+    .pricing-note {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 300;
+      text-align: center;
+      margin-top: 32px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
     @media (max-width: 900px) {
       .prog-hero { padding: 88px 24px 72px; }
-      #honest, #inside, #classes, #waitlist { padding: 72px 24px; }
+      #honest, #inside, #classes, #pricing { padding: 72px 24px; }
       .honest-standout { padding: 20px 24px; }
     }
 
@@ -218,7 +299,7 @@
       <h1>Studio quality.<br>Anywhere.</h1>
       <p class="prog-hero-sub">A growing collection of classes you can do at home, with minimal kit — led by the HerSpace London team.</p>
       <div class="prog-hero-btns">
-        <a href="#waitlist" class="btn-primary">Register your interest</a>
+        <a href="#pricing" class="btn-primary">Get The Home Studio</a>
         <a href="#classes" class="btn-ghost-light">See what's inside</a>
       </div>
     </div>
@@ -294,19 +375,43 @@
     </div>
   </section>
 
-  <!-- WAITLIST -->
-  <section id="waitlist" style="background:var(--navy);padding:100px 48px;">
-    <div style="max-width:580px;margin:0 auto;text-align:center;">
-      <p style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Coming Soon</p>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,52px);font-weight:300;color:#fff;line-height:1.1;margin-bottom:20px;">Be the first in.</h2>
-      <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:40px;">Register your interest and we'll let you know the moment The Home Studio is live — including your <strong style="color:var(--teal);">first month free</strong> as a founding member.</p>
-      <form id="waitlistForm" style="display:flex;flex-direction:column;gap:12px;max-width:420px;margin:0 auto;">
-        <input type="text" id="wlFirstName" placeholder="Your first name" style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
-        <input type="email" id="wlEmail" placeholder="Your email address" required style="padding:14px 20px;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;background:rgba(255,255,255,0.1);color:#fff;outline:none;border:1.5px solid rgba(255,255,255,0.15);">
-        <button type="submit" id="wlBtn" style="padding:15px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background 0.2s;">Register my interest</button>
-      </form>
-      <p id="wlMessage" style="margin-top:16px;font-size:14px;color:rgba(255,255,255,0.7);display:none;line-height:1.7;"></p>
-      <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.3);">No spam, ever. Just the good stuff.</p>
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="section-inner" style="text-align:center;">
+      <p class="section-label">Join The Home Studio</p>
+      <h2>Choose your plan.</h2>
+      <p class="section-sub">Cancel any time. Free for HerSpace London Unlimited (H.E.R.) Members — ask us for your access code.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <span class="pricing-label">Monthly</span>
+          <div>
+            <span class="pricing-amount">£17.99<span style="font-size:15px;font-weight:300;color:rgba(255,255,255,0.5);">/mo</span></span>
+            <p class="pricing-period">7-day free trial, then renews monthly</p>
+          </div>
+          <hr class="pricing-divider">
+          <ul class="pricing-features">
+            <li>Full class library</li>
+            <li>New content added regularly</li>
+            <li>Cancel any time</li>
+          </ul>
+          <a href="#" class="btn-primary" style="text-align:center;" onclick="handleCheckout(event,'price_1TKgVa3qlwzbgcp90PqK6EvG','subscription')">Start Free Trial</a>
+        </div>
+        <div class="pricing-card">
+          <span class="pricing-label">Annual</span>
+          <div>
+            <span class="pricing-amount">£160<span style="font-size:15px;font-weight:300;color:rgba(255,255,255,0.5);">/yr</span></span>
+            <p class="pricing-period">Save £55.88 vs monthly, renews annually</p>
+          </div>
+          <hr class="pricing-divider">
+          <ul class="pricing-features">
+            <li>Full class library</li>
+            <li>New content added regularly</li>
+            <li>Best value</li>
+          </ul>
+          <a href="#" class="btn-primary" style="text-align:center;" onclick="handleCheckout(event,'price_1TKgVa3qlwzbgcp9Bjt9s6yg','subscription')">Get Annual</a>
+        </div>
+      </div>
+      <p class="pricing-note">Already an Unlimited Member? Don't pay twice — message us for your free access code instead.</p>
     </div>
   </section>
 
@@ -346,46 +451,72 @@
       return _supabase;
     }
 
-    // Auth nav
-    (async () => {
-      const sb = await getSupabase();
-      const { data: { user } } = await sb.auth.getUser();
-      if (user) {
-        const btn = document.getElementById('authNavBtn');
-        btn.textContent = 'My Account';
-        btn.href = 'dashboard.html';
-      }
-    })();
-
-    // Waitlist form
-    document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
+    async function handleCheckout(e, priceId, mode) {
       e.preventDefault();
-      const btn = document.getElementById('wlBtn');
-      const msg = document.getElementById('wlMessage');
-      btn.disabled = true;
-      btn.textContent = 'Submitting...';
-      const res = await fetch('/api/waitlist', {
+      const sb = await getSupabase();
+      const { data: { session } } = await sb.auth.getSession();
+
+      if (!session) {
+        window.location.href = `/login.html?redirect=${encodeURIComponent(window.location.pathname)}&price=${priceId}&mode=${mode}`;
+        return;
+      }
+
+      const btn = e.target;
+      const original = btn.textContent;
+      btn.textContent = 'Loading...';
+      btn.style.pointerEvents = 'none';
+
+      const res = await fetch('/api/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: document.getElementById('wlEmail').value,
-          firstName: document.getElementById('wlFirstName').value,
-          programme: 'home-studio'
-        }),
+          priceId, mode,
+          userId: session.user.id,
+          userEmail: session.user.email,
+          successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: window.location.href
+        })
       });
+
       const data = await res.json();
-      msg.style.display = 'block';
-      if (res.ok) {
-        msg.innerHTML = "You're on the list! 🎉<br><br>One more thing — please add <strong>hello@yourspacewellbeing.com</strong> to your safe senders list so our launch email doesn't end up in your spam folder.";
-        msg.style.color = 'rgba(255,255,255,0.75)';
-        document.getElementById('waitlistForm').style.display = 'none';
+      if (data.url) {
+        window.location.href = data.url;
       } else {
-        msg.textContent = data.error || 'Something went wrong. Please try again.';
-        msg.style.color = '#ff6b6b';
-        btn.disabled = false;
-        btn.textContent = 'Register my interest';
+        btn.textContent = original;
+        btn.style.pointerEvents = 'auto';
+        alert('Something went wrong. Please try again.');
       }
-    });
+    }
+
+    // Auth nav + resume a checkout interrupted by a login redirect
+    (async () => {
+      const sb = await getSupabase();
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) {
+        const btn = document.getElementById('authNavBtn');
+        btn.textContent = 'My Account';
+        btn.href = 'dashboard.html';
+
+        const params = new URLSearchParams(window.location.search);
+        const resumePrice = params.get('price');
+        const resumeMode = params.get('mode');
+        if (resumePrice && resumeMode) {
+          const res = await fetch('/api/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              priceId: resumePrice,
+              mode: resumeMode,
+              userId: session.user.id,
+              userEmail: session.user.email,
+              successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+              cancelUrl: window.location.origin + window.location.pathname
+            })
+          }).then(r => r.json());
+          if (res.url) window.location.href = res.url;
+        }
+      }
+    })();
   </script>
 
 </body>

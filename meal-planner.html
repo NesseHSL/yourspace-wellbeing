@@ -727,6 +727,29 @@
       return;
     }
 
+    // Resume a checkout that was interrupted by a login redirect
+    const resumeParams = new URLSearchParams(window.location.search);
+    const resumePrice = resumeParams.get('price');
+    const resumeMode = resumeParams.get('mode');
+    if (resumePrice && resumeMode) {
+      const resumeRes = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId: resumePrice,
+          mode: resumeMode,
+          userId: session.user.id,
+          userEmail: session.user.email,
+          successUrl: `${window.location.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: window.location.origin + window.location.pathname
+        })
+      }).then(r => r.json());
+      if (resumeRes.url) {
+        window.location.href = resumeRes.url;
+        return;
+      }
+    }
+
     const { data: purchases } = await sb
       .from('purchases')
       .select('is_active, expires_at')

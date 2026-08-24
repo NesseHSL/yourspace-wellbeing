@@ -353,6 +353,21 @@
   <script>
     let sb;
 
+    // If handleCheckout sent someone here to log in first, resume them on
+    // the page they came from (with price/mode intact) instead of always
+    // dropping them on the homepage.
+    function getPostLoginUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get('redirect');
+      if (!redirect) return 'index.html';
+      const dest = new URL(redirect, window.location.origin);
+      const price = params.get('price');
+      const mode = params.get('mode');
+      if (price) dest.searchParams.set('price', price);
+      if (mode) dest.searchParams.set('mode', mode);
+      return dest.pathname + dest.search;
+    }
+
     async function init() {
       const res = await fetch('/api/ys-config');
       const config = await res.json();
@@ -360,7 +375,7 @@
 
       // If already logged in, go straight to dashboard
       const { data: { session } } = await sb.auth.getSession();
-      if (session) window.location.href = 'index.html';
+      if (session) window.location.href = getPostLoginUrl();
     }
 
     init();
@@ -425,7 +440,7 @@
         );
         setLoading('signinBtn', false, 'Sign In');
       } else {
-        window.location.href = 'index.html';
+        window.location.href = getPostLoginUrl();
       }
     }
 
@@ -458,7 +473,7 @@
         // If email confirmation is off, session exists immediately
         const { data: { session } } = await sb.auth.getSession();
         if (session) {
-          window.location.href = 'index.html';
+          window.location.href = getPostLoginUrl();
         } else {
           showMessage(
             'Almost there! Check your email and click the confirmation link to activate your account.',
