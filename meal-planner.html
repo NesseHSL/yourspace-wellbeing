@@ -914,8 +914,19 @@
         throw new Error(data.error || 'Something went wrong.');
       }
 
-      // Render the plan
-      document.getElementById('planOutput').innerHTML = marked.parse(data.plan);
+      // Render the plan. Markdown rendering has hit a rare Safari-specific
+      // parsing error on some generated content in the wild — if that
+      // happens, fall back to showing the plan as plain text rather than
+      // losing it behind a generic error after it's already been generated.
+      let rendered;
+      try {
+        rendered = marked.parse(data.plan);
+      } catch (renderErr) {
+        console.error('Markdown render failed, falling back to plain text:', renderErr);
+        const escaped = data.plan.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        rendered = `<pre style="white-space:pre-wrap;font-family:inherit;">${escaped}</pre>`;
+      }
+      document.getElementById('planOutput').innerHTML = rendered;
       document.getElementById('results-section').classList.add('visible');
 
       // Scroll to results
