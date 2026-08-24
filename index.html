@@ -322,6 +322,21 @@
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
       });
     });
+
+    // Instructor bios: tap-to-toggle for touch devices (CSS :hover alone doesn't work reliably on mobile)
+    document.querySelectorAll('.instructor-photo-wrap').forEach(wrap => {
+      wrap.addEventListener('click', e => {
+        const wasActive = wrap.classList.contains('is-active');
+        document.querySelectorAll('.instructor-photo-wrap.is-active').forEach(el => el.classList.remove('is-active'));
+        if (!wasActive) {
+          wrap.classList.add('is-active');
+          e.stopPropagation();
+        }
+      });
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.instructor-photo-wrap.is-active').forEach(el => el.classList.remove('is-active'));
+    });
   </script>
 
 
