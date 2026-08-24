@@ -190,84 +190,15 @@
       color: var(--grey);
     }
 
-    /* ── THE 4 WEEKS ───────────────────────────── */
-    #schedule {
+    /* ── PRICING ───────────────────────────────── */
+    #pricing {
       background: var(--navy);
       padding: 100px 48px;
     }
-    #schedule .section-label { color: rgba(255,255,255,0.4); }
-    #schedule h2 { color: var(--white); }
-    #schedule .section-sub { color: rgba(255,255,255,0.55); }
-
-    .schedule-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      margin-top: 56px;
-    }
-    .schedule-week {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px;
-      padding: 28px 24px;
-    }
-    .schedule-week-label {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--teal);
-      margin-bottom: 16px;
-    }
-    .schedule-week h4 {
-      font-family: var(--font-serif);
-      font-size: 22px;
-      font-weight: 300;
-      color: var(--white);
-      margin-bottom: 12px;
-    }
-    .schedule-sessions {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .schedule-sessions li {
-      font-size: 13px;
-      color: rgba(255,255,255,0.55);
-      font-weight: 300;
-      padding-left: 16px;
-      position: relative;
-    }
-    .schedule-sessions li::before {
-      content: '—';
-      position: absolute;
-      left: 0;
-      color: var(--teal);
-      opacity: 0.6;
-    }
-    .schedule-note {
-      margin-top: 40px;
-      padding: 24px 32px;
-      background: rgba(255,255,255,0.05);
-      border-left: 3px solid var(--teal);
-      border-radius: 0 8px 8px 0;
-    }
-    .schedule-note p {
-      font-size: 14px;
-      color: rgba(255,255,255,0.55);
-      font-weight: 300;
-      line-height: 1.7;
-    }
-    .schedule-note strong {
-      color: rgba(255,255,255,0.8);
-      font-weight: 400;
-    }
-
-    /* ── PRICING ───────────────────────────────── */
-    #pricing {
-      background: var(--white);
-      padding: 100px 48px;
-    }
+    #pricing .section-label { color: rgba(255,255,255,0.4); }
+    #pricing h2 { color: var(--white); }
+    #pricing .section-sub { color: rgba(255,255,255,0.55); }
+    #pricing .pricing-note { color: rgba(255,255,255,0.5); }
     .pricing-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -287,8 +218,8 @@
       gap: 20px;
       max-width: 420px;
       width: 100%;
-      background: var(--navy);
-      border-color: var(--navy);
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.1);
     }
     .pricing-label {
       font-size: 10px;
@@ -356,14 +287,12 @@
     /* ── RESPONSIVE ────────────────────────────── */
     @media (max-width: 900px) {
       .prog-hero { padding: 80px 24px 72px; }
-      #how, #outcomes, #prizes, #schedule, #pricing { padding: 72px 24px; }
+      #how, #outcomes, #prizes, #pricing { padding: 72px 24px; }
       .video-card { grid-template-columns: 48px 1fr; gap: 20px; }
       .video-meta { display: none; }
-      .schedule-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 600px) {
       .who-grid { grid-template-columns: 1fr 1fr; }
-      .schedule-grid { grid-template-columns: 1fr; }
       .video-card { grid-template-columns: 1fr; }
       .video-num { display: none; }
     }
@@ -513,58 +442,12 @@
       </div>
     </section>
 
-    <!-- THE 4 WEEKS -->
-    <section id="schedule">
-      <div class="section-inner">
-        <p class="section-label">The Challenge</p>
-        <h2>Four weeks. One simple rhythm.</h2>
-        <p class="section-sub">Every week looks the same — hit the target, and the row turns turquoise.</p>
-        <div class="schedule-grid">
-          <div class="schedule-week">
-            <div class="schedule-week-label">Week 1</div>
-            <h4>Get Going</h4>
-            <ul class="schedule-sessions">
-              <li>4 classes booked & attended</li>
-              <li>4 nutrition days followed</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Week 2</div>
-            <h4>Find Your Rhythm</h4>
-            <ul class="schedule-sessions">
-              <li>4 classes booked & attended</li>
-              <li>4 nutrition days followed</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Week 3</div>
-            <h4>Build Momentum</h4>
-            <ul class="schedule-sessions">
-              <li>4 classes booked & attended</li>
-              <li>4 nutrition days followed</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Week 4</div>
-            <h4>All Turquoise</h4>
-            <ul class="schedule-sessions">
-              <li>4 classes booked & attended</li>
-              <li>4 nutrition days followed</li>
-            </ul>
-          </div>
-        </div>
-        <div class="schedule-note">
-          <p><strong>Rolling start, remember.</strong> There's no fixed start date — your 4 weeks begin the moment you join, so jump in whenever suits you.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- PRICING -->
     <section id="pricing">
       <div class="section-inner">
         <p class="section-label">Join the challenge</p>
-        <h2>Free to join.<br>Nutrition guide optional.</h2>
-        <p class="section-sub">Your class pack is booked separately with us as usual. The tracker itself is free — the nutrition guide is a small optional add-on, already included if you have Sofa to Studio or All Access.</p>
+        <h2>Add The Menu</h2>
+        <p class="section-sub">Your class pack is booked separately with us as usual. The tracker itself is free — The Menu — your in-pocket nutrition guide — is an optional add-on.</p>
         <div class="pricing-grid">
           <div class="pricing-card">
             <span class="pricing-label">Back to It Challenge</span>
