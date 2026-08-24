@@ -17,8 +17,14 @@ export default async function handler(req, res) {
     'price_1TKgT63qlwzbgcp9K2PRVMac': 'CITE THE APP',
   };
 
+  // Home Studio monthly gets a 7-day free trial
+  const TRIAL_PRICE_IDS = new Set([
+    'price_1TKgVa3qlwzbgcp90PqK6EvG',
+  ]);
+
   try {
     const descriptor = DESCRIPTORS[priceId] || 'HERSPACE LONDON';
+    const hasTrial = TRIAL_PRICE_IDS.has(priceId);
 
     const params = new URLSearchParams({
       'line_items[0][price]': priceId,
@@ -29,12 +35,17 @@ export default async function handler(req, res) {
       'metadata[user_id]': userId || '',
       'metadata[price_id]': priceId,
       'allow_promotion_codes': 'true',
-      'payment_method_collection': 'if_required',
+      // Trials start at £0 due today, so force card collection now —
+      // otherwise Stripe may skip it and have nothing to bill on day 8.
+      'payment_method_collection': hasTrial ? 'always' : 'if_required',
     });
 
     // statement_descriptor param differs by payment mode
     if (mode === 'subscription') {
       params.append('subscription_data[description]', descriptor);
+      if (hasTrial) {
+        params.append('subscription_data[trial_period_days]', '7');
+      }
     } else {
       params.append('payment_intent_data[statement_descriptor]', descriptor);
     }
