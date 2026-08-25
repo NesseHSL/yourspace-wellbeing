@@ -329,7 +329,10 @@
       });
     });
 
-    // Instructor bios: tap-to-toggle for touch devices (CSS :hover alone doesn't work reliably on mobile)
+    // MOBILE-CRITICAL: tap-to-toggle for instructor bios, since CSS :hover
+    // alone doesn't fire reliably on touch devices. Pairs with the
+    // .is-active rules and mobile font-size overrides in style.css — if
+    // this breaks, bios will be inaccessible on phones/tablets again.
     document.querySelectorAll('.instructor-photo-wrap').forEach(wrap => {
       wrap.addEventListener('click', e => {
         const wasActive = wrap.classList.contains('is-active');

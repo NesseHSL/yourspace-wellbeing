@@ -19,6 +19,9 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* text-size-adjust:100% is mobile-critical — without it, Android Chrome
+   auto-inflates small text (like the instructor bio below) past its
+   specified size, blowing it out of its frame. Do not remove. */
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body { font-family: var(--font-sans); color: var(--navy); background: var(--white); -webkit-font-smoothing: antialiased; }
 img { display: block; max-width: 100%; }
@@ -608,6 +611,9 @@ footer {
   transition: filter 0.4s ease;
   display: block;
 }
+/* .is-active is toggled by the tap-to-toggle handler in index.html —
+   CSS :hover alone doesn't fire reliably on touch devices, so mobile
+   depends on both this class and that JS. Keep them in sync. */
 .instructor-photo-wrap:hover img,
 .instructor-photo-wrap.is-active img { filter: grayscale(0%); }
 .instructor-bio {
@@ -693,6 +699,9 @@ footer {
   .footer-nav { flex-wrap: wrap; gap: 20px; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
   .instructors-row { gap: 28px; flex-wrap: wrap; justify-content: center; }
+  /* Mobile-critical: 140px circle + 10px bio text is the tested fix for
+     the bio text overflowing its frame on small screens. Don't shrink
+     the circle or grow the font here without retesting on a real phone. */
   .instructor-photo-wrap { width: 140px; height: 140px; }
   .instructor-bio { font-size: 10px; line-height: 1.4; padding: 12px; }
 }
