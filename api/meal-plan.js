@@ -358,7 +358,7 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
     // Best-effort — a save failure shouldn't cost the user the plan they
     // just waited 60-90 seconds for.
     if (userId) {
-      await saveMealPlan(userId, programme, text, calories, protein);
+      await saveMealPlan(userId, text, calories, protein);
     }
 
     return res.status(200).json({ plan: text });
@@ -372,8 +372,12 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
   }
 }
 
-async function saveMealPlan(userId, programme, planContent, calories, protein) {
+async function saveMealPlan(userId, planContent, calories, protein) {
   try {
+    // Always tagged as The Menu's content — the meal planner is shared
+    // across programmes (Sofa to Studio, Back to It, standalone), but a
+    // generated plan is The Menu's product regardless of which
+    // subscription unlocked access to generate it.
     const res = await fetch(`${process.env.SUPABASE_URL}/rest/v1/meal_plans`, {
       method: 'POST',
       headers: {
@@ -384,7 +388,7 @@ async function saveMealPlan(userId, programme, planContent, calories, protein) {
       },
       body: JSON.stringify([{
         user_id:      userId,
-        programme:    programme || 'sofa-to-studio',
+        programme:    'nutrition-guide',
         plan_content: planContent,
         calories:     parseInt(calories, 10) || null,
         protein:      parseInt(protein, 10) || null,
