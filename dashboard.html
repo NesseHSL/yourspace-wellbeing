@@ -335,6 +335,46 @@
       border-color: var(--teal);
     }
 
+    /* MEAL PLAN MODAL */
+    .plan-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(28,52,97,0.55);
+      z-index: 200;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .plan-modal-backdrop.visible { display: block; }
+    .plan-modal {
+      background: var(--white);
+      border-radius: 14px;
+      max-width: 760px;
+      margin: 24px auto;
+      padding: 40px;
+      position: relative;
+    }
+    .plan-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      border: none;
+      background: var(--off-white);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 16px;
+      color: var(--navy);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .plan-modal-close:hover { background: #EFEFEF; }
+    .plan-modal-body { font-size: 14px; line-height: 1.7; color: var(--navy); }
+    .plan-modal-body h1, .plan-modal-body h2 { font-family: 'Cormorant Garamond', serif; margin: 24px 0 10px; }
+    .plan-modal-body h3 { margin: 20px 0 8px; }
+    .plan-modal-body ul, .plan-modal-body ol { padding-left: 20px; margin-bottom: 10px; }
+    .plan-modal-body hr { border: none; border-top: 1px solid #EFEFEF; margin: 20px 0; }
+
     /* LOADING STATE */
     .loading {
       text-align: center;
@@ -394,9 +434,28 @@
       </div>
     </div>
 
+    <!-- THE MENU: SAVED MEAL PLANS -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Your Meal Plans</h2>
+      </div>
+      <div id="mealPlans">
+        <div class="loading">Loading your meal plans...</div>
+      </div>
+    </div>
+
   </main>
 
+  <!-- MEAL PLAN VIEWER -->
+  <div class="plan-modal-backdrop" id="planModalBackdrop" onclick="if (event.target === this) closeMealPlanModal();">
+    <div class="plan-modal">
+      <button class="plan-modal-close" onclick="closeMealPlanModal()">✕</button>
+      <div class="plan-modal-body" id="planModalBody"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     let sb;
 
@@ -453,6 +512,19 @@
 
       renderActiveProgrammes(purchases || []);
       renderPurchaseHistory(purchases || []);
+
+      // The Menu's saved plans — kept regardless of current subscription
+      // status, so past plans stay reachable even after a lapse.
+      const { data: mealPlans, error: mealPlansError } = await sb
+        .from('meal_plans')
+        .select('id, plan_content, calories, protein, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (mealPlansError) {
+        console.error(mealPlansError);
+      }
+      renderMealPlans(mealPlans || []);
     }
 
     function isActive(purchase) {
@@ -571,6 +643,66 @@
               </tr>`).join('')}
           </tbody>
         </table>`;
+    }
+
+    function renderMealPlans(plans) {
+      const container = document.getElementById('mealPlans');
+
+      if (plans.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🍽️</div>
+            <h3 class="empty-title">No meal plans yet</h3>
+            <p class="empty-sub">Plans you generate with The Menu will be saved here, so you can always come back to them.</p>
+            <a href="meal-planner.html?programme=nutrition-guide" class="btn-browse">Open The Menu</a>
+          </div>`;
+        return;
+      }
+
+      // Store plan content on window so the modal can look it up by id
+      // without re-fetching or re-escaping it into the DOM.
+      window._mealPlansById = {};
+      plans.forEach(p => { window._mealPlansById[p.id] = p.plan_content; });
+
+      container.innerHTML = `
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Generated</th>
+              <th>Targets</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${plans.map(p => `
+              <tr>
+                <td><strong>${formatDate(p.created_at)}</strong></td>
+                <td>${p.calories ? `${p.calories} kcal` : '—'}${p.protein ? ` · ${p.protein}g protein` : ''}</td>
+                <td><button class="receipt-btn" onclick="viewMealPlan('${p.id}')">View</button></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    function viewMealPlan(planId) {
+      const planContent = window._mealPlansById[planId];
+      const body = document.getElementById('planModalBody');
+
+      // Same Safari-safe fallback as the generator itself, since this is
+      // the same markdown content rendered a second time.
+      try {
+        body.innerHTML = marked.parse(planContent);
+      } catch (err) {
+        console.error('Markdown render failed, falling back to plain text:', err);
+        const escaped = planContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        body.innerHTML = `<pre style="white-space:pre-wrap;font-family:inherit;">${escaped}</pre>`;
+      }
+
+      document.getElementById('planModalBackdrop').classList.add('visible');
+    }
+
+    function closeMealPlanModal() {
+      document.getElementById('planModalBackdrop').classList.remove('visible');
     }
 
     async function handleSignOut() {
