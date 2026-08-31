@@ -460,7 +460,7 @@
         <p class="step-title" style="font-size:32px;">Unlock your meal planner</p>
         <p class="step-sub" style="max-width:480px;margin:0 auto 28px;">A new personalised 7-day plan every week (up to 4 a month), tailored to your targets and dietary needs, with full recipes included. Included free with Sofa to Studio and All Access — or add it on its own.</p>
         <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--navy);margin-bottom:4px;">£9.99<span style="font-size:16px;font-weight:400;color:#777;">/month</span></div>
-        <p style="font-size:13px;color:#999;margin-bottom:28px;">Cancel any time</p>
+        <p style="font-size:13px;color:#999;margin-bottom:28px;">Renews monthly. Cancel any time.</p>
         <button class="generate-btn" id="paywallSubscribeBtn" onclick="handleNutritionCheckout(event)">Subscribe — £9.99/month</button>
         <p style="font-size:13px;color:#999;margin-top:16px;">Already have Sofa to Studio or All Access? <a href="login.html" style="color:var(--teal);">Sign in</a> — it's included.</p>
       </div>
@@ -769,6 +769,21 @@
     );
 
     document.getElementById(hasAccess ? 'plannerForm' : 'plannerPaywall').style.display = 'block';
+
+    // Show their most recent saved plan on return, rather than an empty
+    // form — plans used to only live in page memory and vanished on refresh.
+    if (hasAccess) {
+      const { data: savedPlans } = await sb
+        .from('meal_plans')
+        .select('plan_content')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (savedPlans && savedPlans[0]) {
+        renderPlan(savedPlans[0].plan_content);
+      }
+    }
   }
 
   async function handleNutritionCheckout(e) {
@@ -910,10 +925,12 @@
     document.getElementById('results-section').classList.remove('visible');
 
     try {
+      const { data: { session } } = await sb.auth.getSession();
+
       const response = await fetch('/api/meal-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ calories, protein, activeDays, frameworks, allergies, programme: currentProgramme })
+        body: JSON.stringify({ calories, protein, activeDays, frameworks, allergies, programme: currentProgramme, userId: session?.user?.id })
       });
 
       const data = await response.json();
@@ -922,20 +939,7 @@
         throw new Error(data.error || 'Something went wrong.');
       }
 
-      // Render the plan. Markdown rendering has hit a rare Safari-specific
-      // parsing error on some generated content in the wild — if that
-      // happens, fall back to showing the plan as plain text rather than
-      // losing it behind a generic error after it's already been generated.
-      let rendered;
-      try {
-        rendered = marked.parse(data.plan);
-      } catch (renderErr) {
-        console.error('Markdown render failed, falling back to plain text:', renderErr);
-        const escaped = data.plan.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        rendered = `<pre style="white-space:pre-wrap;font-family:inherit;">${escaped}</pre>`;
-      }
-      document.getElementById('planOutput').innerHTML = rendered;
-      document.getElementById('results-section').classList.add('visible');
+      renderPlan(data.plan);
 
       // Scroll to results
       document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -948,6 +952,21 @@
   }
 
   // ── HELPERS ────────────────────────────────────────────────────────────────
+  // Markdown rendering has hit a rare Safari-specific parsing error on some
+  // generated content in the wild — if that happens, fall back to showing
+  // the plan as plain text rather than losing it behind a generic error.
+  function renderPlan(planText) {
+    let rendered;
+    try {
+      rendered = marked.parse(planText);
+    } catch (renderErr) {
+      console.error('Markdown render failed, falling back to plain text:', renderErr);
+      const escaped = planText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      rendered = `<pre style="white-space:pre-wrap;font-family:inherit;">${escaped}</pre>`;
+    }
+    document.getElementById('planOutput').innerHTML = rendered;
+    document.getElementById('results-section').classList.add('visible');
+  }
   function setLoading(on) {
     document.getElementById('generateBtn').disabled = on;
     document.getElementById('generateBtn').textContent = on ? 'Generating…' : '✨ Generate My Meal Plan';

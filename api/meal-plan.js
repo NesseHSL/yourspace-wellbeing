@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { calories, protein, activeDays, frameworks, allergies, programme } = req.body;
+  const { calories, protein, activeDays, frameworks, allergies, programme, userId } = req.body;
 
   // Basic validation
   if (!calories || !protein) {
@@ -354,6 +354,13 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
       text += `\n\n---\n*A note on accuracy: a couple of days in this plan came out slightly off your exact target. The recipes are still a great guide, but treat the numbers as close estimates rather than exact.*`;
     }
 
+    // Save so it survives refresh/logout instead of only living on this page.
+    // Best-effort — a save failure shouldn't cost the user the plan they
+    // just waited 60-90 seconds for.
+    if (userId) {
+      await saveMealPlan(userId, programme, text, calories, protein);
+    }
+
     return res.status(200).json({ plan: text });
 
   } catch (error) {
@@ -362,5 +369,31 @@ Please produce a varied, practical, and appetising 7-day plan, with full recipes
       error: 'We couldn\'t generate your meal plan right now. Please try again in a moment.',
       detail: error.message
     });
+  }
+}
+
+async function saveMealPlan(userId, programme, planContent, calories, protein) {
+  try {
+    const res = await fetch(`${process.env.SUPABASE_URL}/rest/v1/meal_plans`, {
+      method: 'POST',
+      headers: {
+        'apikey':        process.env.SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${process.env.SUPABASE_SECRET_SERVICE_KEY}`,
+        'Content-Type':  'application/json',
+        'Prefer':        'return=minimal',
+      },
+      body: JSON.stringify([{
+        user_id:      userId,
+        programme:    programme || 'sofa-to-studio',
+        plan_content: planContent,
+        calories:     parseInt(calories, 10) || null,
+        protein:      parseInt(protein, 10) || null,
+      }]),
+    });
+    if (!res.ok) {
+      console.error('Failed to save meal plan:', await res.text());
+    }
+  } catch (err) {
+    console.error('Failed to save meal plan:', err.message);
   }
 }
