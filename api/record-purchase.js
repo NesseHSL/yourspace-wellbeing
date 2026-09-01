@@ -187,7 +187,7 @@ async function getUserInfo(userId, supabaseHeaders) {
     const user = await res.json();
     return {
       email: user.email || null,
-      name:  user.user_metadata?.first_name || null,
+      name:  [user.user_metadata?.first_name, user.user_metadata?.last_name].filter(Boolean).join(' ') || null,
     };
   } catch (err) {
     console.error('Failed to look up user info:', err.message);

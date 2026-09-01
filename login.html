@@ -303,6 +303,10 @@
             <input type="text" id="firstName" placeholder="Your first name" required>
           </div>
           <div class="form-group">
+            <label for="lastName">Last name</label>
+            <input type="text" id="lastName" placeholder="Your last name" required>
+          </div>
+          <div class="form-group">
             <label for="signupEmail">Email address</label>
             <input type="email" id="signupEmail" placeholder="you@example.com" required>
           </div>
@@ -467,7 +471,10 @@
         email: document.getElementById('signupEmail').value,
         password,
         options: {
-          data: { first_name: document.getElementById('firstName').value.trim() },
+          data: {
+            first_name: document.getElementById('firstName').value.trim(),
+            last_name:  document.getElementById('lastName').value.trim(),
+          },
           emailRedirectTo: `${window.location.origin}/index.html`,
         },
       });
