@@ -57,6 +57,9 @@ export default async function handler(req, res) {
       'Prefer':        'return=minimal',
     };
 
+    // So the purchases table shows who bought something, not just a UUID.
+    const { email: userEmail, name: userName } = await getUserInfo(resolvedUserId, supabaseHeaders);
+
     // ── ALL ACCESS ────────────────────────────────────────────────────
     // Record one purchase row per unlocked programme.
     // Only the first row carries the real amount_paid; the rest are £0
@@ -81,6 +84,8 @@ export default async function handler(req, res) {
 
       const rows = ALL_ACCESS_PROGRAMMES.map((p, i) => ({
         user_id:          resolvedUserId,
+        user_email:       userEmail,
+        user_name:        userName,
         programme_id:     p.id,
         programme_name:   p.name,
         amount_paid:      i === 0 ? totalPaid : 0,
@@ -118,6 +123,8 @@ export default async function handler(req, res) {
 
     const rows = [{
       user_id:          resolvedUserId,
+      user_email:       userEmail,
+      user_name:        userName,
       programme_id:     programme.id,
       programme_name:   programme.name,
       amount_paid:      session.amount_total / 100,
@@ -133,6 +140,8 @@ export default async function handler(req, res) {
     if (programme.id === 'sofa-to-studio') {
       rows.push({
         user_id:          resolvedUserId,
+        user_email:       userEmail,
+        user_name:        userName,
         programme_id:     'nutrition-guide',
         programme_name:   'The Menu',
         amount_paid:      0,
@@ -169,9 +178,26 @@ export default async function handler(req, res) {
   }
 }
 
+async function getUserInfo(userId, supabaseHeaders) {
+  try {
+    const res = await fetch(`${process.env.SUPABASE_URL}/auth/v1/admin/users/${userId}`, {
+      headers: supabaseHeaders,
+    });
+    if (!res.ok) return { email: null, name: null };
+    const user = await res.json();
+    return {
+      email: user.email || null,
+      name:  user.user_metadata?.first_name || null,
+    };
+  } catch (err) {
+    console.error('Failed to look up user info:', err.message);
+    return { email: null, name: null };
+  }
+}
+
 async function notifyAdmin(subject, html) {
   try {
-    await fetch('https://api.resend.com/emails', {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
@@ -184,6 +210,12 @@ async function notifyAdmin(subject, html) {
         html,
       }),
     });
+    // Resend rejecting the request (bad API key, bad `to` address, etc.)
+    // comes back as a normal HTTP response, not a thrown error - without
+    // this check a failure here was completely invisible, anywhere.
+    if (!res.ok) {
+      console.error('Notification email rejected by Resend:', res.status, await res.text());
+    }
   } catch (err) {
     console.error('Notification email failed:', err);
   }
