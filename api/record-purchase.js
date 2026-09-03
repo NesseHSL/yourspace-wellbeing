@@ -14,9 +14,10 @@ export default async function handler(req, res) {
     'price_1U7zGl3qlwzbgcp9sNjlcIYu': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
     'price_1U3wIK3qlwzbgcp9oC7W1lps': { id: 'nutrition-guide', name: 'The Menu',  days: 30,  type: 'subscription' },
     // PLACEHOLDER — replace with the real Stripe price ID once Restore has
-    // a product/price set up. days:3650 (~10yr) approximates lifetime
-    // access, since Restore is self-paced with no expiry implied.
-    'price_PLACEHOLDER_RESTORE': { id: 'restore', name: 'Restore', days: 3650, type: 'one-off' },
+    // a product/price set up. 90-day window (same as Pre-Hab/Sofa to
+    // Studio) is a deliberate safeguard against login-sharing, not a
+    // reflection of how long the content itself takes to work through.
+    'price_PLACEHOLDER_RESTORE': { id: 'restore', name: 'Restore', days: 90, type: 'one-off' },
   };
 
   // All Access unlocks all of these.
