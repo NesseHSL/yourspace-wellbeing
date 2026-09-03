@@ -194,83 +194,12 @@
       border-radius: 20px;
     }
     .video-meta { text-align: right; flex-shrink: 0; }
-    .video-duration {
-      font-family: var(--font-serif);
-      font-size: 22px;
-      font-weight: 300;
-      color: var(--navy);
-      white-space: nowrap;
-      margin-bottom: 6px;
-    }
     .video-week {
       font-size: 10px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--grey);
     }
-
-    /* ── SCHEDULE ──────────────────────────────── */
-    #schedule {
-      background: #1A5F7A;
-      padding: 100px 48px;
-    }
-    #schedule .section-label { color: rgba(255,255,255,0.4); }
-    #schedule h2 { color: var(--white); }
-    #schedule .section-sub { color: rgba(255,255,255,0.55); }
-    .schedule-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      margin-top: 56px;
-    }
-    .schedule-week {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 14px;
-      padding: 28px 24px;
-    }
-    .schedule-week-label {
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 16px;
-    }
-    .schedule-week h4 {
-      font-family: var(--font-serif);
-      font-size: 22px;
-      font-weight: 300;
-      color: var(--white);
-      margin-bottom: 12px;
-    }
-    .schedule-sessions { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .schedule-sessions li {
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-      font-weight: 300;
-      padding-left: 16px;
-      position: relative;
-    }
-    .schedule-sessions li::before {
-      content: '—';
-      position: absolute;
-      left: 0;
-      color: rgba(255,255,255,0.3);
-    }
-    .schedule-note {
-      margin-top: 40px;
-      padding: 24px 32px;
-      background: rgba(255,255,255,0.07);
-      border-left: 3px solid rgba(255,255,255,0.3);
-      border-radius: 0 8px 8px 0;
-    }
-    .schedule-note p {
-      font-size: 14px;
-      color: rgba(255,255,255,0.5);
-      font-weight: 300;
-      line-height: 1.7;
-    }
-    .schedule-note strong { color: rgba(255,255,255,0.8); font-weight: 400; }
 
     /* ── PRICING ───────────────────────────────── */
     #pricing { background: var(--white); padding: 100px 48px; }
@@ -319,7 +248,7 @@
 
     /* ── RESPONSIVE ────────────────────────────── */
     @media (max-width: 900px) {
-      .prog-hero, #medical-banner, #who, #outcomes, #the-programme, #schedule, #pricing { padding: 72px 24px; }
+      .prog-hero, #medical-banner, #who, #outcomes, #the-programme, #pricing { padding: 72px 24px; }
       .video-card { grid-template-columns: 48px 1fr; gap: 20px; }
       .video-meta { display: none; }
       .pricing-grid { grid-template-columns: 1fr; max-width: 440px; }
@@ -459,180 +388,69 @@
     <section id="the-programme">
       <div class="section-inner">
         <p class="section-label">The Programme</p>
-        <h2>Six sessions.<br>Eight weeks.</h2>
-        <p class="section-sub">Restore is deliberately gradual. Each session is shorter than you might expect — because recovery isn't about effort, it's about consistency. We progress only when your body is ready.</p>
+        <h2>Four videos.<br>Your pace.</h2>
+        <p class="section-sub">All four videos unlock the moment you join — no schedule, no waiting, no checkpoints to clear. Start with Video 1, and move on whenever you're ready.</p>
         <div class="video-list">
 
           <div class="video-card">
             <div class="video-num">1</div>
             <div class="video-info">
-              <h3>Breathe & Reconnect</h3>
-              <p>We begin with breath — because diaphragmatic breathing is the first step in restoring the relationship between your breath, your core, and your pelvic floor. This session is gentle, meditative, and more powerful than it looks. Everything starts here.</p>
+              <h3>Foundations</h3>
+              <p>Pelvic floor reconnection, plus a guided check for abdominal separation (diastasis recti) — the starting point for everything that follows. Filmed by Hillary.</p>
               <div class="video-tags">
-                <span>Diaphragmatic breathing</span>
-                <span>Pelvic floor awareness</span>
-                <span>Gentle mobility</span>
-                <span>C-section safe</span>
+                <span>Pelvic floor</span>
+                <span>Diastasis check</span>
               </div>
             </div>
             <div class="video-meta">
-              <div class="video-duration">15 mins</div>
-              <div class="video-week">Weeks 1–2</div>
+              <div class="video-week">Video 1</div>
             </div>
           </div>
 
           <div class="video-card">
             <div class="video-num">2</div>
             <div class="video-info">
-              <h3>Pelvic Floor First</h3>
-              <p>A dedicated session focused entirely on pelvic floor activation and progressive strengthening. We cover the full spectrum — activation, coordination, endurance, and relaxation — because a pelvic floor that can't let go is just as problematic as one that can't hold on.</p>
+              <h3>Core & Movement Basics</h3>
+              <p>Transverse abdominis activation, pelvic tilts, and bridging — safe, foundational core work to build on Video 1. Filmed by Benji.</p>
               <div class="video-tags">
-                <span>Pelvic floor activation</span>
-                <span>Coordination</span>
-                <span>Endurance & release</span>
-                <span>C-section safe</span>
+                <span>Deep core</span>
+                <span>Pelvic tilts</span>
               </div>
             </div>
             <div class="video-meta">
-              <div class="video-duration">20 mins</div>
-              <div class="video-week">Weeks 2–3</div>
+              <div class="video-week">Video 2</div>
             </div>
           </div>
 
           <div class="video-card">
             <div class="video-num">3</div>
             <div class="video-info">
-              <h3>Core Reconnect</h3>
-              <p>Now we introduce the deep core — specifically the transverse abdominis, which acts as your body's natural corset. Every exercise here is safe for diastasis recti and focused on reconnection rather than loading. No crunches. No sit-ups. Just intelligent, progressive core work.</p>
+              <h3>Full Body Strength, Core Progression & Low-Impact Cardio</h3>
+              <p>Building real strength back in, with a progressed core challenge and gentle, low-impact cardio. Filmed by Benji.</p>
               <div class="video-tags">
-                <span>Transverse abdominis</span>
-                <span>Diastasis recti safe</span>
-                <span>Deep core</span>
-                <span>Spinal alignment</span>
+                <span>Full body</span>
+                <span>Low-impact cardio</span>
               </div>
             </div>
             <div class="video-meta">
-              <div class="video-duration">20 mins</div>
-              <div class="video-week">Weeks 3–4</div>
+              <div class="video-week">Video 3</div>
             </div>
           </div>
 
           <div class="video-card">
             <div class="video-num">4</div>
             <div class="video-info">
-              <h3>Posture Reset</h3>
-              <p>Pregnancy, birth, and feeding all leave their mark on posture — rounded shoulders, tight hip flexors, a pelvis tipped forward or back. This session addresses those patterns directly, releasing what's tight and strengthening what's weak, so you can stand tall again.</p>
+              <h3>Return to Studio Bridge</h3>
+              <p>The final step, built to leave you feeling ready and confident to return to the studio floor. Filmed by Benji.</p>
               <div class="video-tags">
-                <span>Upper back</span>
-                <span>Hip flexors</span>
-                <span>Pelvic alignment</span>
-                <span>Neck & shoulders</span>
+                <span>Studio ready</span>
               </div>
             </div>
             <div class="video-meta">
-              <div class="video-duration">20 mins</div>
-              <div class="video-week">Weeks 4–5</div>
+              <div class="video-week">Video 4</div>
             </div>
           </div>
 
-          <div class="video-card">
-            <div class="video-num">5</div>
-            <div class="video-info">
-              <h3>Rebuild Strength</h3>
-              <p>With your foundations in place, we begin rebuilding functional strength — glutes, hips, and legs through progressive, supported movements. This session introduces load gradually, always with pelvic floor connection as the foundation. You'll feel strong — and you'll be surprised how much you've already rebuilt.</p>
-              <div class="video-tags">
-                <span>Glute strength</span>
-                <span>Hip stability</span>
-                <span>Functional movement</span>
-                <span>Progressive load</span>
-              </div>
-            </div>
-            <div class="video-meta">
-              <div class="video-duration">25 mins</div>
-              <div class="video-week">Weeks 5–7</div>
-            </div>
-          </div>
-
-          <div class="video-card">
-            <div class="video-num">6</div>
-            <div class="video-info">
-              <h3>Studio Ready</h3>
-              <p>The final session brings everything together in a full-body workout that mirrors what you'll experience back at the studio — with the awareness, connection, and strength you've spent eight weeks building. This isn't just a workout. It's the moment you realise you're ready.</p>
-              <div class="video-tags">
-                <span>Full body</span>
-                <span>Studio preparation</span>
-                <span>Integration</span>
-                <span>Confidence building</span>
-              </div>
-            </div>
-            <div class="video-meta">
-              <div class="video-duration">25 mins</div>
-              <div class="video-week">Weeks 7–8</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- SCHEDULE -->
-    <section id="schedule">
-      <div class="section-inner">
-        <p class="section-label">Your Plan</p>
-        <h2>Eight weeks.<br>Your pace.</h2>
-        <p class="section-sub">Two sessions a week — short enough to fit around a baby's schedule, consistent enough to build real results. Never push through pain or discomfort.</p>
-        <div class="schedule-grid">
-          <div class="schedule-week">
-            <div class="schedule-week-label">Weeks 1–2</div>
-            <h4>Breathe</h4>
-            <ul class="schedule-sessions">
-              <li>Session 1: Breathe & Reconnect</li>
-              <li>Session 2: Breathe & Reconnect</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Weeks 2–3</div>
-            <h4>Activate</h4>
-            <ul class="schedule-sessions">
-              <li>Session 1: Pelvic Floor First</li>
-              <li>Session 2: Breathe & Reconnect</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Weeks 3–4</div>
-            <h4>Reconnect</h4>
-            <ul class="schedule-sessions">
-              <li>Session 1: Core Reconnect</li>
-              <li>Session 2: Pelvic Floor First</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Weeks 4–5</div>
-            <h4>Reset</h4>
-            <ul class="schedule-sessions">
-              <li>Session 1: Posture Reset</li>
-              <li>Session 2: Core Reconnect</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Weeks 5–7</div>
-            <h4>Rebuild</h4>
-            <ul class="schedule-sessions">
-              <li>Session 1: Rebuild Strength</li>
-              <li>Session 2: Posture Reset</li>
-            </ul>
-          </div>
-          <div class="schedule-week">
-            <div class="schedule-week-label">Weeks 7–8</div>
-            <h4>Restore</h4>
-            <ul class="schedule-sessions">
-              <li>Session 1: Studio Ready</li>
-              <li>Session 2: Rebuild Strength</li>
-            </ul>
-          </div>
-        </div>
-        <div class="schedule-note">
-          <p><strong>Go at your own pace.</strong> If a week feels too much, repeat it. If something doesn't feel right, stop. Your body has done something extraordinary — this programme respects that. There is no rush, and no judgement.</p>
         </div>
       </div>
     </section>
