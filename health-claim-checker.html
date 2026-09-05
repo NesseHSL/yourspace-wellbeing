@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#1C3461">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="YourSpace">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Claim Checker — YourSpace Wellbeing</title>
+<meta property="og:title" content="Health Claim Checker — YourSpace Wellbeing">
+<meta property="og:description" content="Type any health claim. We evaluate it against peer-reviewed evidence.">
+<meta property="og:url" content="https://www.yourspacewellbeing.com/health-claim-checker">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="health-claim-checker.css">
+<script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo-wrap">
+    <div style="font-family:'LeJourSerif','Georgia',serif;font-size:32px;font-weight:400;color:#fff;letter-spacing:2px;text-align:center;">Health Claim<br>Checker</div>
+  </div>
+  <div class="splash-rule"></div>
+  <div class="splash-tag">Where Claims<br>Meet Evidence</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="h-back">&larr; YourSpace</a>
+  <div class="h-logo">Health Claim Checker</div>
+  <div class="h-tag">by YourSpace</div>
+  <button class="h-menu-btn" id="menuBtn" aria-label="Menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="h-nav" id="mainNav">
+    <a href="health-claim-checker-how-it-works.html">How it works</a>
+    <a href="health-claim-checker-terms.html">Terms of use</a>
+    <div class="nav-divider"></div>
+    <a href="mailto:citetheapp@gmail.com">Contact us</a>
+  </nav>
+</header>
+
+<main>
+
+  <div id="screen-input">
+    <div class="eyebrow">Health Claim Checker</div>
+    <h1 class="page-title">What have<br>you heard?</h1>
+    <p class="page-sub">Type any health claim, however you've seen it written. We evaluate it against peer-reviewed evidence.</p>
+    <textarea id="claim-input" placeholder="e.g. magnesium helps with anxiety, seed oils are toxic, collagen improves skin..."></textarea>
+    <button class="btn-check" id="check-btn" onclick="runCheck()">Check the evidence</button>
+    <div class="error-msg" id="error-msg"></div>
+    <div class="examples">
+      <div class="ex-label">Try an example</div>
+      <div class="pills">
+        <span class="pill" onclick="setEx('Vitamin D cures depression')">Vitamin D cures depression</span>
+        <span class="pill" onclick="setEx('Seed oils are toxic')">Seed oils are toxic</span>
+        <span class="pill" onclick="setEx('Magnesium reduces anxiety')">Magnesium reduces anxiety</span>
+        <span class="pill" onclick="setEx('Collagen supplements improve skin')">Collagen supplements improve skin</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-loading">
+    <svg width="72" height="62" viewBox="0 0 72 62" fill="none" style="display:block;margin:0 auto">
+      <path d="M4 8 C4 8 4 6 6 5 L32 3.5 C34 3.5 35 4.5 35 4.5 L35 56.5 C35 56.5 34 55.5 32 55.5 L6 57 C4 57 4 55 4 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
+      <path d="M68 8 C68 8 68 6 66 5 L40 3.5 C38 3.5 37 4.5 37 4.5 L37 56.5 C37 56.5 38 55.5 40 55.5 L66 57 C68 57 68 55 68 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
+      <line class="page-line-l" x1="10" y1="15" x2="30" y2="13.5" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-l2" x1="10" y1="22" x2="30" y2="20.5" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-l3" x1="10" y1="29" x2="30" y2="27.5" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
+      <line class="page-line-r" x1="42" y1="13.5" x2="62" y2="15" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-r2" x1="42" y1="20.5" x2="62" y2="22" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-r3" x1="42" y1="27.5" x2="62" y2="29" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
+    </svg>
+    <div class="load-title">Reviewing the evidence</div>
+    <div class="load-sub">Searching peer-reviewed research, systematic reviews, and clinical studies.</div>
+    <div class="load-time">This usually takes 5–8 seconds.</div>
+    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+
+  <div id="screen-loading-payment">
+    <svg width="72" height="62" viewBox="0 0 72 62" fill="none" style="display:block;margin:0 auto">
+      <path d="M4 8 C4 8 4 6 6 5 L32 3.5 C34 3.5 35 4.5 35 4.5 L35 56.5 C35 56.5 34 55.5 32 55.5 L6 57 C4 57 4 55 4 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
+      <path d="M68 8 C68 8 68 6 66 5 L40 3.5 C38 3.5 37 4.5 37 4.5 L37 56.5 C37 56.5 38 55.5 40 55.5 L66 57 C68 57 68 55 68 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
+      <line class="page-line-l" x1="10" y1="15" x2="30" y2="13.5" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-l2" x1="10" y1="22" x2="30" y2="20.5" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-l3" x1="10" y1="29" x2="30" y2="27.5" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
+      <line class="page-line-r" x1="42" y1="13.5" x2="62" y2="15" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-r2" x1="42" y1="20.5" x2="62" y2="22" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-r3" x1="42" y1="27.5" x2="62" y2="29" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
+    </svg>
+    <div class="load-title">Building your evidence report</div>
+    <div class="load-sub">Payment confirmed. Now pulling the full research breakdown, this takes 5–10 seconds.</div>
+    <div class="load-time">Please don't close this page.</div>
+    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+
+  <div id="screen-results">
+    <div class="verdict-strip">
+      <span class="v-label">Verdict</span>
+      <div class="v-badge" id="v-badge"><div class="v-dot"></div><span id="v-text"></span></div>
+    </div>
+    <div class="rcard">
+      <div class="rcard-label">What the science says</div>
+      <p id="bottom-line"></p>
+    </div>
+
+    <!-- Demo mode: bypass payment -->
+    <button class="btn-dive" id="btn-dive-demo" style="display:none" onclick="loadDeepDive()">Show the full evidence breakdown →</button>
+
+    <!-- Paywall card -->
+    <div class="upsell-card" id="upsell-card">
+      <h3 class="upsell-headline">What does the research really show?</h3>
+      <p class="upsell-body">See the real evidence, the caveats, and what the headlines got wrong. Don't just take our word for it, judge it for yourself.</p>
+      <p class="upsell-note"><em>This small charge keeps the Health Claim Checker independent and the summaries free for everyone. We don't take sponsorship or allow advertisements here, ever. All Access members get 5 free checks a month.</em></p>
+      <p class="upsell-price-line"><span id="upsell-amount">£1.50</span><span id="upsell-price-label" style="display:none"></span> · Instant access · PDF included</p>
+
+      <!-- Payment step -->
+      <div id="payment-section">
+        <button class="btn-upsell" id="btn-start-payment" onclick="startPayment()">Get the full breakdown →</button>
+        <p class="upsell-gdpr">Payments processed securely by Stripe. We don't store your card details.</p>
+      </div>
+
+      <!-- Stripe element appears here -->
+      <div id="stripe-section" style="display:none">
+        <div id="payment-element"></div>
+        <div class="error-msg" id="payment-error" style="margin-top:12px"></div>
+        <button class="btn-upsell" id="btn-pay" onclick="confirmPayment()" style="margin-top:14px">Pay and view breakdown →</button>
+        <button class="btn-ghost" onclick="cancelPayment()">Cancel</button>
+      </div>
+    </div>
+
+    <button class="btn-ghost" onclick="reset()">Check another claim</button>
+  </div>
+
+  <div id="screen-deepdive">
+    <div class="verdict-strip" style="margin-bottom:20px">
+      <span class="v-label">Verdict</span>
+      <div class="v-badge" id="v-badge-2"><div class="v-dot"></div><span id="v-text-2"></span></div>
+    </div>
+    <div class="interp-box">
+      <div class="interp-label">How we read this claim</div>
+      <p id="snapshot"></p>
+    </div>
+    <div class="acc" id="acc1">
+      <div class="acc-head" onclick="tog('acc1')">
+        <span id="ev-header">The Evidence</span>
+        <div class="acc-arrow">&#8964;</div>
+      </div>
+      <div class="acc-body">
+        <ul id="str-list"></ul>
+        <div class="links-area" id="links-area" style="display:none">
+          <div class="links-heading">Want to read the research yourself? A few credible starting points:</div>
+          <div id="link-list"></div>
+        </div>
+      </div>
+    </div>
+    <div class="acc" id="acc2">
+      <div class="acc-head" onclick="tog('acc2')">
+        <span>The Important Nuance</span>
+        <div class="acc-arrow">&#8964;</div>
+      </div>
+      <div class="acc-body"><p id="conf-text"></p></div>
+    </div>
+    <div class="acc" id="acc3">
+      <div class="acc-head" onclick="tog('acc3')">
+        <span>What The Headlines Get Wrong</span>
+        <div class="acc-arrow">&#8964;</div>
+      </div>
+      <div class="acc-body"><div id="mis-content"></div></div>
+    </div>
+    <button class="btn-pdf" onclick="downloadPDF()">↓ Download as PDF</button>
+    <button class="back-btn" onclick="reset()">← Check another claim</button>
+  </div>
+
+</main>
+
+<div id="print-header">
+  <div class="ph-logo">Health Claim Checker</div>
+  <div class="ph-subtitle">Evidence Report</div>
+  <p id="ph-claim" class="ph-claim"></p>
+  <p id="ph-date" class="ph-date"></p>
+</div>
+<div id="print-footer">
+  <p>Generated by the Health Claim Checker &nbsp;|&nbsp; yourspacewellbeing.com &nbsp;|&nbsp; For informational purposes only. Not medical advice.</p>
+</div>
+
+<script>
+// Demo mode only works on non-production domains
+const hostname = window.location.hostname;
+const isProductionDomain = hostname === 'yourspacewellbeing.com' || hostname === 'www.yourspacewellbeing.com';
+const demoMode = !isProductionDomain && new URLSearchParams(window.location.search).get('demo') === 'true';
+
+let currentClaim = '';
+let currentTopic = '';
+let deepDiveRaw = '';
+let stripe = null;
+let elements = null;
+let clientSecret = null;
+let confirmedPaymentIntentId = null;
+
+function toggleMenu(){document.getElementById('mainNav').classList.toggle('open')}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#menuBtn')&&!e.target.closest('#mainNav')){
+    document.getElementById('mainNav').classList.remove('open');
+  }
+});
+
+function setEx(t){document.getElementById('claim-input').value=t}
+
+function downloadPDF(){
+  const wasOpen=[...document.querySelectorAll('#screen-deepdive .acc.open')].map(a=>a.id);
+  document.querySelectorAll('#screen-deepdive .acc').forEach(a=>a.classList.add('open'));
+  document.getElementById('ph-claim').textContent='“'+currentClaim+'”';
+  document.getElementById('ph-date').textContent=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  window.print();
+  window.onafterprint=function(){
+    document.querySelectorAll('#screen-deepdive .acc').forEach(a=>{
+      if(!wasOpen.includes(a.id))a.classList.remove('open');
+    });
+  };
+}
+
+function show(id){
+  ['screen-input','screen-loading','screen-loading-payment','screen-results','screen-deepdive'].forEach(s=>{
+    document.getElementById(s).style.display='none';
+  });
+  document.getElementById(id).style.display='block';
+}
+
+function tog(id){document.getElementById(id).classList.toggle('open')}
+
+function extract(text,s,e){
+  const si=text.indexOf(s),ei=text.indexOf(e);
+  if(si===-1||ei===-1)return'';
+  return text.slice(si+s.length,ei).trim();
+}
+
+function getVerdict(text){
+  const m=text.match(/VERDICT:\s*(GREEN|AMBER|RED|GREY)/i);
+  return m?m[1].toUpperCase():'GREY';
+}
+
+function setVerdict(verdict,badge,vtxt){
+  badge.className='v-badge v-'+verdict;
+  vtxt.textContent=verdict;
+}
+
+function parseBullets(text){
+  return text.split('\n').map(l=>l.replace(/^[-•*]\s*/,'').trim()).filter(l=>l.length>3);
+}
+
+function parseStrengths(text){
+  const items=[];
+  const lines=text.split('\n');
+  let current=null;
+  for(const line of lines){
+    const t=line.trim();
+    if(t.match(/^[-•*]/)){
+      if(current)items.push(current);
+      current={text:t.replace(/^[-•*]\s*/,''),url:null};
+    } else if(t.startsWith('→')&&current){
+      const url=t.replace(/^→\s*/,'').trim();
+      if(url.startsWith('http'))current.url=url;
+    }
+  }
+  if(current)items.push(current);
+  return items;
+}
+
+function renderDeepDive(raw){
+  const verdict=getVerdict(raw);
+  setVerdict(verdict,document.getElementById('v-badge-2'),document.getElementById('v-text-2'));
+  document.getElementById('snapshot').textContent=extract(raw,'<<CLAIM_SNAPSHOT>>','<<END_CLAIM_SNAPSHOT>>');
+  const strRaw=extract(raw,'<<STRENGTHS>>','<<END_STRENGTHS>>');
+  const sl=document.getElementById('str-list');
+  sl.innerHTML='';
+  parseStrengths(strRaw).forEach(item=>{
+    const li=document.createElement('li');li.textContent=item.text;sl.appendChild(li);
+    if(item.url){
+      const a=document.createElement('a');a.href=item.url;a.className='slink inline-link';
+      a.textContent='View study →';a.target='_blank';sl.appendChild(a);
+    }
+  });
+  document.getElementById('ev-header').textContent=verdict==='RED'?'The Evidence Against This Claim':'The Evidence';
+  document.getElementById('links-area').style.display='none';
+  document.getElementById('conf-text').textContent=extract(raw,'<<CONFOUNDING_CHECK>>','<<END_CONFOUNDING_CHECK>>');
+  const misRaw=extract(raw,'<<MISINTERPRETATIONS>>','<<END_MISINTERPRETATIONS>>');
+  const mc=document.getElementById('mis-content');mc.innerHTML='';
+  const lines=misRaw.split('\n').map(l=>l.trim()).filter(l=>l.length>2);
+  if(lines.length>0){
+    const intro=document.createElement('p');intro.textContent=lines[0];intro.style.marginBottom='4px';mc.appendChild(intro);
+    const ul=document.createElement('ul');
+    lines.slice(1).forEach(b=>{
+      const clean=b.replace(/^[-•*]\s*/,'').trim();
+      if(clean.length>2){const li=document.createElement('li');li.textContent=clean;ul.appendChild(li);}
+    });
+    mc.appendChild(ul);
+  }
+  show('screen-deepdive');
+}
+
+async function loadDeepDive(){
+  show('screen-loading-payment');
+  try{
+    const res=await fetch('/api/health-deepdive',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        claim:currentClaim,
+        paymentIntentId:confirmedPaymentIntentId,
+        topicCategory:currentTopic
+      })
+    });
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Something went wrong');
+    deepDiveRaw=data.text;
+    renderDeepDive(deepDiveRaw);
+  }catch(e){
+    show('screen-results');
+    const err=document.getElementById('payment-error');
+    err.textContent='Something went wrong loading your breakdown. Please contact citetheapp@gmail.com';
+    err.style.display='block';
+  }
+}
+
+async function startPayment(){
+  const btn=document.getElementById('btn-start-payment');
+  btn.disabled=true;
+  btn.textContent='Loading payment...';
+
+  try{
+    const res=await fetch('/api/health-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Payment setup failed');
+
+    clientSecret=data.client_secret||data.clientSecret;
+    const amount=data.amount;
+
+    // Update price display
+    const pounds=(amount/100).toFixed(2);
+    document.getElementById('upsell-amount').textContent='£'+pounds;
+    document.getElementById('upsell-price-label').textContent=amount===150?'early access':'per search';
+
+    // Init Stripe elements
+    const pubKey=document.getElementById('stripe-pub-key').value;
+    stripe=Stripe(pubKey);
+    elements=stripe.elements({clientSecret});
+    const paymentEl=elements.create('payment',{layout:'tabs'});
+    paymentEl.mount('#payment-element');
+
+    document.getElementById('payment-section').style.display='none';
+    document.getElementById('stripe-section').style.display='block';
+  }catch(e){
+    btn.disabled=false;
+    btn.textContent='Get the full breakdown →';
+    const err=document.getElementById('payment-error');
+    err.textContent='Payment setup failed. Please try again.';
+    err.style.display='block';
+  }
+}
+
+async function confirmPayment(){
+  const btn=document.getElementById('btn-pay');
+  btn.disabled=true;
+  btn.textContent='Processing...';
+  const errEl=document.getElementById('payment-error');
+  errEl.style.display='none';
+
+  try{
+    const {error,paymentIntent}=await stripe.confirmPayment({
+      elements,
+      redirect:'if_required'
+    });
+
+    if(error){
+      errEl.textContent=error.message;
+      errEl.style.display='block';
+      btn.disabled=false;
+      btn.textContent='Pay and view breakdown →';
+      return;
+    }
+
+    if(paymentIntent&&paymentIntent.status==='succeeded'){
+      confirmedPaymentIntentId=paymentIntent.id;
+      await loadDeepDive();
+    }
+  }catch(e){
+    errEl.textContent='Something went wrong. Please try again.';
+    errEl.style.display='block';
+    btn.disabled=false;
+    btn.textContent='Pay and view breakdown →';
+  }
+}
+
+function cancelPayment(){
+  document.getElementById('stripe-section').style.display='none';
+  document.getElementById('payment-section').style.display='block';
+  document.getElementById('btn-start-payment').disabled=false;
+  document.getElementById('btn-start-payment').textContent='Get the full breakdown →';
+  document.getElementById('payment-error').style.display='none';
+  elements=null;
+  clientSecret=null;
+}
+
+function reset(){
+  document.getElementById('claim-input').value='';
+  currentClaim='';
+  currentTopic='';
+  deepDiveRaw='';
+  confirmedPaymentIntentId=null;
+  clientSecret=null;
+  elements=null;
+  document.getElementById('error-msg').style.display='none';
+  document.getElementById('payment-error').style.display='none';
+  document.querySelectorAll('.acc').forEach(a=>a.classList.remove('open'));
+  // Reset payment section
+  document.getElementById('stripe-section').style.display='none';
+  document.getElementById('payment-section').style.display='block';
+  document.getElementById('btn-start-payment').disabled=false;
+  document.getElementById('btn-start-payment').textContent='Get the full breakdown →';
+  show('screen-input');
+}
+
+async function runCheck(){
+  const claim=document.getElementById('claim-input').value.trim();
+  if(!claim)return;
+  currentClaim=claim;
+  const errEl=document.getElementById('error-msg');
+  errEl.style.display='none';
+  document.getElementById('check-btn').disabled=true;
+  show('screen-loading');
+  try{
+    const res=await fetch('/api/health-check',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({claim})
+    });
+    const data=await res.json();
+    if(!res.ok){throw new Error(data.error||'Something went wrong');}
+    currentTopic=data.topic||'';
+    const text=data.text;
+    const verdict=getVerdict(text);
+    const bl=extract(text,'<<BOTTOM_LINE>>','<<END_BOTTOM_LINE>>');
+    setVerdict(verdict,document.getElementById('v-badge'),document.getElementById('v-text'));
+    document.getElementById('bottom-line').textContent=bl;
+    show('screen-results');
+  }catch(e){
+    show('screen-input');
+    errEl.textContent='Something went wrong: '+e.message+'. Please try again.';
+    errEl.style.display='block';
+  }
+  document.getElementById('check-btn').disabled=false;
+}
+
+window.addEventListener('load',async()=>{
+  // Fetch Stripe publishable key from server
+  try{
+    const r=await fetch('/api/health-config');
+    const cfg=await r.json();
+    if(cfg.stripePublishableKey){
+      document.getElementById('stripe-pub-key').value=cfg.stripePublishableKey;
+    }
+  }catch(e){}
+
+  if(demoMode){
+    document.getElementById('upsell-card').style.display='none';
+    document.getElementById('btn-dive-demo').style.display='block';
+    confirmedPaymentIntentId='demo';
+  }
+  setTimeout(()=>{
+    document.getElementById('splash').classList.add('fade-out');
+    setTimeout(()=>document.getElementById('splash').style.display='none',1000);
+  },3200);
+});
+</script>
+
+<!-- Stripe publishable key — safe to expose in frontend -->
+<input type="hidden" id="stripe-pub-key" value="">
+
+</body>
+</html>

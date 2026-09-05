@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
+<title>How It Works — Health Claim Checker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="health-claim-checker.css">
+<style>
+.hw-main{max-width:640px;margin:0 auto;padding:56px 24px 100px}
+.hw-back{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--muted);text-decoration:none;
+  margin-bottom:48px;transition:color 0.2s;
+}
+.hw-back:hover{color:var(--navy)}
+.hw-intro{margin-bottom:56px}
+.hw-intro .page-title{margin-bottom:16px}
+.hw-intro-sub{font-size:16px;line-height:1.8;color:var(--muted);max-width:520px}
+.hw-section{margin-bottom:52px}
+.hw-rule{width:100%;height:1px;background:var(--border);margin-bottom:36px}
+.hw-h2{
+  font-family:'LeJourSerif','Georgia',serif;
+  font-size:26px;font-weight:400;color:var(--navy);
+  line-height:1.3;margin-bottom:18px;
+}
+.hw-p{font-size:15px;line-height:1.85;color:var(--text);margin-bottom:16px}
+.hw-p:last-child{margin-bottom:0}
+.hw-p a{color:var(--teal);text-decoration:none}
+.hw-p a:hover{text-decoration:underline}
+.hw-ul{list-style:none;padding:0;margin:0 0 16px}
+.hw-ul li{
+  font-size:15px;line-height:1.75;color:var(--text);
+  padding:8px 0 8px 20px;position:relative;
+  border-bottom:1px solid var(--border);
+}
+.hw-ul li:last-child{border-bottom:none}
+.hw-ul li::before{
+  content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:5px;height:5px;border-radius:50%;background:var(--teal);
+}
+.hw-callout{
+  background:var(--teal-light);border:1px solid #B8DDE2;
+  border-radius:12px;padding:22px 26px;margin:24px 0;
+}
+.hw-callout p{font-size:15px;line-height:1.8;color:var(--navy)}
+.hw-verdict-list{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.hw-vrow{display:flex;gap:14px;align-items:flex-start}
+.hw-vrow .v-badge{flex-shrink:0;margin-top:2px}
+.hw-vrow-text{font-size:14px;line-height:1.75;color:var(--text)}
+.hw-disclaimer{
+  background:#F8F9FB;border:1px solid var(--border);
+  border-radius:12px;padding:22px 26px;margin-top:52px;
+}
+.hw-disclaimer p{font-size:13px;line-height:1.75;color:var(--muted)}
+@media(max-width:480px){
+  .hw-main{padding:40px 16px 80px}
+  .hw-h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="h-back">&larr; YourSpace</a>
+  <div class="h-logo">Health Claim Checker</div>
+  <div class="h-tag">by YourSpace</div>
+  <button class="h-menu-btn" id="menuBtn" aria-label="Menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="h-nav" id="mainNav">
+    <a href="health-claim-checker-how-it-works.html">How it works</a>
+    <a href="health-claim-checker-terms.html">Terms of use</a>
+    <div class="nav-divider"></div>
+    <a href="mailto:citetheapp@gmail.com">Contact us</a>
+  </nav>
+</header>
+
+<div class="hw-main">
+
+  <a class="hw-back" href="health-claim-checker.html">← Back to the checker</a>
+
+  <div class="hw-intro">
+    <div class="eyebrow">About the Health Claim Checker</div>
+    <h1 class="page-title">How it<br>works</h1>
+    <p class="hw-intro-sub">What we are, what we aren't, and why we built something different.</p>
+  </div>
+
+  <div class="hw-rule"></div>
+
+  <!-- WHY WE BUILT THIS -->
+  <div class="hw-section">
+    <h2 class="hw-h2">Why we built this</h2>
+    <p class="hw-p">Health claims are everywhere. On social media, in wellness blogs, from well-meaning friends, and increasingly, from AI assistants. The problem isn't access to information. It's knowing which information to trust.</p>
+    <p class="hw-p">Most people, when they ask an AI about a health claim, get an answer that sounds authoritative. What they don't get is an answer that has been filtered through the standards scientists actually use to evaluate evidence. A single small study gets weighted the same as a large randomised controlled trial. An association gets reported as a cause. A finding in mice gets applied to humans. A fringe position gets equal billing with the scientific consensus.</p>
+    <p class="hw-p">This isn't a failure of AI, it's a failure of the question. Without very specific parameters around what constitutes good evidence, and how to weight different types of research against each other, even a capable AI tool will return confident-sounding answers that don't reflect the full picture.</p>
+
+    <div class="hw-callout">
+      <p>The Health Claim Checker was built to solve that. We've developed a structured approach to evidence evaluation, so you don't need to know how to interrogate a scientific literature base yourself. We do it for you, the way a careful scientist would.</p>
+    </div>
+  </div>
+
+  <!-- WHAT WE DO DIFFERENTLY -->
+  <div class="hw-section">
+    <h2 class="hw-h2">What we do differently</h2>
+    <p class="hw-p">In science, not all evidence is equal. A well-designed randomised controlled trial (RCT) tells us far more than an anecdote or an observational study. A meta-analysis, which pools findings from multiple high-quality studies, is more reliable than any single trial on its own. Systematic reviews that synthesise the available literature carry more weight than individual expert opinion.</p>
+    <p class="hw-p">We apply this logic to every claim we evaluate. Rather than simply retrieving information, we work through a structured evidence hierarchy, prioritising the research that carries the most scientific weight, and being explicit about where the evidence is weak, mixed, or absent.</p>
+    <p class="hw-p">We've also built in specific checks for the most common ways health science gets misrepresented:</p>
+    <ul class="hw-ul">
+      <li>Confusing correlation with causation, just because two things are associated doesn't mean one causes the other</li>
+      <li>Overgeneralising from small, short-term, or poorly designed studies</li>
+      <li>Applying findings from animal or laboratory research directly to humans</li>
+      <li>Treating preliminary findings as settled science</li>
+      <li>Ignoring important moderating factors like dose, population, or context</li>
+    </ul>
+    <p class="hw-p">The result is an evaluation that reflects not just what research exists, but how much confidence the science actually warrants.</p>
+  </div>
+
+  <!-- WHAT IT IS AND ISN'T -->
+  <div class="hw-section">
+    <h2 class="hw-h2">What this is, and isn't</h2>
+    <p class="hw-p">The Health Claim Checker is an evidence-checking tool. It's designed to help you understand what the current scientific literature says about a health claim, and how strong that evidence actually is. Think of it as a rigorous starting point for understanding, not a replacement for professional advice.</p>
+    <p class="hw-p"><strong>It is not:</strong></p>
+    <ul class="hw-ul">
+      <li>A medical professional. It does not provide medical advice</li>
+      <li>A diagnostic tool. It cannot assess your individual health situation</li>
+      <li>A treatment recommendation. It will never tell you what to take, do, or avoid</li>
+      <li>A substitute for your doctor, specialist, or qualified healthcare provider</li>
+    </ul>
+    <p class="hw-p">If you're making an important health decision, please talk to a qualified professional who knows your personal circumstances.</p>
+  </div>
+
+  <!-- VERDICTS -->
+  <div class="hw-section">
+    <h2 class="hw-h2">What the verdicts mean</h2>
+    <p class="hw-p">Every claim we evaluate receives one of four verdicts, based on the overall weight of the available evidence.</p>
+    <div class="hw-verdict-list">
+      <div class="hw-vrow">
+        <div class="v-badge v-GREEN"><div class="v-dot"></div><span>Green</span></div>
+        <p class="hw-vrow-text">The claim is supported by strong, consistent scientific evidence. Multiple well-designed studies, or meta-analyses synthesising the research, point in the same direction with reasonable confidence.</p>
+      </div>
+      <div class="hw-vrow">
+        <div class="v-badge v-AMBER"><div class="v-dot"></div><span>Amber</span></div>
+        <p class="hw-vrow-text">The evidence is mixed, partial, or preliminary. There may be support for the claim, but significant caveats apply, inconsistent findings across studies, limitations in study quality, small sample sizes, or important nuances that affect how the evidence applies in practice.</p>
+      </div>
+      <div class="hw-vrow">
+        <div class="v-badge v-RED"><div class="v-dot"></div><span>Red</span></div>
+        <p class="hw-vrow-text">The claim is contradicted by evidence, or the available research does not support it. A red verdict doesn't always mean the claim is entirely impossible, it means the scientific evidence, on balance, doesn't back it up.</p>
+      </div>
+      <div class="hw-vrow">
+        <div class="v-badge v-GREY"><div class="v-dot"></div><span>Grey</span></div>
+        <p class="hw-vrow-text">There isn't enough quality evidence to reach a verdict. The research may be too limited, too early-stage, or too conflicting to draw a reliable conclusion. This is an honest answer, not a failure, some claims genuinely haven't been well studied yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIMITATIONS -->
+  <div class="hw-section">
+    <h2 class="hw-h2">Limitations: what this can get wrong</h2>
+    <p class="hw-p">We've built this to be as rigorous as possible, but no tool is perfect. It's important to understand where the limits are.</p>
+    <ul class="hw-ul">
+      <li>It may not reflect the very latest research, particularly studies published recently</li>
+      <li>Some areas of health science are much better-studied than others. Verdicts in under-researched areas should be treated with more caution</li>
+      <li>A complex or ambiguously worded claim may be interpreted differently than you intended, always read how we interpreted your claim before relying on the verdict</li>
+      <li>We synthesise the literature as it stands. If the scientific consensus is wrong (it occasionally is), the result will reflect that</li>
+      <li>Evidence hierarchies are a guide, not a formula. Genuine scientific judgement is nuanced, and we may occasionally oversimplify in genuinely complicated areas</li>
+    </ul>
+    <p class="hw-p">We're committed to improving this over time. If you receive a result that seems wrong or incomplete, treat it as a prompt to dig deeper, not as a final word.</p>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="hw-disclaimer">
+    <p><strong>Disclaimer.</strong> The Health Claim Checker is an informational tool only. Nothing on this platform constitutes medical advice, diagnosis, or treatment recommendation. The information provided is for general educational purposes and reflects the state of the scientific literature as understood at the time of evaluation. Individual health circumstances vary significantly, always consult a qualified healthcare professional before making decisions about your health.</p>
+  </div>
+
+</div>
+
+<script>
+function toggleMenu(){document.getElementById('mainNav').classList.toggle('open')}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#menuBtn')&&!e.target.closest('#mainNav')){
+    document.getElementById('mainNav').classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
