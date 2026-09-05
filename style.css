@@ -260,10 +260,73 @@ section { padding: 112px 48px; }
    ====================================== */
 #programmes { background: var(--white); }
 
+.prog-category { margin-bottom: 56px; }
+.prog-category:last-child { margin-bottom: 0; }
+.prog-category-label {
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 20px;
+}
+
 .prog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 28px;
+}
+
+.prog-card-checker { border-color: var(--navy); }
+.prog-card-myth {
+  background: var(--off-white);
+  border: 1px dashed rgba(28,52,97,0.18);
+  justify-content: center;
+}
+.prog-card-myth h3 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--navy);
+}
+.prog-card-myth p {
+  font-size: 14px;
+  color: var(--grey-mid);
+  font-weight: 300;
+  line-height: 1.65;
+}
+
+.all-access-banner {
+  background: var(--navy);
+  padding: 64px 48px;
+  margin-top: 24px;
+}
+.all-access-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.all-access-inner h3 {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 300;
+  color: var(--white);
+  margin: 6px 0 10px;
+}
+.all-access-inner p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 300;
+  max-width: 440px;
+  line-height: 1.6;
+}
+.all-access-cta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
 }
 .prog-card {
   border: 1px solid rgba(0,0,0,0.08);
@@ -704,4 +767,6 @@ footer {
      the circle or grow the font here without retesting on a real phone. */
   .instructor-photo-wrap { width: 140px; height: 140px; }
   .instructor-bio { font-size: 10px; line-height: 1.4; padding: 12px; }
+  .all-access-inner { flex-direction: column; align-items: flex-start; text-align: left; }
+  .all-access-cta { width: 100%; justify-content: space-between; }
 }
