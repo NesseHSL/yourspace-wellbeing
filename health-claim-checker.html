@@ -19,6 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="health-claim-checker.css">
 <script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -42,8 +43,6 @@
   <nav class="h-nav" id="mainNav">
     <a href="health-claim-checker-how-it-works.html">How it works</a>
     <a href="health-claim-checker-terms.html">Terms of use</a>
-    <div class="nav-divider"></div>
-    <a href="mailto:citetheapp@gmail.com">Contact us</a>
   </nav>
 </header>
 
@@ -119,12 +118,20 @@
       <h3 class="upsell-headline">What does the research really show?</h3>
       <p class="upsell-body">See the real evidence, the caveats, and what the headlines got wrong. Don't just take our word for it, judge it for yourself.</p>
       <p class="upsell-note"><em>This small charge keeps the Health Claim Checker independent and the summaries free for everyone. We don't take sponsorship or allow advertisements here, ever. All Access members get 5 free checks a month.</em></p>
-      <p class="upsell-price-line"><span id="upsell-amount">£1.50</span><span id="upsell-price-label" style="display:none"></span> · Instant access · PDF included</p>
+
+      <!-- All Access free-credit path -->
+      <div id="credit-section" style="display:none">
+        <p class="upsell-price-line">You have <strong id="credit-remaining">5</strong> free deep dives left this month with All Access.</p>
+        <button class="btn-upsell" id="btn-use-credit" onclick="useCredit()">Use a free deep dive →</button>
+      </div>
+
+      <p class="upsell-price-line" id="upsell-price-line"><span id="upsell-amount">£1.50</span><span id="upsell-price-label" style="display:none"></span> · Instant access · PDF included</p>
 
       <!-- Payment step -->
       <div id="payment-section">
         <button class="btn-upsell" id="btn-start-payment" onclick="startPayment()">Get the full breakdown →</button>
         <p class="upsell-gdpr">Payments processed securely by Stripe. We don't store your card details.</p>
+        <p class="upsell-gdpr" id="signin-nudge" style="display:none">Already an All Access member? <a href="login.html?redirect=/health-claim-checker">Sign in</a> to use your free checks.</p>
       </div>
 
       <!-- Stripe element appears here -->
@@ -204,6 +211,12 @@ let stripe = null;
 let elements = null;
 let clientSecret = null;
 let confirmedPaymentIntentId = null;
+
+let sb = null;
+let currentUser = null;
+let hasAllAccessCredits = false;
+let freeRemaining = 0;
+const FREE_CREDITS_PER_MONTH = 5;
 
 function toggleMenu(){document.getElementById('mainNav').classList.toggle('open')}
 document.addEventListener('click',function(e){
@@ -325,7 +338,7 @@ async function loadDeepDive(){
   }catch(e){
     show('screen-results');
     const err=document.getElementById('payment-error');
-    err.textContent='Something went wrong loading your breakdown. Please contact citetheapp@gmail.com';
+    err.textContent='Something went wrong loading your breakdown. Please try again in a moment.';
     err.style.display='block';
   }
 }
@@ -409,6 +422,69 @@ function cancelPayment(){
   clientSecret=null;
 }
 
+function updateCreditUI(){
+  const creditSection=document.getElementById('credit-section');
+  const priceLine=document.getElementById('upsell-price-line');
+  const paymentSection=document.getElementById('payment-section');
+  const signinNudge=document.getElementById('signin-nudge');
+  if(hasAllAccessCredits&&freeRemaining>0){
+    creditSection.style.display='block';
+    document.getElementById('credit-remaining').textContent=freeRemaining;
+    priceLine.style.display='none';
+    paymentSection.style.display='none';
+  }else{
+    creditSection.style.display='none';
+    priceLine.style.display='block';
+    paymentSection.style.display='block';
+    signinNudge.style.display=currentUser?'none':'block';
+  }
+}
+
+async function refreshCredits(){
+  if(!sb||!currentUser)return;
+  try{
+    const monthKey=new Date().toISOString().slice(0,7);
+    const{data:rows}=await sb.from('health_deepdive_credits')
+      .select('used_count').eq('user_id',currentUser.id).eq('month_key',monthKey);
+    const used=(rows&&rows[0]&&rows[0].used_count)||0;
+    freeRemaining=Math.max(0,FREE_CREDITS_PER_MONTH-used);
+  }catch(e){
+    freeRemaining=0;
+  }
+  updateCreditUI();
+}
+
+async function useCredit(){
+  const btn=document.getElementById('btn-use-credit');
+  btn.disabled=true;
+  btn.textContent='Loading...';
+  show('screen-loading-payment');
+  try{
+    const res=await fetch('/api/health-deepdive',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        claim:currentClaim,
+        userId:currentUser.id,
+        useCredit:true,
+        topicCategory:currentTopic
+      })
+    });
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Something went wrong');
+    deepDiveRaw=data.text;
+    renderDeepDive(deepDiveRaw);
+  }catch(e){
+    show('screen-results');
+    btn.disabled=false;
+    btn.textContent='Use a free deep dive →';
+    const err=document.getElementById('payment-error');
+    err.textContent=e.message||'Something went wrong. Please try again.';
+    err.style.display='block';
+    await refreshCredits();
+  }
+}
+
 function reset(){
   document.getElementById('claim-input').value='';
   currentClaim='';
@@ -422,9 +498,12 @@ function reset(){
   document.querySelectorAll('.acc').forEach(a=>a.classList.remove('open'));
   // Reset payment section
   document.getElementById('stripe-section').style.display='none';
-  document.getElementById('payment-section').style.display='block';
   document.getElementById('btn-start-payment').disabled=false;
   document.getElementById('btn-start-payment').textContent='Get the full breakdown →';
+  const useCreditBtn=document.getElementById('btn-use-credit');
+  useCreditBtn.disabled=false;
+  useCreditBtn.textContent='Use a free deep dive →';
+  updateCreditUI();
   show('screen-input');
 }
 
@@ -450,6 +529,7 @@ async function runCheck(){
     const bl=extract(text,'<<BOTTOM_LINE>>','<<END_BOTTOM_LINE>>');
     setVerdict(verdict,document.getElementById('v-badge'),document.getElementById('v-text'));
     document.getElementById('bottom-line').textContent=bl;
+    updateCreditUI();
     show('screen-results');
   }catch(e){
     show('screen-input');
@@ -466,6 +546,22 @@ window.addEventListener('load',async()=>{
     const cfg=await r.json();
     if(cfg.stripePublishableKey){
       document.getElementById('stripe-pub-key').value=cfg.stripePublishableKey;
+    }
+    if(cfg.supabaseUrl&&cfg.supabaseKey){
+      sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey);
+      const{data:{session}}=await sb.auth.getSession();
+      if(session){
+        currentUser=session.user;
+        const{data:purchases}=await sb.from('purchases')
+          .select('is_active,expires_at')
+          .eq('user_id',currentUser.id)
+          .eq('programme_id','health-claim-checker');
+        hasAllAccessCredits=(purchases||[]).some(p=>
+          p.is_active&&(!p.expires_at||new Date(p.expires_at)>new Date())
+        );
+        if(hasAllAccessCredits)await refreshCredits();
+      }
+      updateCreditUI();
     }
   }catch(e){}
 

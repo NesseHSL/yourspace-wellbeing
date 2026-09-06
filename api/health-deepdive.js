@@ -122,7 +122,7 @@ function getCountryCode(req) {
   return (country && country.length === 2) ? country.toUpperCase() : null;
 }
 
-async function logToSupabase(claim_category, verdict, country_code, topic_category) {
+async function logToSupabase(claim_category, verdict, country_code, topic_category, isPaid) {
   try {
     await fetch(`${process.env.SUPABASE_URL}/rest/v1/deep_dives`, {
       method: 'POST',
@@ -136,13 +136,72 @@ async function logToSupabase(claim_category, verdict, country_code, topic_catego
         topic_category: topic_category || null,
         claim_category: claim_category || 'Other',
         verdict,
-        is_paid: true,
+        // Free-via-All-Access redemptions are deliberately logged as
+        // is_paid:false — this column also drives the £1.50/£2.50 price-tier
+        // count in api/health-payment.js, and a free redemption isn't a sale.
+        is_paid: isPaid !== false,
         country_code: country_code || null,
       }]),
     });
   } catch (e) {
     // Non-fatal — don't let logging failure break the response
   }
+}
+
+// All Access members get 5 free deep dives per calendar month. Both the
+// entitlement (active 'health-claim-checker' purchase) and the redemption
+// count are re-verified here server-side with the service role key —
+// never trust the client's claim that it has credit remaining.
+const FREE_CREDITS_PER_MONTH = 5;
+
+function getMonthKey() {
+  return new Date().toISOString().slice(0, 7); // e.g. '2026-09'
+}
+
+async function hasActiveAllAccess(userId) {
+  const res = await fetch(
+    `${process.env.SUPABASE_URL}/rest/v1/purchases?select=is_active,expires_at&user_id=eq.${userId}&programme_id=eq.health-claim-checker`,
+    {
+      headers: {
+        'apikey':        process.env.SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${process.env.SUPABASE_SECRET_SERVICE_KEY}`,
+      },
+    }
+  );
+  if (!res.ok) return false;
+  const rows = await res.json();
+  return rows.some(p => p.is_active && (!p.expires_at || new Date(p.expires_at) > new Date()));
+}
+
+async function redeemFreeCredit(userId) {
+  const monthKey = getMonthKey();
+  const headers = {
+    'apikey':        process.env.SUPABASE_PUBLISHABLE_KEY,
+    'Authorization': `Bearer ${process.env.SUPABASE_SECRET_SERVICE_KEY}`,
+    'Content-Type':  'application/json',
+  };
+
+  const getRes = await fetch(
+    `${process.env.SUPABASE_URL}/rest/v1/health_deepdive_credits?select=used_count&user_id=eq.${userId}&month_key=eq.${monthKey}`,
+    { headers }
+  );
+  const rows = getRes.ok ? await getRes.json() : [];
+  const usedCount = rows[0]?.used_count || 0;
+
+  if (usedCount >= FREE_CREDITS_PER_MONTH) {
+    return false;
+  }
+
+  await fetch(
+    `${process.env.SUPABASE_URL}/rest/v1/health_deepdive_credits?on_conflict=user_id,month_key`,
+    {
+      method: 'POST',
+      headers: { ...headers, 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([{ user_id: userId, month_key: monthKey, used_count: usedCount + 1 }]),
+    }
+  );
+
+  return true;
 }
 
 export default async function handler(req, res) {
@@ -152,22 +211,41 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { claim, paymentIntentId, topicCategory } = req.body;
+  const { claim, paymentIntentId, topicCategory, userId, useCredit } = req.body;
   if (!claim) return res.status(400).json({ error: 'No claim provided' });
-  if (!paymentIntentId) return res.status(400).json({ error: 'No payment reference provided' });
 
-  // Verify payment with Stripe server-side (skip for demo mode)
-  if (paymentIntentId !== 'demo') {
-    try {
-      const piRes = await fetch(`https://api.stripe.com/v1/payment_intents/${paymentIntentId}`, {
-        headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}` },
-      });
-      const paymentIntent = await piRes.json();
-      if (!piRes.ok || paymentIntent.status !== 'succeeded') {
-        return res.status(402).json({ error: 'Payment not confirmed' });
+  let usedFreeCredit = false;
+
+  if (useCredit) {
+    if (!userId) return res.status(400).json({ error: 'No user provided' });
+
+    const eligible = await hasActiveAllAccess(userId);
+    if (!eligible) {
+      return res.status(403).json({ error: 'Active All Access membership required' });
+    }
+
+    const redeemed = await redeemFreeCredit(userId);
+    if (!redeemed) {
+      return res.status(402).json({ error: 'You have used all your free deep dives this month' });
+    }
+    usedFreeCredit = true;
+
+  } else {
+    if (!paymentIntentId) return res.status(400).json({ error: 'No payment reference provided' });
+
+    // Verify payment with Stripe server-side (skip for demo mode)
+    if (paymentIntentId !== 'demo') {
+      try {
+        const piRes = await fetch(`https://api.stripe.com/v1/payment_intents/${paymentIntentId}`, {
+          headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}` },
+        });
+        const paymentIntent = await piRes.json();
+        if (!piRes.ok || paymentIntent.status !== 'succeeded') {
+          return res.status(402).json({ error: 'Payment not confirmed' });
+        }
+      } catch (e) {
+        return res.status(402).json({ error: 'Could not verify payment' });
       }
-    } catch (e) {
-      return res.status(402).json({ error: 'Could not verify payment' });
     }
   }
 
@@ -217,7 +295,7 @@ export default async function handler(req, res) {
   const countryCode = getCountryCode(req);
 
   // Log anonymised data — no personal identifiers
-  await logToSupabase(claimCategory, verdict, countryCode, topicCategory || null);
+  await logToSupabase(claimCategory, verdict, countryCode, topicCategory || null, !usedFreeCredit);
 
   return res.status(200).json({ text });
 }

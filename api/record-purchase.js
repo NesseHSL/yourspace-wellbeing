@@ -24,11 +24,12 @@ export default async function handler(req, res) {
   // Back to It isn't listed here — it's free to join for any account, so
   // there's nothing for a purchase to unlock (see back-to-it-tracker.html).
   const ALL_ACCESS_PROGRAMMES = [
-    { id: 'prehab',          name: 'YourSpace Pre-Hab' },
-    { id: 'sofa-to-studio',  name: 'Sofa to Studio' },
-    { id: 'home-studio',     name: 'The Home Studio' },
-    { id: 'nutrition-guide', name: 'The Menu' },
-    { id: 'restore',         name: 'Restore' },
+    { id: 'prehab',               name: 'YourSpace Pre-Hab' },
+    { id: 'sofa-to-studio',       name: 'Sofa to Studio' },
+    { id: 'home-studio',          name: 'The Home Studio' },
+    { id: 'nutrition-guide',      name: 'The Menu' },
+    { id: 'restore',              name: 'Restore' },
+    { id: 'health-claim-checker', name: 'Health Claim Checker' },
   ];
 
   try {
