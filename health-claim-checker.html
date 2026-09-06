@@ -23,15 +23,6 @@
 </head>
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <div class="splash-logo-wrap">
-    <div style="font-family:'LeJourSerif','Georgia',serif;font-size:32px;font-weight:400;color:#fff;letter-spacing:2px;text-align:center;">Health Claim<br>Checker</div>
-  </div>
-  <div class="splash-rule"></div>
-  <div class="splash-tag">Where Claims<br>Meet Evidence</div>
-</div>
-
 <!-- HEADER -->
 <header>
   <a href="index.html" class="h-back">&larr; YourSpace</a>
@@ -570,10 +561,6 @@ window.addEventListener('load',async()=>{
     document.getElementById('btn-dive-demo').style.display='block';
     confirmedPaymentIntentId='demo';
   }
-  setTimeout(()=>{
-    document.getElementById('splash').classList.add('fade-out');
-    setTimeout(()=>document.getElementById('splash').style.display='none',1000);
-  },3200);
 });
 </script>
 
