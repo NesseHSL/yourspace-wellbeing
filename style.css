@@ -364,7 +364,7 @@ section { padding: 112px 48px; }
   border-color: var(--navy);
   background: var(--off-white);
 }
-.prog-card-retreat {
+.prog-card.prog-card-retreat {
   position: relative;
   border: none;
   min-height: 440px;
@@ -374,13 +374,13 @@ section { padding: 112px 48px; }
     linear-gradient(180deg, rgba(13,20,40,0.82) 0%, rgba(13,20,40,0.88) 100%),
     url('assets/retreat-terrace.jpg') center/cover no-repeat;
 }
-.prog-card-retreat h3 { color: var(--white); }
-.prog-card-retreat p { color: rgba(255,255,255,0.88); }
-.prog-card-retreat .prog-tags span {
+.prog-card.prog-card-retreat h3 { color: var(--white); }
+.prog-card.prog-card-retreat p { color: rgba(255,255,255,0.88); }
+.prog-card.prog-card-retreat .prog-tags span {
   background: rgba(255,255,255,0.14);
   color: var(--white);
 }
-.prog-card-retreat .prog-footer { border-top-color: rgba(255,255,255,0.2); }
+.prog-card.prog-card-retreat .prog-footer { border-top-color: rgba(255,255,255,0.2); }
 .prog-badge {
   display: inline-block;
   font-size: 9px;
