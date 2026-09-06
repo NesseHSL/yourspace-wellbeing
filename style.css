@@ -235,6 +235,13 @@ header nav a.nav-btn-ghost:hover { background: var(--off-white); border-color: v
   width: fit-content;
   margin: 18px auto 0;
 }
+.hero-secondary-caption {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 300;
+}
 
 /* ======================================
    SECTION SHARED
@@ -375,12 +382,12 @@ section { padding: 112px 48px; }
     url('assets/retreat-terrace.jpg') center/cover no-repeat;
 }
 .prog-card.prog-card-retreat h3 { color: var(--white); }
-.prog-card.prog-card-retreat p { color: rgba(255,255,255,0.88); }
+.prog-card.prog-card-retreat p { color: rgba(255,255,255,0.88); flex-grow: 0; }
 .prog-card.prog-card-retreat .prog-tags span {
   background: rgba(255,255,255,0.14);
   color: var(--white);
 }
-.prog-card.prog-card-retreat .prog-footer { border-top-color: rgba(255,255,255,0.2); }
+.prog-card.prog-card-retreat .prog-footer { border-top-color: rgba(255,255,255,0.2); margin-top: 0; }
 .prog-badge {
   display: inline-block;
   font-size: 9px;
