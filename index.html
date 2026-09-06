@@ -285,40 +285,6 @@
       </div>
     </section>
 
-    <!-- TEAM -->
-    <section id="team">
-      <div class="section-inner">
-        <p class="section-label">The people</p>
-        <h2>Who you'll be moving with</h2>
-
-        <!-- Instructors -->
-        <p class="instructors-intro-text">Nesse, Benji, and Jaimee bring decades of combined expertise — and a genuinely good time. Hover over them. Go on.</p>
-        <div class="instructors-row">
-          <div class="instructor-card">
-            <div class="instructor-photo-wrap">
-              <img src="assets/NESSE_Instructor.jpeg" alt="Nesse">
-              <p class="instructor-bio">Founder of HerSpace London. Dancer, Trainer, Fierce feminist. She's known as Queen of the Barre and for good reason.</p>
-            </div>
-            <p class="instructor-name">Nesse</p>
-          </div>
-          <div class="instructor-card">
-            <div class="instructor-photo-wrap">
-              <img src="assets/BENJI.jpg" alt="Benji">
-              <p class="instructor-bio">The yin to Nesse's yang, Benji is the King of Pilates. Former ballet dancer and full time sweetheart. Prepare to fall in love.</p>
-            </div>
-            <p class="instructor-name">Benji</p>
-          </div>
-          <div class="instructor-card">
-            <div class="instructor-photo-wrap">
-              <img src="assets/JAIMEE.jpg" alt="Jaimee">
-              <p class="instructor-bio">Our resident showgirl, Jaimee lights up stages and screens in London and around the world. Dancer, Trainer, Diamond.</p>
-            </div>
-            <p class="instructor-name">Jaimee</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- TESTIMONIALS -->
     <!-- ⚠️ REPLACE WITH REAL YOURSPACE TESTIMONIALS BEFORE LAUNCH ⚠️ -->
     <section id="testimonials">
@@ -422,23 +388,6 @@
       });
     });
 
-    // MOBILE-CRITICAL: tap-to-toggle for instructor bios, since CSS :hover
-    // alone doesn't fire reliably on touch devices. Pairs with the
-    // .is-active rules and mobile font-size overrides in style.css — if
-    // this breaks, bios will be inaccessible on phones/tablets again.
-    document.querySelectorAll('.instructor-photo-wrap').forEach(wrap => {
-      wrap.addEventListener('click', e => {
-        const wasActive = wrap.classList.contains('is-active');
-        document.querySelectorAll('.instructor-photo-wrap.is-active').forEach(el => el.classList.remove('is-active'));
-        if (!wasActive) {
-          wrap.classList.add('is-active');
-          e.stopPropagation();
-        }
-      });
-    });
-    document.addEventListener('click', () => {
-      document.querySelectorAll('.instructor-photo-wrap.is-active').forEach(el => el.classList.remove('is-active'));
-    });
   </script>
 
 
