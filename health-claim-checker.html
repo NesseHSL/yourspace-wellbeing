@@ -16,7 +16,7 @@
 <meta property="og:url" content="https://www.yourspacewellbeing.com/health-claim-checker">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="health-claim-checker.css">
 <script src="https://js.stripe.com/v3/"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -25,7 +25,7 @@
 
 <!-- HEADER -->
 <header>
-  <a href="index.html" class="h-back">&larr; YourSpace</a>
+  <a href="index.html" class="h-back h-logo-link"><img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing"></a>
   <div class="h-logo">Health Claim Checker</div>
   <div class="h-tag">by YourSpace</div>
   <button class="h-menu-btn" id="menuBtn" aria-label="Menu" onclick="toggleMenu()">
@@ -42,7 +42,7 @@
   <div id="screen-input">
     <div class="eyebrow">Health Claim Checker</div>
     <h1 class="page-title">What have<br>you heard?</h1>
-    <p class="page-sub">Type any health claim, however you've seen it written. We evaluate it against peer-reviewed evidence.</p>
+    <p class="page-sub">Type any health claim, however you've seen it written or heard it repeated. We check it against current, peer-reviewed research, using the same evidence hierarchy scientists rely on, prioritising systematic reviews and randomised controlled trials over single studies or anecdotes. We don't scan the whole internet for opinions. We search published science, so what comes back is genuinely trustworthy, not just confident-sounding.</p>
     <textarea id="claim-input" placeholder="e.g. magnesium helps with anxiety, seed oils are toxic, collagen improves skin..."></textarea>
     <button class="btn-check" id="check-btn" onclick="runCheck()">Check the evidence</button>
     <div class="error-msg" id="error-msg"></div>
@@ -59,14 +59,14 @@
 
   <div id="screen-loading">
     <svg width="72" height="62" viewBox="0 0 72 62" fill="none" style="display:block;margin:0 auto">
-      <path d="M4 8 C4 8 4 6 6 5 L32 3.5 C34 3.5 35 4.5 35 4.5 L35 56.5 C35 56.5 34 55.5 32 55.5 L6 57 C4 57 4 55 4 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
-      <path d="M68 8 C68 8 68 6 66 5 L40 3.5 C38 3.5 37 4.5 37 4.5 L37 56.5 C37 56.5 38 55.5 40 55.5 L66 57 C68 57 68 55 68 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
-      <line class="page-line-l" x1="10" y1="15" x2="30" y2="13.5" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
-      <line class="page-line-l2" x1="10" y1="22" x2="30" y2="20.5" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
-      <line class="page-line-l3" x1="10" y1="29" x2="30" y2="27.5" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
-      <line class="page-line-r" x1="42" y1="13.5" x2="62" y2="15" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
-      <line class="page-line-r2" x1="42" y1="20.5" x2="62" y2="22" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
-      <line class="page-line-r3" x1="42" y1="27.5" x2="62" y2="29" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
+      <path d="M4 8 C4 8 4 6 6 5 L32 3.5 C34 3.5 35 4.5 35 4.5 L35 56.5 C35 56.5 34 55.5 32 55.5 L6 57 C4 57 4 55 4 55 Z" stroke="#1C3461" stroke-width="2" fill="none"/>
+      <path d="M68 8 C68 8 68 6 66 5 L40 3.5 C38 3.5 37 4.5 37 4.5 L37 56.5 C37 56.5 38 55.5 40 55.5 L66 57 C68 57 68 55 68 55 Z" stroke="#1C3461" stroke-width="2" fill="none"/>
+      <line class="page-line-l" x1="10" y1="15" x2="30" y2="13.5" stroke="#2A9DB5" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-l2" x1="10" y1="22" x2="30" y2="20.5" stroke="#2A9DB5" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-l3" x1="10" y1="29" x2="30" y2="27.5" stroke="#2A9DB5" stroke-width="1" stroke-linecap="round"/>
+      <line class="page-line-r" x1="42" y1="13.5" x2="62" y2="15" stroke="#2A9DB5" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-r2" x1="42" y1="20.5" x2="62" y2="22" stroke="#2A9DB5" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-r3" x1="42" y1="27.5" x2="62" y2="29" stroke="#2A9DB5" stroke-width="1" stroke-linecap="round"/>
     </svg>
     <div class="load-title">Reviewing the evidence</div>
     <div class="load-sub">Searching peer-reviewed research, systematic reviews, and clinical studies.</div>
@@ -76,14 +76,14 @@
 
   <div id="screen-loading-payment">
     <svg width="72" height="62" viewBox="0 0 72 62" fill="none" style="display:block;margin:0 auto">
-      <path d="M4 8 C4 8 4 6 6 5 L32 3.5 C34 3.5 35 4.5 35 4.5 L35 56.5 C35 56.5 34 55.5 32 55.5 L6 57 C4 57 4 55 4 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
-      <path d="M68 8 C68 8 68 6 66 5 L40 3.5 C38 3.5 37 4.5 37 4.5 L37 56.5 C37 56.5 38 55.5 40 55.5 L66 57 C68 57 68 55 68 55 Z" stroke="#0D1B3E" stroke-width="2" fill="none"/>
-      <line class="page-line-l" x1="10" y1="15" x2="30" y2="13.5" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
-      <line class="page-line-l2" x1="10" y1="22" x2="30" y2="20.5" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
-      <line class="page-line-l3" x1="10" y1="29" x2="30" y2="27.5" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
-      <line class="page-line-r" x1="42" y1="13.5" x2="62" y2="15" stroke="#2A7F8A" stroke-width="1.5" stroke-linecap="round"/>
-      <line class="page-line-r2" x1="42" y1="20.5" x2="62" y2="22" stroke="#2A7F8A" stroke-width="1.2" stroke-linecap="round"/>
-      <line class="page-line-r3" x1="42" y1="27.5" x2="62" y2="29" stroke="#2A7F8A" stroke-width="1" stroke-linecap="round"/>
+      <path d="M4 8 C4 8 4 6 6 5 L32 3.5 C34 3.5 35 4.5 35 4.5 L35 56.5 C35 56.5 34 55.5 32 55.5 L6 57 C4 57 4 55 4 55 Z" stroke="#1C3461" stroke-width="2" fill="none"/>
+      <path d="M68 8 C68 8 68 6 66 5 L40 3.5 C38 3.5 37 4.5 37 4.5 L37 56.5 C37 56.5 38 55.5 40 55.5 L66 57 C68 57 68 55 68 55 Z" stroke="#1C3461" stroke-width="2" fill="none"/>
+      <line class="page-line-l" x1="10" y1="15" x2="30" y2="13.5" stroke="#2A9DB5" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-l2" x1="10" y1="22" x2="30" y2="20.5" stroke="#2A9DB5" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-l3" x1="10" y1="29" x2="30" y2="27.5" stroke="#2A9DB5" stroke-width="1" stroke-linecap="round"/>
+      <line class="page-line-r" x1="42" y1="13.5" x2="62" y2="15" stroke="#2A9DB5" stroke-width="1.5" stroke-linecap="round"/>
+      <line class="page-line-r2" x1="42" y1="20.5" x2="62" y2="22" stroke="#2A9DB5" stroke-width="1.2" stroke-linecap="round"/>
+      <line class="page-line-r3" x1="42" y1="27.5" x2="62" y2="29" stroke="#2A9DB5" stroke-width="1" stroke-linecap="round"/>
     </svg>
     <div class="load-title">Building your evidence report</div>
     <div class="load-sub">Payment confirmed. Now pulling the full research breakdown, this takes 5–10 seconds.</div>
