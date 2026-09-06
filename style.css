@@ -119,13 +119,6 @@ header nav a.nav-btn-ghost {
   color: var(--navy);
 }
 header nav a.nav-btn-ghost:hover { background: var(--off-white); border-color: var(--navy); }
-header nav a.nav-btn-teal {
-  background: var(--teal);
-  color: var(--white);
-  border: none;
-}
-header nav a.nav-btn-teal:hover { background: var(--navy); }
-
 /* ======================================
    BUTTONS
    ====================================== */
@@ -236,6 +229,11 @@ header nav a.nav-btn-teal:hover { background: var(--navy); }
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
+}
+.hero-secondary-link {
+  display: block;
+  width: fit-content;
+  margin: 18px auto 0;
 }
 
 /* ======================================
@@ -373,8 +371,8 @@ section { padding: 112px 48px; }
   justify-content: flex-end;
   color: var(--white);
   background:
-    linear-gradient(180deg, rgba(20,32,58,0.15) 0%, rgba(15,24,46,0.92) 100%),
-    url('assets/retreat-villa.jpg') center/cover no-repeat;
+    linear-gradient(180deg, rgba(13,20,40,0.82) 0%, rgba(13,20,40,0.88) 100%),
+    url('assets/retreat-terrace.jpg') center/cover no-repeat;
 }
 .prog-card-retreat h3 { color: var(--white); }
 .prog-card-retreat p { color: rgba(255,255,255,0.88); }
