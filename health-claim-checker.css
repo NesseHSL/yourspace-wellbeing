@@ -33,7 +33,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .page-line-l3{transform-origin:right center;animation:flipL 1.6s ease-in-out infinite 0.4s}
 .page-line-r3{transform-origin:left center;animation:flipR 1.6s ease-in-out infinite 1.2s}
 
-main{max-width:640px;margin:0 auto;padding:64px 24px 80px}
+.hcc-topbar{
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;height:56px;
+  display:flex;align-items:center;
+  position:sticky;top:0;z-index:100;
+}
+.hcc-topbar-logo{display:flex;align-items:center}
+.hcc-topbar-logo img{height:110px;width:auto;display:block}
+
+main{max-width:640px;margin:0 auto;padding:40px 24px 80px}
 
 .hcc-footer-links{
   margin-top:48px;padding-top:24px;
