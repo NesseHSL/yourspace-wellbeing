@@ -119,6 +119,12 @@ header nav a.nav-btn-ghost {
   color: var(--navy);
 }
 header nav a.nav-btn-ghost:hover { background: var(--off-white); border-color: var(--navy); }
+header nav a.nav-btn-teal {
+  background: var(--teal);
+  color: var(--white);
+  border: none;
+}
+header nav a.nav-btn-teal:hover { background: var(--navy); }
 
 /* ======================================
    BUTTONS
@@ -360,6 +366,23 @@ section { padding: 112px 48px; }
   border-color: var(--navy);
   background: var(--off-white);
 }
+.prog-card-retreat {
+  position: relative;
+  border: none;
+  min-height: 440px;
+  justify-content: flex-end;
+  color: var(--white);
+  background:
+    linear-gradient(180deg, rgba(20,32,58,0.15) 0%, rgba(15,24,46,0.92) 100%),
+    url('assets/retreat-villa.jpg') center/cover no-repeat;
+}
+.prog-card-retreat h3 { color: var(--white); }
+.prog-card-retreat p { color: rgba(255,255,255,0.88); }
+.prog-card-retreat .prog-tags span {
+  background: rgba(255,255,255,0.14);
+  color: var(--white);
+}
+.prog-card-retreat .prog-footer { border-top-color: rgba(255,255,255,0.2); }
 .prog-badge {
   display: inline-block;
   font-size: 9px;

@@ -62,20 +62,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <a href="index.html" class="h-back h-logo-link"><img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing"></a>
-  <div class="h-logo">Health Claim Checker</div>
-  <div class="h-tag">by YourSpace</div>
-  <button class="h-menu-btn" id="menuBtn" aria-label="Menu" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </button>
-  <nav class="h-nav" id="mainNav">
-    <a href="health-claim-checker-how-it-works.html">How it works</a>
-    <a href="health-claim-checker-terms.html">Terms of use</a>
-  </nav>
-</header>
-
 <div class="hw-main">
 
   <a class="hw-back" href="health-claim-checker.html">← Back to the checker</a>
@@ -173,15 +159,19 @@
     <p><strong>Disclaimer.</strong> The Health Claim Checker is an informational tool only. Nothing on this platform constitutes medical advice, diagnosis, or treatment recommendation. The information provided is for general educational purposes and reflects the state of the scientific literature as understood at the time of evaluation. Individual health circumstances vary significantly, always consult a qualified healthcare professional before making decisions about your health.</p>
   </div>
 
+  <div class="hcc-footer-links">
+    <a href="index.html">← YourSpace</a>
+    <span>·</span>
+    <a href="health-claim-checker.html">Check a claim</a>
+    <span>·</span>
+    <a href="health-claim-checker-how-it-works.html">How it works</a>
+    <span>·</span>
+    <a href="health-claim-checker-terms.html">Terms of use</a>
+  </div>
+
 </div>
 
 <script>
-function toggleMenu(){document.getElementById('mainNav').classList.toggle('open')}
-document.addEventListener('click',function(e){
-  if(!e.target.closest('#menuBtn')&&!e.target.closest('#mainNav')){
-    document.getElementById('mainNav').classList.remove('open');
-  }
-});
 </script>
 </body>
 </html>

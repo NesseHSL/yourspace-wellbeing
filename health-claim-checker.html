@@ -23,20 +23,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
-  <a href="index.html" class="h-back h-logo-link"><img src="assets/yourspace-logo-nostrap.png" alt="YourSpace Wellbeing"></a>
-  <div class="h-logo">Health Claim Checker</div>
-  <div class="h-tag">by YourSpace</div>
-  <button class="h-menu-btn" id="menuBtn" aria-label="Menu" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </button>
-  <nav class="h-nav" id="mainNav">
-    <a href="health-claim-checker-how-it-works.html">How it works</a>
-    <a href="health-claim-checker-terms.html">Terms of use</a>
-  </nav>
-</header>
-
 <main>
 
   <div id="screen-input">
@@ -177,6 +163,14 @@
     <button class="back-btn" onclick="reset()">← Check another claim</button>
   </div>
 
+  <div class="hcc-footer-links">
+    <a href="index.html">← YourSpace</a>
+    <span>·</span>
+    <a href="health-claim-checker-how-it-works.html">How it works</a>
+    <span>·</span>
+    <a href="health-claim-checker-terms.html">Terms of use</a>
+  </div>
+
 </main>
 
 <div id="print-header">
@@ -209,12 +203,6 @@ let hasAllAccessCredits = false;
 let freeRemaining = 0;
 const FREE_CREDITS_PER_MONTH = 5;
 
-function toggleMenu(){document.getElementById('mainNav').classList.toggle('open')}
-document.addEventListener('click',function(e){
-  if(!e.target.closest('#menuBtn')&&!e.target.closest('#mainNav')){
-    document.getElementById('mainNav').classList.remove('open');
-  }
-});
 
 function setEx(t){document.getElementById('claim-input').value=t}
 
