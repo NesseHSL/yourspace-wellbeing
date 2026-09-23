@@ -36,13 +36,14 @@ export default async function handler(req, res) {
       'metadata[user_id]': userId || '',
       'metadata[price_id]': priceId,
       'allow_promotion_codes': 'true',
-      // Trials start at £0 due today, so force card collection now —
-      // otherwise Stripe may skip it and have nothing to bill on day 8.
-      'payment_method_collection': hasTrial ? 'always' : 'if_required',
     });
 
     // statement_descriptor param differs by payment mode
     if (mode === 'subscription') {
+      // Trials start at £0 due today, so force card collection now —
+      // otherwise Stripe may skip it and have nothing to bill on day 8.
+      // (Stripe rejects this param on one-off payments.)
+      params.append('payment_method_collection', hasTrial ? 'always' : 'if_required');
       params.append('subscription_data[description]', descriptor);
       if (hasTrial) {
         params.append('subscription_data[trial_period_days]', '7');
