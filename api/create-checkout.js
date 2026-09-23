@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         params.append('subscription_data[trial_period_days]', '7');
       }
     } else {
-      params.append('payment_intent_data[statement_descriptor]', descriptor);
+      params.append('payment_intent_data[statement_descriptor_suffix]', descriptor);
     }
 
     if (userEmail) params.append('customer_email', userEmail);

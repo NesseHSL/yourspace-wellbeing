@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     // Restore: £24.99 one-off. 6 months (not 90 days like Pre-Hab/Sofa to
     // Studio) because some videos are for 12+ weeks postpartum and new
     // mums often can't start straight away.
-    'price_1UIps13qlwzbgcp9gNC6N4Aj': { id: 'restore', name: 'Restore', days: 183, type: 'one-off' },
+    'price_1UIps13qlwzbgcp9gNC6N4Aj': { id: 'restore', name: 'Restore', days: 183, type: 'one-off', opensOn: '2026-10-12' },
   };
 
   // All Access unlocks all of these.
@@ -123,7 +123,11 @@ export default async function handler(req, res) {
     }
 
     // ── SINGLE PROGRAMME ─────────────────────────────────────────────
-    const expiresAt = new Date();
+    // Pre-orders (programme.opensOn in the future) get their full access
+    // window counted from launch day, not from the day they paid.
+    const opensOn   = programme.opensOn ? new Date(`${programme.opensOn}T00:00:00Z`) : null;
+    const isPreOrder = opensOn && opensOn > new Date();
+    const expiresAt = isPreOrder ? new Date(opensOn) : new Date();
     expiresAt.setDate(expiresAt.getDate() + programme.days);
     const expiresAtStr = expiresAt.toISOString();
 
@@ -172,11 +176,15 @@ export default async function handler(req, res) {
     }
 
     await notifyAdmin(
-      `New YourSpace purchase — ${programme.name}`,
-      `<p>New <strong>${programme.name}</strong> purchase: <strong>£${(session.amount_total / 100).toFixed(2)} ${session.currency?.toUpperCase()}</strong></p>`
+      `New YourSpace ${isPreOrder ? 'pre-order' : 'purchase'} — ${programme.name}`,
+      `<p>New <strong>${programme.name}</strong> ${isPreOrder ? 'pre-order' : 'purchase'}: <strong>£${(session.amount_total / 100).toFixed(2)} ${session.currency?.toUpperCase()}</strong></p>`
     );
 
-    return res.status(200).json({ success: true, programme: programme.name });
+    return res.status(200).json({
+      success: true,
+      programme: programme.name,
+      opensOn: isPreOrder ? programme.opensOn : null,
+    });
 
   } catch (error) {
     console.error('Record purchase error:', error);

@@ -117,7 +117,7 @@
       <div class="icon">🎉</div>
       <h1>You're in!</h1>
       <div class="programme-name" id="programmeName"></div>
-      <p>Your purchase is confirmed and your programme is ready and waiting. Let's get moving.</p>
+      <p id="successMsg">Your purchase is confirmed and your programme is ready and waiting. Let's get moving.</p>
       <a href="dashboard.html" class="btn">Go to my dashboard</a>
     </div>
 
@@ -162,6 +162,11 @@
 
         if (data.success) {
           document.getElementById('programmeName').textContent = data.programme;
+          if (data.opensOn) {
+            const opens = new Date(`${data.opensOn}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+            document.getElementById('successMsg').textContent =
+              `Your pre-order is confirmed. ${data.programme} opens on ${opens}, and your access period starts from that day, so you won't lose a thing.`;
+          }
           showSuccess();
         } else {
           const detail = document.getElementById('errorDetail');
