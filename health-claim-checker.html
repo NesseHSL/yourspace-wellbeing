@@ -177,6 +177,8 @@
   <div class="hcc-footer-links">
     <a href="index.html">← YourSpace</a>
     <span>·</span>
+    <a href="/evidence">Evidence library</a>
+    <span>·</span>
     <a href="health-claim-checker-how-it-works.html">How it works</a>
     <span>·</span>
     <a href="health-claim-checker-terms.html">Terms of use</a>
@@ -559,6 +561,13 @@ window.addEventListener('load',async()=>{
     document.getElementById('upsell-card').style.display='none';
     document.getElementById('btn-dive-demo').style.display='block';
     confirmedPaymentIntentId='demo';
+  }
+
+  // Evidence Library links arrive with ?claim=... so the check runs straight away
+  const presetClaim=new URLSearchParams(window.location.search).get('claim');
+  if(presetClaim){
+    document.getElementById('claim-input').value=presetClaim.slice(0,300);
+    runCheck();
   }
 });
 </script>

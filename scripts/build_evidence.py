@@ -3,7 +3,11 @@ import html, json, os
 B = "https://www.yourspacewellbeing.com"
 OUT = os.path.expanduser("~/Desktop/YourSpace/evidence")
 DATE = "2026-09-23"
-DRAFT = True  # noindex until Hillary approves
+DRAFT = False  # True adds noindex (for unreviewed drafts)
+# Full articles show the whole evidence breakdown as a free sample of the paid deep dive.
+# Every other article stops at summary level and links to the paid deep dive for that claim.
+FULL = {"collagen-skin"}
+from urllib.parse import quote
 
 ARTICLES = [
  {
@@ -144,6 +148,14 @@ HEAD_CSS = """
 .ev-btn:hover{background:var(--teal)}
 .ev-disclaimer{background:#F8F9FB;border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-top:40px}
 .ev-disclaimer p{font-size:13px;line-height:1.75;color:var(--muted)}
+.ev-locked{margin:40px 0 8px;padding:28px 26px;border-radius:14px;background:var(--navy);text-align:center}
+.ev-locked h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:400;color:#fff;margin-bottom:10px}
+.ev-locked p{font-size:14px;line-height:1.7;color:rgba(255,255,255,.75);margin-bottom:18px}
+.ev-locked .ev-btn{background:var(--teal)}
+.ev-locked .ev-btn:hover{background:#fff;color:var(--navy)}
+.ev-locked .ev-locked-note{font-size:12px;margin:16px 0 0}
+.ev-locked-note a{color:#fff}
+.ev-tag{display:inline-block;margin-left:8px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--teal)}
 .ev-meta{font-size:12px;color:var(--muted);margin-top:8px}
 .ev-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
 .ev-card{display:block;border:1px solid var(--border);border-radius:14px;padding:22px 24px;text-decoration:none;transition:border-color .2s,box-shadow .2s}
@@ -211,19 +223,27 @@ for a in ARTICLES:
             {"@type": "ListItem", "position": 3, "name": a["claim"], "item": url}]}]}
     body = [head(a["title"], a["desc"], url, ld), '<main class="ev-main">',
             '  <a class="ev-back" href="/evidence">← Evidence library</a>',
-            '  <div class="eyebrow">Health claim, checked</div>',
+            f'  <div class="eyebrow">{"Sample deep dive" if a["slug"] in FULL else "Health claim, checked"}</div>',
             f'  <p class="ev-claim">&ldquo;{e(a["claim"])}&rdquo;</p>',
             f'  <h1 class="page-title">{e(a["title"])}</h1>',
             f'  <div class="ev-verdict">{badge(a["verdict"])}<span class="ev-verdict-text">{VMEAN[a["verdict"]]}</span></div>',
             f'  <section class="ev-short"><h2>The short answer</h2><p>{e(a["short"])}</p></section>']
+    full = a["slug"] in FULL
     for h, ps in a["sections"]:
+        if not full and h == "What the strongest evidence shows":
+            body.append(f'  <div class="ev-locked"><h2>The full evidence breakdown</h2><p>Every key study, how strong it is, the caveats and what the headlines got wrong, in a report you can keep.</p><a class="ev-btn" href="/health-claim-checker?claim={quote(a["claim"])}">See the full breakdown</a><p class="ev-locked-note">A small one-off fee. All Access members get 5 free deep dives a month. <a href="/evidence/collagen-skin">See a free sample</a>.</p></div>')
+            continue
         body.append(f'  <h2 class="ev-h2">{e(h)}</h2>')
         body += [f'  <p class="ev-p">{e(p)}</p>' for p in ps]
-    body.append('  <h2 class="ev-h2">Sources</h2>\n  <ul class="ev-sources">')
-    body += [f'    <li><a href="{u}" target="_blank" rel="noopener">{e(t)}</a></li>' for t, u in a["sources"]]
+    srcs = a["sources"] if full else a["sources"][:1]
+    body.append(f'  <h2 class="ev-h2">{"Sources" if full else "Key source"}</h2>\n  <ul class="ev-sources">')
+    body += [f'    <li><a href="{u}" target="_blank" rel="noopener">{e(t)}</a></li>' for t, u in srcs]
     body.append('  </ul>')
     body.append(f'  <p class="ev-meta">Last reviewed {DATE[8:].lstrip("0")} September 2026 by the YourSpace Wellbeing team.</p>')
-    body.append('  <div class="ev-cta"><p>Heard a different health claim? Check it against the research in seconds.</p><a class="ev-btn" href="/health-claim-checker">Check a claim</a></div>')
+    if full:
+        body.append('  <div class="ev-cta"><p>This is the depth of every Health Claim Checker deep dive. Heard a claim you want to check?</p><a class="ev-btn" href="/health-claim-checker">Check a claim</a></div>')
+    else:
+        body.append('  <div class="ev-cta"><p>Heard a different health claim? Check it against the research in seconds.</p><a class="ev-btn" href="/health-claim-checker">Check a claim</a></div>')
     body.append('  <div class="ev-disclaimer"><p><strong>Not medical advice.</strong> This article summarises published research for general education. It is not a diagnosis or a treatment recommendation. Always speak to a qualified healthcare professional about your own health.</p></div>')
     body.append(FOOT)
     body.append('</main>\n</body>\n</html>\n')
@@ -239,8 +259,9 @@ body = [head("Evidence library: health claims, checked", idesc, url, ld, "websit
         '  <h1 class="page-title">Health claims,<br>checked</h1>',
         '  <p class="page-sub">The health and nutrition claims we hear most, weighed against the best available research: systematic reviews and randomised trials first, headlines last.</p>',
         '  <ul class="ev-list">']
-for a in ARTICLES:
-    body.append(f'    <li><a class="ev-card" href="/evidence/{a["slug"]}">{badge(a["verdict"])}<h2>{e(a["title"])}</h2><p>{e(a["short"])}</p></a></li>')
+for a in sorted(ARTICLES, key=lambda a: a["slug"] not in FULL):
+    tag = '<span class="ev-tag">Free sample deep dive</span>' if a["slug"] in FULL else ""
+    body.append(f'    <li><a class="ev-card" href="/evidence/{a["slug"]}">{badge(a["verdict"])}{tag}<h2>{e(a["title"])}</h2><p>{e(a["short"])}</p></a></li>')
 body.append('  </ul>')
 body.append('  <div class="ev-cta"><p>Don&rsquo;t see your claim here?</p><a class="ev-btn" href="/health-claim-checker">Check any claim</a></div>')
 body.append(FOOT)
