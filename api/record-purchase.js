@@ -13,11 +13,10 @@ export default async function handler(req, res) {
     'price_1TKgVa3qlwzbgcp9Bjt9s6yg': { id: 'home-studio',    name: 'The Home Studio',     days: 365, type: 'subscription' },
     'price_1U7zGl3qlwzbgcp9sNjlcIYu': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
     'price_1U3wIK3qlwzbgcp9oC7W1lps': { id: 'nutrition-guide', name: 'The Menu',  days: 30,  type: 'subscription' },
-    // PLACEHOLDER — replace with the real Stripe price ID once Restore has
-    // a product/price set up. 6 months (not 90 days like Pre-Hab/Sofa to
+    // Restore: £24.99 one-off. 6 months (not 90 days like Pre-Hab/Sofa to
     // Studio) because some videos are for 12+ weeks postpartum and new
     // mums often can't start straight away.
-    'price_PLACEHOLDER_RESTORE': { id: 'restore', name: 'Restore', days: 183, type: 'one-off' },
+    'price_1UIps13qlwzbgcp9gNC6N4Aj': { id: 'restore', name: 'Restore', days: 183, type: 'one-off' },
   };
 
   // All Access unlocks all of these.
