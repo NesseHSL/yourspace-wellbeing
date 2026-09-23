@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /success
+Disallow: /receipt
+Disallow: /studio-content
+Disallow: /restore-content
+Disallow: /sofa-content
+Disallow: /back-to-it-tracker
+
+Sitemap: https://www.yourspacewellbeing.com/sitemap.xml
