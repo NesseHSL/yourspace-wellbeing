@@ -10,5 +10,12 @@
       "source": "/evidence",
       "destination": "/evidence/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
   ]
 }
