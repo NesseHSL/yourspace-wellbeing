@@ -275,7 +275,7 @@
         <!-- RESTORE (POST-NATAL) -->
         <a href="restore.html" class="spec-card teal">
           <div class="spec-card-top">
-            <div class="spec-card-badge">Coming Soon</div>
+            <div class="spec-card-badge"><span data-restore-badge>Coming Soon</span></div>
             <h2>Restore</h2>
             <p>Safe, progressive movement for new mothers</p>
           </div>
@@ -380,5 +380,8 @@
     });
   </script>
 
+<script>
+  if (new Date() >= new Date('2026-10-15T23:00:00Z')) document.querySelectorAll('[data-restore-badge]').forEach(e => e.textContent = 'Available Now');
+</script>
 </body>
 </html>

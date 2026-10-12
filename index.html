@@ -131,7 +131,7 @@
             <div class="prog-card">
               <div class="prog-badges-row">
                 <div class="prog-badge badge-grey">Postnatal</div>
-                <div class="prog-badge badge-coming-soon">Coming Soon</div>
+                <div class="prog-badge badge-coming-soon"><span data-restore-badge>Coming Soon</span></div>
               </div>
               <h3>Restore</h3>
               <p>Four videos to help you find your way back to movement after birth, gently, and entirely at your own pace. No schedule, no checkpoints.</p>
@@ -477,5 +477,8 @@
       } catch(e) { /* fail silently */ }
     })();
   </script>
+<script>
+  if (new Date() >= new Date('2026-10-15T23:00:00Z')) document.querySelectorAll('[data-restore-badge]').forEach(e => e.textContent = 'Available Now');
+</script>
 </body>
 </html>
