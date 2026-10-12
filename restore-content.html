@@ -207,6 +207,13 @@
       justify-content: center;
       position: relative;
     }
+    .guide-box { display:flex; align-items:center; justify-content:space-between; gap:24px; background:var(--teal-light, #E8F6FA); border-radius:16px; padding:24px 28px; }
+    .guide-title { font-family: var(--font-serif); font-size: 26px; font-weight: 400; color: var(--navy); margin-bottom: 6px; }
+    .guide-body { font-size: 14px; line-height: 1.6; color: rgba(28,52,97,0.7); max-width: 520px; }
+    .guide-btn { flex-shrink:0; display:inline-block; background: var(--navy); color:#fff; text-decoration:none; padding: 12px 22px; border-radius: 40px; font-size: 14px; font-weight: 500; }
+    .guide-btn:hover { background: var(--teal); }
+    @media (max-width: 640px) { .guide-box { flex-direction: column; align-items: flex-start; } }
+
     .video-thumb.playable { cursor: pointer; }
     .video-thumb-label {
       font-family: var(--font-serif);
@@ -383,7 +390,7 @@
     <section class="content-section" id="orientation">
       <p class="section-label">Before you begin</p>
       <h2 class="section-title">Welcome to Restore</h2>
-      <p class="orientation-body">This programme is here to support you as you find your way back to movement after birth, gently, and entirely at your own pace. There's no schedule to follow and nothing to unlock. All four videos are yours from today.</p>
+      <p class="orientation-body">This programme is here to support you as you find your way back to movement after birth, gently, and entirely at your own pace. There's no schedule to follow and nothing to unlock. Your videos appear below as soon as they're ready.</p>
       <p class="orientation-body">Restore is not a replacement for care from your GP or a women's health physiotherapist. If you haven't yet had your postnatal check, please get clearance from your GP or midwife before starting, and if anything below applies to you, please see a doctor or physio rather than continuing.</p>
 
       <div class="warning-box" id="red-flags">
@@ -400,59 +407,71 @@
       </div>
     </section>
 
+    <!-- NUTRITION GUIDE -->
+    <section class="content-section" id="nutrition-guide">
+      <div class="guide-box">
+        <div>
+          <p class="section-label" style="margin-bottom:6px;">Nourish to Restore</p>
+          <h2 class="guide-title">Your postnatal nutrition guide</h2>
+          <p class="guide-body">Simple, evidence-based guidance on protein, hydration, vitamin D, calcium, iron and more, stage by stage alongside your workouts. Written by our founder and clinical nutritionist, Nesse.</p>
+        </div>
+        <a class="guide-btn" href="assets/restore-nourish-to-restore.pdf" target="_blank" rel="noopener" download>Download the guide (PDF)</a>
+      </div>
+    </section>
+
     <!-- VIDEOS -->
     <section class="content-section">
       <p class="section-label">Your Videos</p>
       <h2 class="section-title">The Programme</h2>
-      <p class="sequence-nudge">Start with Video 1, and move on to the next video whenever you're feeling ready. There's no set schedule.</p>
+      <p class="sequence-nudge">Start with Video 1, your introduction and diastasis check. Then work through the three workouts in order, moving on whenever you're feeling ready. Each one is a little more involved than the last. There's no set schedule.</p>
 
       <div class="content-grid">
 
         <!-- Video 1 -->
-        <div class="video-card">
+        <div class="video-card" data-vimeo="" data-title="Restore: Welcome &amp; Diastasis Check">
           <div class="video-thumb">
             <div class="coming-soon-overlay">
               <span class="coming-soon-badge">Coming Soon</span>
             </div>
           </div>
           <div class="video-card-body">
-            <p class="video-phase">Video 1 &middot; Filmed by Hillary</p>
-            <h3 class="video-title">Foundations</h3>
-            <p class="video-desc">Pelvic floor reconnection, plus a guided check for abdominal separation (diastasis recti), the starting point for everything that follows.</p>
+            <p class="video-phase">Video 1 &middot; Introduction</p>
+            <h3 class="video-title">Welcome &amp; Diastasis Check</h3>
+            <p class="video-desc">A short introduction to Restore and how to get the most from it, plus a step-by-step guide to checking yourself for abdominal separation (diastasis recti) before you begin.</p>
             <div class="video-footer">
-              <div class="video-tags"><span class="video-tag">Pelvic floor</span><span class="video-tag">Diastasis check</span></div>
+              <div class="video-tags"><span class="video-tag">Start here</span><span class="video-tag">Diastasis check</span></div>
             </div>
           </div>
         </div>
 
         <!-- Video 2 -->
-        <div class="video-card">
+        <div class="video-card" data-vimeo="" data-title="Restore: Core &amp; Movement Basics">
           <div class="video-thumb">
             <div class="coming-soon-overlay">
               <span class="coming-soon-badge">Coming Soon</span>
             </div>
           </div>
           <div class="video-card-body">
-            <p class="video-phase">Video 2 &middot; Filmed by Benji</p>
+            <p class="video-phase">Video 2 &middot; Workout 1</p>
             <h3 class="video-title">Core &amp; Movement Basics</h3>
-            <p class="video-desc">Transverse abdominis activation, pelvic tilts, and bridging. Safe, foundational core work to build on Video 1.</p>
+            <p class="video-desc">Gentle, foundational work: deep core activation, pelvic floor connection, pelvic tilts and bridging. Safe, steady and the perfect place to start moving again.</p>
             <div class="video-footer">
-              <div class="video-tags"><span class="video-tag">Deep core</span><span class="video-tag">Pelvic tilts</span></div>
+              <div class="video-tags"><span class="video-tag">Deep core</span><span class="video-tag">Pelvic floor</span></div>
             </div>
           </div>
         </div>
 
         <!-- Video 3 -->
-        <div class="video-card">
+        <div class="video-card" data-vimeo="" data-title="Restore: Full Body Strength">
           <div class="video-thumb">
             <div class="coming-soon-overlay">
               <span class="coming-soon-badge">Coming Soon</span>
             </div>
           </div>
           <div class="video-card-body">
-            <p class="video-phase">Video 3 &middot; Filmed by Benji</p>
-            <h3 class="video-title">Full Body Strength, Core Progression &amp; Low-Impact Cardio</h3>
-            <p class="video-desc">Building real strength back in, with a progressed core challenge and gentle, low-impact cardio.</p>
+            <p class="video-phase">Video 3 &middot; Workout 2</p>
+            <h3 class="video-title">Full Body Strength</h3>
+            <p class="video-desc">A step up: building real strength back in through the whole body, with a progressed core challenge and gentle, low-impact cardio.</p>
             <div class="video-footer">
               <div class="video-tags"><span class="video-tag">Full body</span><span class="video-tag">Low-impact cardio</span></div>
             </div>
@@ -460,16 +479,16 @@
         </div>
 
         <!-- Video 4 -->
-        <div class="video-card">
+        <div class="video-card" data-vimeo="" data-title="Restore: Return to Studio">
           <div class="video-thumb">
             <div class="coming-soon-overlay">
               <span class="coming-soon-badge">Coming Soon</span>
             </div>
           </div>
           <div class="video-card-body">
-            <p class="video-phase">Video 4 &middot; Filmed by Benji</p>
-            <h3 class="video-title">Return to Studio Bridge</h3>
-            <p class="video-desc">The final step, built to leave you feeling ready and confident to return to the studio floor.</p>
+            <p class="video-phase">Video 4 &middot; Workout 3</p>
+            <h3 class="video-title">Return to Studio</h3>
+            <p class="video-desc">The final and most involved workout, designed to leave you feeling strong and confident enough to step back onto the studio floor.</p>
             <div class="video-footer">
               <div class="video-tags"><span class="video-tag">Studio ready</span></div>
             </div>
@@ -518,6 +537,22 @@
       document.getElementById('videoModalOverlay').classList.remove('open');
       document.getElementById('videoModalFrameWrap').innerHTML = '';
     }
+
+    // Videos go live by adding their Vimeo ID to data-vimeo on the card above
+    document.querySelectorAll('.video-card[data-vimeo]').forEach(card => {
+      const id = card.dataset.vimeo.trim();
+      if (!id) return;
+      const thumb = card.querySelector('.video-thumb');
+      thumb.classList.add('playable');
+      thumb.innerHTML = '<div class="video-thumb-label">&#9654; Play</div>';
+      const thumbImg = card.dataset.thumb;
+      if (thumbImg) {
+        thumb.style.backgroundImage = `linear-gradient(to top, rgba(10,20,40,0.55), rgba(10,20,40,0.15)), url('${thumbImg}')`;
+        thumb.style.backgroundSize = 'cover';
+        thumb.style.backgroundPosition = 'center';
+      }
+      thumb.addEventListener('click', () => openVideoModal(id, card.dataset.title));
+    });
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeVideoModal();
