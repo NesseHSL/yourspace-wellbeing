@@ -81,12 +81,15 @@ async function freeCheckAllowed(req) {
     };
     const base = `${process.env.SUPABASE_URL}/rest/v1/health_free_checks`;
     const r = await fetch(`${base}?ip_hash=eq.${ipHash}&day=eq.${day}&select=id`, { headers });
-    if (!r.ok) return true; // table missing or Supabase down: fail open
+    if (!r.ok) { console.error('free-check limit GET failed', r.status, (await r.text()).slice(0, 300)); return true; } // fail open
     const rows = await r.json();
     if (Array.isArray(rows) && rows.length >= FREE_CHECKS_PER_IP_PER_DAY) return false;
-    await fetch(base, { method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' }, body: JSON.stringify([{ ip_hash: ipHash, day }]) });
+    const ins = await fetch(base, { method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' }, body: JSON.stringify([{ ip_hash: ipHash, day }]) });
+    if (!ins.ok) console.error('free-check limit INSERT failed', ins.status, (await ins.text()).slice(0, 300));
+    console.log('free-check rows today for this connection:', Array.isArray(rows) ? rows.length : rows);
     return true;
   } catch (e) {
+    console.error('free-check limit error', e.message);
     return true;
   }
 }
