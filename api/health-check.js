@@ -70,7 +70,11 @@ const FREE_CHECKS_PER_IP_PER_DAY = 3;
 async function freeCheckAllowed(req) {
   try {
     const crypto = await import('crypto');
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
+    // The site sits behind Cloudflare, so x-forwarded-for is Cloudflare's own
+    // address; cf-connecting-ip carries the real visitor IP.
+    const ip = req.headers['cf-connecting-ip']
+      || (req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+      || req.socket?.remoteAddress || 'unknown';
     const salt = process.env.HEALTH_LIMIT_SALT || process.env.SUPABASE_SECRET_SERVICE_KEY || '';
     const ipHash = crypto.createHash('sha256').update(ip + salt).digest('hex');
     const day = new Date().toISOString().slice(0, 10);
@@ -81,15 +85,12 @@ async function freeCheckAllowed(req) {
     };
     const base = `${process.env.SUPABASE_URL}/rest/v1/health_free_checks`;
     const r = await fetch(`${base}?ip_hash=eq.${ipHash}&day=eq.${day}&select=id`, { headers });
-    if (!r.ok) { console.error('free-check limit GET failed', r.status, (await r.text()).slice(0, 300)); return true; } // fail open
+    if (!r.ok) return true; // table missing or Supabase down: fail open
     const rows = await r.json();
     if (Array.isArray(rows) && rows.length >= FREE_CHECKS_PER_IP_PER_DAY) return false;
-    const ins = await fetch(base, { method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' }, body: JSON.stringify([{ ip_hash: ipHash, day }]) });
-    if (!ins.ok) console.error('free-check limit INSERT failed', ins.status, (await ins.text()).slice(0, 300));
-    console.log('free-check debug', JSON.stringify({ hash: ipHash.slice(0, 8), day, getStatus: r.status, rows, insertStatus: ins.status, ipSample: ip.slice(0, 6) }));
+    await fetch(base, { method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' }, body: JSON.stringify([{ ip_hash: ipHash, day }]) });
     return true;
   } catch (e) {
-    console.error('free-check limit error', e.message);
     return true;
   }
 }
