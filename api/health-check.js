@@ -86,7 +86,7 @@ async function freeCheckAllowed(req) {
     if (Array.isArray(rows) && rows.length >= FREE_CHECKS_PER_IP_PER_DAY) return false;
     const ins = await fetch(base, { method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' }, body: JSON.stringify([{ ip_hash: ipHash, day }]) });
     if (!ins.ok) console.error('free-check limit INSERT failed', ins.status, (await ins.text()).slice(0, 300));
-    console.log('free-check rows today for this connection:', Array.isArray(rows) ? rows.length : rows);
+    console.log('free-check debug', JSON.stringify({ hash: ipHash.slice(0, 8), day, getStatus: r.status, rows, insertStatus: ins.status, ipSample: ip.slice(0, 6) }));
     return true;
   } catch (e) {
     console.error('free-check limit error', e.message);
