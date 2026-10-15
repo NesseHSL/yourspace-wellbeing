@@ -42,6 +42,7 @@
     <p class="page-sub">Type any health claim, however you've seen it written or heard it repeated. We check it against current, peer-reviewed research, using the same evidence hierarchy scientists rely on, prioritising systematic reviews and randomised controlled trials over single studies or anecdotes. We don't scan the whole internet for opinions. We search published science, so what comes back is genuinely trustworthy, not just confident-sounding.</p>
     <textarea id="claim-input" placeholder="e.g. magnesium helps with anxiety, seed oils are toxic, collagen improves skin..."></textarea>
     <button class="btn-check" id="check-btn" onclick="runCheck()">Check the evidence</button>
+    <p class="free-note" style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;">One free check a day. Every search we run costs us real money, so we keep it to one a day to stay independent and ad-free. Full evidence reports are always available.</p>
     <div class="error-msg" id="error-msg"></div>
     <div class="examples">
       <div class="ex-label">Try an example</div>
@@ -89,12 +90,12 @@
   </div>
 
   <div id="screen-results">
-    <div class="verdict-strip">
+    <div class="verdict-strip" id="free-verdict-strip">
       <span class="v-label">Verdict</span>
       <div class="v-badge" id="v-badge"><div class="v-dot"></div><span id="v-text"></span></div>
     </div>
     <div class="rcard">
-      <div class="rcard-label">What the science says</div>
+      <div class="rcard-label" id="free-rcard-label">What the science says</div>
       <p id="bottom-line"></p>
     </div>
 
@@ -104,7 +105,7 @@
     <!-- Paywall card -->
     <div class="upsell-card" id="upsell-card">
       <h3 class="upsell-headline">What does the research really show?</h3>
-      <p class="upsell-body">See the real evidence, the caveats, and what the headlines got wrong. Don't just take our word for it, judge it for yourself.</p>
+      <p class="upsell-body" id="upsell-body">See the real evidence, the caveats, and what the headlines got wrong. Don't just take our word for it, judge it for yourself.</p>
       <p class="upsell-note"><em>This small charge keeps the Health Claim Checker independent and the summaries free for everyone. We don't take sponsorship or allow advertisements here, ever. All Access members get 5 free checks a month.</em></p>
 
       <!-- All Access free-credit path -->
@@ -499,6 +500,18 @@ function reset(){
   show('screen-input');
 }
 
+const UPSELL_DEFAULT="See the real evidence, the caveats, and what the headlines got wrong. Don't just take our word for it, judge it for yourself.";
+
+// Shown when today's free check has been used: they can still buy the full report for this claim
+function showFreeLimit(){
+  document.getElementById('free-verdict-strip').style.display='none';
+  document.getElementById('free-rcard-label').textContent="Today's free check is used";
+  document.getElementById('bottom-line').textContent="Every search we run costs us real money, so we keep free checks to one a day. It's how we stay independent and ad-free. Come back tomorrow for another free check, or get the full evidence report on this claim right now.";
+  document.getElementById('upsell-body').textContent=UPSELL_DEFAULT;
+  updateCreditUI();
+  show('screen-results');
+}
+
 async function runCheck(){
   const claim=document.getElementById('claim-input').value.trim();
   if(!claim)return;
@@ -506,6 +519,10 @@ async function runCheck(){
   const errEl=document.getElementById('error-msg');
   errEl.style.display='none';
   document.getElementById('check-btn').disabled=true;
+  const today=new Date().toISOString().slice(0,10);
+  let usedToday=false;
+  try{usedToday=localStorage.getItem('hccFreeCheckDay')===today;}catch(e){}
+  if(usedToday){showFreeLimit();document.getElementById('check-btn').disabled=false;return;}
   show('screen-loading');
   try{
     const res=await fetch('/api/health-check',{
@@ -514,13 +531,21 @@ async function runCheck(){
       body:JSON.stringify({claim})
     });
     const data=await res.json();
+    if(res.status===429){showFreeLimit();document.getElementById('check-btn').disabled=false;return;}
     if(!res.ok){throw new Error(data.error||'Something went wrong');}
+    try{localStorage.setItem('hccFreeCheckDay',today);}catch(e){}
     currentTopic=data.topic||'';
     const text=data.text;
     const verdict=getVerdict(text);
     const bl=extract(text,'<<BOTTOM_LINE>>','<<END_BOTTOM_LINE>>');
     setVerdict(verdict,document.getElementById('v-badge'),document.getElementById('v-text'));
     document.getElementById('bottom-line').textContent=bl;
+    document.getElementById('free-verdict-strip').style.display='';
+    document.getElementById('free-rcard-label').textContent='What the science says';
+    const preview=extract(text,'<<PREVIEW>>','<<END_PREVIEW>>');
+    document.getElementById('upsell-body').textContent=(preview&&preview.length>20)
+      ? preview+' Judge the evidence for yourself.'
+      : UPSELL_DEFAULT;
     updateCreditUI();
     show('screen-results');
   }catch(e){

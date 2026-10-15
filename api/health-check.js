@@ -40,6 +40,10 @@ VERDICT: GREEN / AMBER / RED / GREY
 2-4 sentences. What the evidence actually shows. Specific and direct. No interpreted claim restatement. No advice.
 <<END_BOTTOM_LINE>>
 
+<<PREVIEW>>
+One sentence, starting "The full breakdown", describing what the detailed evidence report on THIS claim will cover: the specific angles that matter for this claim (e.g. which kinds of studies, doses or durations tested, which groups the findings do or don't apply to, where headlines overstate it). Do NOT state numbers of studies or name specific papers. No advice.
+<<END_PREVIEW>>
+
 TOPIC: [2-5 word label]
 
 HEALTH CLAIM: `;
@@ -57,6 +61,34 @@ function extractVerdict(text) {
 function getCountryCode(req) {
   const country = req.headers['x-vercel-ip-country'];
   return (country && country.length === 2) ? country.toUpperCase() : null;
+}
+
+// Free checks: one a day per person (enforced in the browser) plus this
+// server-side backstop per connection, because every check costs us API fees.
+const FREE_CHECKS_PER_IP_PER_DAY = 3;
+
+async function freeCheckAllowed(req) {
+  try {
+    const crypto = await import('crypto');
+    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
+    const salt = process.env.HEALTH_LIMIT_SALT || process.env.SUPABASE_SECRET_SERVICE_KEY || '';
+    const ipHash = crypto.createHash('sha256').update(ip + salt).digest('hex');
+    const day = new Date().toISOString().slice(0, 10);
+    const headers = {
+      'apikey':        process.env.SUPABASE_PUBLISHABLE_KEY,
+      'Authorization': `Bearer ${process.env.SUPABASE_SECRET_SERVICE_KEY}`,
+      'Content-Type':  'application/json',
+    };
+    const base = `${process.env.SUPABASE_URL}/rest/v1/health_free_checks`;
+    const r = await fetch(`${base}?ip_hash=eq.${ipHash}&day=eq.${day}&select=id`, { headers });
+    if (!r.ok) return true; // table missing or Supabase down: fail open
+    const rows = await r.json();
+    if (Array.isArray(rows) && rows.length >= FREE_CHECKS_PER_IP_PER_DAY) return false;
+    await fetch(base, { method: 'POST', headers: { ...headers, 'Prefer': 'return=minimal' }, body: JSON.stringify([{ ip_hash: ipHash, day }]) });
+    return true;
+  } catch (e) {
+    return true;
+  }
 }
 
 async function logToSupabase(topic_category, verdict, country_code) {
@@ -128,6 +160,10 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
+
+  if (!(await freeCheckAllowed(req))) {
+    return res.status(429).json({ error: 'limit' });
+  }
 
   try {
     const response = await callAnthropic(apiKey, claim);
