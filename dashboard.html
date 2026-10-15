@@ -602,20 +602,23 @@
         return;
       }
 
-      // Consolidate All Access entries — show one row per unique stripe_payment_id
+      // Consolidate multi-programme subscriptions (Home Studio + The Menu bundle,
+      // legacy All Access) into one row per unique stripe_payment_id
+      const GROUPED = { 'bundle': 'Home Studio + The Menu', 'all-access': 'All Access (all programmes)' };
       const historyRows = [];
-      const seenAllAccessPayments = new Set();
+      const seenGroupedPayments = new Set();
 
       for (const p of purchases) {
-        if (p.access_type === 'all-access') {
-          if (seenAllAccessPayments.has(p.stripe_payment_id)) continue;
-          seenAllAccessPayments.add(p.stripe_payment_id);
-          // Push a consolidated All Access row using the non-zero amount entry
+        const groupName = GROUPED[p.access_type];
+        if (groupName) {
+          const key = p.access_type + ':' + p.stripe_payment_id;
+          if (seenGroupedPayments.has(key)) continue;
+          seenGroupedPayments.add(key);
           historyRows.push({
             ...p,
-            programme_name: 'All Access (all programmes)',
+            programme_name: groupName,
             amount_paid: purchases
-              .filter(r => r.access_type === 'all-access' && r.stripe_payment_id === p.stripe_payment_id)
+              .filter(r => r.access_type === p.access_type && r.stripe_payment_id === p.stripe_payment_id)
               .reduce((sum, r) => sum + parseFloat(r.amount_paid || 0), 0),
           });
         } else {
