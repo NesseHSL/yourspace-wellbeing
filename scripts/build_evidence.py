@@ -231,7 +231,7 @@ for a in ARTICLES:
     full = a["slug"] in FULL
     for h, ps in a["sections"]:
         if not full and h == "What the strongest evidence shows":
-            body.append(f'  <div class="ev-locked"><h2>The full evidence breakdown</h2><p>Every key study, how strong it is, the caveats and what the headlines got wrong, in a report you can keep.</p><a class="ev-btn" href="/health-claim-checker?claim={quote(a["claim"])}">See the full breakdown</a><p class="ev-locked-note">A small one-off fee. All Access members get 5 free deep dives a month. <a href="/evidence/collagen-skin">See a free sample</a>.</p></div>')
+            body.append(f'  <div class="ev-locked"><h2>The full evidence breakdown</h2><p>Every key study, how strong it is, the caveats and what the headlines got wrong, in a report you can keep.</p><a class="ev-btn" href="/health-claim-checker?claim={quote(a["claim"])}">See the full breakdown</a><p class="ev-locked-note">A small one-off fee. <a href="/evidence/collagen-skin">See a free sample</a>.</p></div>')
             continue
         body.append(f'  <h2 class="ev-h2">{e(h)}</h2>')
         body += [f'  <p class="ev-p">{e(p)}</p>' for p in ps]

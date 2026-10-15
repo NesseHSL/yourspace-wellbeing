@@ -13,6 +13,7 @@ export default async function handler(req, res) {
     'price_1TKgVa3qlwzbgcp9Bjt9s6yg': { id: 'home-studio',    name: 'The Home Studio',     days: 365, type: 'subscription' },
     'price_1U7zGl3qlwzbgcp9sNjlcIYu': { id: 'all-access',     name: 'All Access',          days: 30,  type: 'subscription' },
     'price_1U3wIK3qlwzbgcp9oC7W1lps': { id: 'nutrition-guide', name: 'The Menu',  days: 30,  type: 'subscription' },
+    'price_1UQoBh3qlwzbgcp9xPlLPX0o': { id: 'bundle', name: 'Home Studio + The Menu', days: 30, type: 'subscription' },
     // Restore: £24.99 one-off. 6 months (not 90 days like Pre-Hab/Sofa to
     // Studio) because some videos are for 12+ weeks postpartum and new
     // mums often can't start straight away.
@@ -120,6 +121,49 @@ export default async function handler(req, res) {
       );
 
       return res.status(200).json({ success: true, programme: 'All Access' });
+    }
+
+    // ── HOME STUDIO + THE MENU BUNDLE ────────────────────────────────
+    // Two entitlement rows sharing one subscription id, so the invoice.paid
+    // webhook renews both (it already covers home-studio and nutrition-guide).
+    // access_type 'bundle' identifies bundle rows (e.g. for the dashboard).
+    if (programme.id === 'bundle') {
+      const bundleExpires = new Date();
+      bundleExpires.setDate(bundleExpires.getDate() + programme.days);
+      const rows = [
+        { programme_id: 'home-studio',     programme_name: 'The Home Studio' },
+        { programme_id: 'nutrition-guide', programme_name: 'The Menu' },
+      ].map((p, i) => ({
+        user_id:           resolvedUserId,
+        user_email:        userEmail,
+        user_name:         userName,
+        programme_id:      p.programme_id,
+        programme_name:    p.programme_name,
+        amount_paid:       i === 0 ? session.amount_total / 100 : 0,
+        currency:          session.currency,
+        purchased_at:      purchasedAt,
+        expires_at:        bundleExpires.toISOString(),
+        stripe_payment_id: stripePaymentId,
+        is_active:         true,
+        access_type:       'bundle',
+      }));
+
+      const supabaseRes = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/purchases`,
+        { method: 'POST', headers: supabaseHeaders, body: JSON.stringify(rows) }
+      );
+      if (!supabaseRes.ok) {
+        const errText = await supabaseRes.text();
+        console.error('Supabase error (bundle):', errText);
+        throw new Error('Failed to record purchase');
+      }
+
+      await notifyAdmin(
+        'New YourSpace purchase — Home Studio + The Menu',
+        `<p>New <strong>Home Studio + The Menu</strong> subscription: <strong>£${(session.amount_total / 100).toFixed(2)} ${session.currency?.toUpperCase()}</strong></p>`
+      );
+
+      return res.status(200).json({ success: true, programme: programme.name });
     }
 
     // ── SINGLE PROGRAMME ─────────────────────────────────────────────
