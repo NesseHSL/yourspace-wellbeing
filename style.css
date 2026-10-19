@@ -230,6 +230,32 @@ header nav a.nav-btn-ghost:hover { background: var(--off-white); border-color: v
   justify-content: center;
   flex-wrap: wrap;
 }
+.member-strip {
+  margin: 28px auto 0;
+  padding: 18px 20px;
+  max-width: 520px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.06);
+  text-align: center;
+}
+.member-strip-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 12px;
+  font-weight: 300;
+}
+.member-strip-links {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.prog-owned {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal);
+}
 .hero-secondary-link {
   display: block;
   width: fit-content;

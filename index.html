@@ -45,7 +45,7 @@
         </a>
         <nav>
           <a href="#programmes">Programmes</a>
-          <a href="login.html" class="nav-btn" id="authNavBtn">Sign In</a>
+          <a href="login.html" class="nav-btn" id="authNavBtn">Log In</a>
         </nav>
       </div>
     </header>
@@ -58,6 +58,10 @@
         <p class="hero-sub">Expert-led movement and wellness.<br>From our studio floor to you, wherever you are.</p>
         <div class="hero-btns">
           <a href="#programmes" class="btn-primary">Explore Programmes</a>
+        </div>
+        <div class="member-strip" id="memberStrip">
+          <p class="member-strip-text">Already bought a programme?</p>
+          <a href="login.html" class="btn-ghost-light btn-sm">Log in to access your programmes</a>
         </div>
         <a href="#london-family" class="btn-ghost-light hero-secondary-link" title="Already a member of our London studio? Access your news, events, and other fun stuff here.">HerSpace Studio Members</a>
         <p class="hero-secondary-caption">Shortcut to in-studio news, events &amp; challenges. Everything else here is for everyone.</p>
@@ -106,7 +110,7 @@
                   <span class="prog-annual">Renews monthly. Or £160/year, save £55.88, renews annually.</span>
                   <span class="prog-annual">7-day free trial on the monthly plan</span>
                 </div>
-                <a href="home-studio.html" class="btn-ghost btn-sm">Find out more</a>
+                <a href="home-studio.html" data-programme="home-studio" class="btn-ghost btn-sm">Find out more</a>
               </div>
             </div>
 
@@ -124,7 +128,7 @@
               </div>
               <div class="prog-footer">
                 <span class="prog-price">£19.99</span>
-                <a href="prehab.html" class="btn-ghost btn-sm">Find out more</a>
+                <a href="prehab.html" data-programme="prehab" class="btn-ghost btn-sm">Find out more</a>
               </div>
             </div>
 
@@ -142,7 +146,7 @@
               </div>
               <div class="prog-footer">
                 <span class="prog-price">£24.99</span>
-                <a href="restore.html" class="btn-ghost btn-sm">Find out more</a>
+                <a href="restore.html" data-programme="restore" class="btn-ghost btn-sm">Find out more</a>
               </div>
             </div>
 
@@ -169,7 +173,7 @@
                   <span class="prog-annual">Renews monthly. Cancel any time.</span>
                   <span class="prog-annual">Or get it with Home Studio for £24.99/month</span>
                 </div>
-                <a href="meal-planner.html?programme=nutrition-guide" class="btn-ghost btn-sm">Find out more</a>
+                <a href="meal-planner.html?programme=nutrition-guide" data-programme="nutrition-guide" class="btn-ghost btn-sm">Find out more</a>
               </div>
             </div>
 
@@ -195,7 +199,7 @@
               </div>
               <div class="prog-footer">
                 <span class="prog-price">£29.99</span>
-                <a href="sofa-to-studio.html" class="btn-primary btn-sm">Find out more</a>
+                <a href="sofa-to-studio.html" data-programme="sofa-to-studio" class="btn-primary btn-sm">Find out more</a>
               </div>
             </div>
 
@@ -464,17 +468,57 @@
       }
     }
 
-    // Auth state: update nav Sign In → My Account if logged in
+    // Auth state: if logged in, swap nav to My Account, greet them in the
+    // hero with direct links to what they own, and turn "Find out more" on
+    // owned programme cards into "Open programme".
+    const PROGRAMME_ROUTES = {
+      'home-studio':     { name: 'The Home Studio', url: 'studio-content.html' },
+      'nutrition-guide': { name: 'The Menu',        url: 'meal-planner.html?programme=nutrition-guide' },
+      'restore':         { name: 'Restore',         url: 'restore-content.html' },
+      'prehab':          { name: 'Prehab',          url: 'prehab-content.html' },
+      'sofa-to-studio':  { name: 'Sofa to Studio',  url: 'sofa-content.html' },
+    };
     (async () => {
       try {
         const supabase = await getSupabase();
         const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          const btn = document.getElementById('authNavBtn');
-          if (btn) {
-            btn.textContent = 'My Account';
-            btn.href = 'dashboard.html';
-          }
+        if (!session) return;
+        const btn = document.getElementById('authNavBtn');
+        if (btn) {
+          btn.textContent = 'My Account';
+          btn.href = 'dashboard.html';
+        }
+
+        const { data: purchases } = await supabase
+          .from('purchases')
+          .select('programme_id, is_active, expires_at')
+          .eq('user_id', session.user.id);
+        const now = new Date();
+        const owned = new Set((purchases || [])
+          .filter(p => p.is_active && (!p.expires_at || new Date(p.expires_at) > now))
+          .map(p => p.programme_id)
+          .filter(id => PROGRAMME_ROUTES[id]));
+
+        owned.forEach(id => {
+          document.querySelectorAll(`[data-programme="${id}"]`).forEach(a => {
+            a.href = PROGRAMME_ROUTES[id].url;
+            a.textContent = 'Open programme';
+            a.classList.remove('btn-ghost');
+            a.classList.add('btn-primary');
+            const footer = a.closest('.prog-footer');
+            const pricing = footer && (footer.querySelector('.prog-pricing') || footer.querySelector('.prog-price'));
+            if (pricing) pricing.outerHTML = '<span class="prog-owned">✓ In your account</span>';
+          });
+        });
+
+        const firstName = session.user.user_metadata?.first_name || '';
+        const strip = document.getElementById('memberStrip');
+        if (strip) {
+          const links = [...owned].map(id =>
+            `<a href="${PROGRAMME_ROUTES[id].url}" class="btn-primary btn-sm">Open ${PROGRAMME_ROUTES[id].name}</a>`).join('');
+          strip.innerHTML = `
+            <p class="member-strip-text">Welcome back${firstName ? ', ' + firstName : ''}.${owned.size ? ' Jump straight in:' : ''}</p>
+            <div class="member-strip-links">${links}<a href="dashboard.html" class="btn-ghost-light btn-sm">My Account</a></div>`;
         }
       } catch(e) { /* fail silently */ }
     })();
