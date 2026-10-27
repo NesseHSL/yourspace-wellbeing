@@ -16,6 +16,11 @@
       "source": "/home",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/sofa-to-strong",
+      "destination": "/sofa-to-studio",
+      "permanent": true
     }
   ]
 }
