@@ -352,6 +352,53 @@
     }
     .week-card.complete .nutrition-tip { color: rgba(255,255,255,0.75); }
 
+    /* SCAN SCORES */
+    .scans-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(28,52,97,0.06);
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+    .scans-card h2 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+    .scans-intro {
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .scan-row {
+      display: grid;
+      grid-template-columns: 1fr 160px 120px;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 0;
+      border-top: 1px solid #F0F0F0;
+    }
+    .scan-row.locked { opacity: 0.45; }
+    .scan-label { font-size: 14px; font-weight: 500; }
+    .scan-change { display: block; font-size: 12px; font-weight: 400; color: var(--teal); margin-top: 2px; }
+    .scan-row input {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(28,52,97,0.15);
+      background: var(--white);
+      color: var(--navy);
+      width: 100%;
+    }
+    .scan-row input:disabled { cursor: not-allowed; }
+    @media (max-width: 640px) {
+      .scan-row { grid-template-columns: 1fr 1fr; }
+      .scan-label { grid-column: 1 / -1; }
+    }
+
     .verify-note {
       font-size: 13px;
       color: var(--grey);
@@ -409,6 +456,8 @@
       <button class="nutrition-upsell-cta" onclick="handleNutritionCheckout(event)">Add for £9.99/month</button>
     </div>
 
+    <div class="scans-card" id="scansCard"></div>
+
     <p class="verify-note">Classes are checked against your booking history before prizes are handed out — so log honestly and you'll have nothing to worry about.</p>
 
     <div class="tracker-card" id="trackerCard">
@@ -422,6 +471,13 @@
     let currentUser;
     let progressByWeek = {}; // { 1: {classes_logged, nutrition_days_logged, classes_detail: [{type,date}, ...]}, ... }
     let currentWeekNumber = 1;
+    let scans = {}; // { start: {date, t_score}, six_week: {...}, three_month: {...} }
+    let challengeComplete = false;
+    const SCANS = [
+      { key: 'start', label: 'Starting scan', needsComplete: false },
+      { key: 'six_week', label: '6-week scan', needsComplete: true },
+      { key: 'three_month', label: '3-month scan', needsComplete: true },
+    ];
     const TOTAL_WEEKS = 6;
     const CLASS_TYPES = ['Barre', 'Sculpt', 'Power', 'Reformer', 'Mat Pilates', 'Strength', 'Cardio', 'Stretch', 'Bend', 'Other'];
     // Each week's 4 slots: 2 with Jude, 1 more strength class, 1 free choice.
@@ -508,11 +564,14 @@
     async function getOrCreateEnrolment() {
       const { data: existing } = await sb
         .from('back_to_it_enrolments')
-        .select('started_at')
+        .select('started_at, scans')
         .eq('user_id', currentUser.id)
         .maybeSingle();
 
-      if (existing) return new Date(existing.started_at);
+      if (existing) {
+        scans = existing.scans || {};
+        return new Date(existing.started_at);
+      }
 
       const startedAt = new Date();
       const { error } = await sb
@@ -586,6 +645,47 @@
       }).join('');
 
       document.getElementById('completionBanner').classList.toggle('visible', allComplete);
+      challengeComplete = allComplete;
+      renderScans();
+    }
+
+    function renderScans() {
+      const startScore = parseFloat(scans.start && scans.start.t_score);
+      const rows = SCANS.map(({ key, label, needsComplete }) => {
+        const entry = scans[key] || {};
+        const locked = needsComplete && !challengeComplete;
+        const score = parseFloat(entry.t_score);
+        let change = '';
+        if (key !== 'start' && !isNaN(score) && !isNaN(startScore)) {
+          const diff = (score - startScore).toFixed(1);
+          change = `<span class="scan-change">${diff > 0 ? '+' : ''}${diff} since your starting scan</span>`;
+        }
+        return `
+          <div class="scan-row${locked ? ' locked' : ''}">
+            <div class="scan-label">${label}${locked ? ' · unlocks when you finish' : ''}${change}</div>
+            <input type="date" value="${entry.date || ''}" ${locked ? 'disabled' : ''}
+              aria-label="${label} date" onchange="setScan('${key}', 'date', this.value)">
+            <input type="number" step="0.1" min="-6" max="6" placeholder="T-score" value="${entry.t_score ?? ''}" ${locked ? 'disabled' : ''}
+              aria-label="${label} T-score" onchange="setScan('${key}', 't_score', this.value)">
+          </div>`;
+      }).join('');
+
+      document.getElementById('scansCard').innerHTML = `
+        <h2>Your Bone Density Scores</h2>
+        <p class="scans-intro">Add the date and T-score from each scan report. Your 6-week and 3-month scores unlock once you've completed all 24 classes. Only you can see these.</p>
+        ${rows}`;
+    }
+
+    async function setScan(key, field, value) {
+      scans = { ...scans, [key]: { ...(scans[key] || {}), [field]: value } };
+      renderScans();
+
+      const { error } = await sb
+        .from('back_to_it_enrolments')
+        .update({ scans })
+        .eq('user_id', currentUser.id);
+
+      if (error) console.error('Failed to save scan:', error);
     }
 
     function renderClassRows(week, entries, disabled) {
