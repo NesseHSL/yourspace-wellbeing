@@ -27,8 +27,8 @@ export default async function handler(req, res) {
       disclaimerContext: 'YourSpace Wellbeing fitness programme',
     },
     'back-to-it': {
-      about: 'The user is following the Back to It Challenge — a 4-week programme combining 4 studio classes a week with this nutrition plan. Active sessions are a mix of Barre, Pilates, Strength, and Cardio classes at HerSpace London, burning approximately 300–450 kcal depending on class type. The challenge runs 28 days.',
-      disclaimerContext: 'YourSpace Wellbeing Back to It Challenge',
+      about: 'The user is following the Bone Density Challenge — a 6-week programme of 4 studio classes a week at HerSpace London, focused on strength training for bone health: two strength classes with Jude, one more strength-based class (Barre, Sculpt, Power or Reformer), and one class of their choosing. Active sessions burn approximately 300–450 kcal depending on class type. The challenge runs 42 days. Prioritise adequate protein and calcium-rich foods, and include vitamin D sources where practical.',
+      disclaimerContext: 'YourSpace Wellbeing Bone Density Challenge',
     },
     'nutrition-guide': {
       about: 'The user has subscribed to The Menu, YourSpace\'s standalone nutrition subscription — they are not necessarily on a specific fitness programme. Active sessions could be any kind of exercise (studio class, gym, home workout), burning approximately 300–400 kcal on average.',

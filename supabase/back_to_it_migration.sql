@@ -1,4 +1,4 @@
--- Back to It Challenge — weekly progress tracker
+-- Bone Density Challenge (originally "Back to It") — weekly progress tracker
 -- Run this once in the Supabase SQL editor (Project → SQL Editor → New query).
 --
 -- Back to It is free to join (no Stripe purchase), so there's no purchases

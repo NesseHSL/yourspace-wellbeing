@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <title>Back to It — Your Tracker — YourSpace Wellbeing</title>
+  <title>Bone Density Challenge — Your Tracker — YourSpace Wellbeing</title>
   <link rel="icon" type="image/png" href="assets/yourspace-favicon.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
@@ -386,7 +386,7 @@
 
   <div class="prog-banner">
     <div class="prog-banner-inner">
-      <p class="prog-kicker">Back to It Challenge</p>
+      <p class="prog-kicker">Bone Density Challenge</p>
       <h1>Your Tracker</h1>
       <p id="bannerSub">Loading your challenge...</p>
     </div>
@@ -395,10 +395,10 @@
   <main>
     <div class="completion-banner" id="completionBanner">
       <div>
-        <h3>All four weeks, all turquoise. 🎉</h3>
-        <p>You've completed the Back to It Challenge — come and claim your 4 prizes.</p>
+        <h3>All 24 classes, all turquoise. 🎉</h3>
+        <p>You've completed the Bone Density Challenge — come and claim your free follow-up scan and 5 free classes.</p>
       </div>
-      <a href="mailto:info@herspaceldn.com?subject=Back%20to%20It%20—%20I've%20completed%20the%20challenge!">Claim my prizes</a>
+      <a href="mailto:info@herspaceldn.com?subject=Bone%20Density%20Challenge%20—%20I've%20completed%20the%20challenge!">Claim my rewards</a>
     </div>
 
     <div class="nutrition-upsell" id="nutritionUpsell" style="display:none;">
@@ -422,7 +422,15 @@
     let currentUser;
     let progressByWeek = {}; // { 1: {classes_logged, nutrition_days_logged, classes_detail: [{type,date}, ...]}, ... }
     let currentWeekNumber = 1;
-    const CLASS_TYPES = ['Barre', 'Mat Pilates', 'Reformer Pilates', 'Strength', 'Cardio', 'Stretch', 'Bend', 'Other'];
+    const TOTAL_WEEKS = 6;
+    const CLASS_TYPES = ['Barre', 'Sculpt', 'Power', 'Reformer', 'Mat Pilates', 'Strength', 'Cardio', 'Stretch', 'Bend', 'Other'];
+    // Each week's 4 slots: 2 with Jude, 1 more strength class, 1 free choice.
+    const SLOTS = [
+      { placeholder: 'Jude · Monday morning…', types: ['Jude — Monday'] },
+      { placeholder: 'Jude · Thursday morning…', types: ['Jude — Thursday'] },
+      { placeholder: 'Strength class…', types: ['Barre', 'Sculpt', 'Power', 'Reformer'] },
+      { placeholder: 'Your choice…', types: CLASS_TYPES },
+    ];
 
     async function init() {
       const res = await fetch('/api/ys-config');
@@ -436,16 +444,16 @@
       }
       currentUser = session.user;
 
-      // Back to It is free to join — no purchase needed, just a login.
+      // The challenge is free to join — no purchase needed, just a login.
       // Rolling start is tracked by a lightweight enrolment row, created
       // the first time someone opens their tracker.
       const startedAt = await getOrCreateEnrolment();
       const daysSinceStart = Math.floor((new Date() - startedAt) / (1000 * 60 * 60 * 24));
-      currentWeekNumber = Math.min(4, Math.max(1, Math.floor(daysSinceStart / 7) + 1));
-      const daysLeft = Math.max(0, 28 - daysSinceStart);
+      currentWeekNumber = Math.min(TOTAL_WEEKS, Math.max(1, Math.floor(daysSinceStart / 7) + 1));
+      const daysLeft = Math.max(0, TOTAL_WEEKS * 7 - daysSinceStart);
 
       document.getElementById('bannerSub').textContent =
-        `Started ${formatDate(startedAt)} · Week ${currentWeekNumber} of 4 · ${daysLeft} day${daysLeft === 1 ? '' : 's'} left`;
+        `Started ${formatDate(startedAt)} · Week ${currentWeekNumber} of ${TOTAL_WEEKS} · ${daysLeft} day${daysLeft === 1 ? '' : 's'} left`;
 
       await loadProgress();
       await checkNutritionAccess();
@@ -545,11 +553,11 @@
 
     function render() {
       const card = document.getElementById('trackerCard');
-      const weekLabels = ['Get Going', 'Find Your Rhythm', 'Build Momentum', 'All Turquoise'];
+      const weekLabels = ['Get Going', 'Find Your Rhythm', 'Build Momentum', 'Load It Up', 'Stronger Still', 'All Turquoise'];
 
       let allComplete = true;
 
-      card.innerHTML = [1, 2, 3, 4].map(week => {
+      card.innerHTML = Array.from({ length: TOTAL_WEEKS }, (_, i) => i + 1).map(week => {
         const progress = progressByWeek[week] || { classes_logged: 0, classes_detail: [] };
         const classesDetail = progress.classes_detail || [];
         const filledClasses = classesDetail.filter(e => e && e.type && e.date).length;
@@ -584,13 +592,14 @@
       let rows = '';
       for (let i = 0; i < 4; i++) {
         const entry = entries[i] || { type: '', date: '' };
-        const options = CLASS_TYPES.map(t =>
+        const slot = SLOTS[i];
+        const options = slot.types.map(t =>
           `<option value="${t}"${entry.type === t ? ' selected' : ''}>${t}</option>`
         ).join('');
         rows += `
           <div class="class-entry">
             <select ${disabled ? 'disabled' : ''} onchange="setClassDetail(${week}, ${i}, 'type', this.value)">
-              <option value=""${entry.type ? '' : ' selected'}>Class ${i + 1}…</option>
+              <option value=""${entry.type ? '' : ' selected'}>${slot.placeholder}</option>
               ${options}
             </select>
             <input type="date" value="${entry.date || ''}" ${disabled ? 'disabled' : ''}

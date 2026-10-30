@@ -21,6 +21,11 @@
       "source": "/sofa-to-strong",
       "destination": "/sofa-to-studio",
       "permanent": true
+    },
+    {
+      "source": "/bone-density-challenge",
+      "destination": "/back-to-it",
+      "permanent": false
     }
   ]
 }
