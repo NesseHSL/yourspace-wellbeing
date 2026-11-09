@@ -111,7 +111,8 @@
     }
     .input-row.single { grid-template-columns: 1fr; }
 
-    .field-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .field-wrap { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .field-wrap select { width: 100%; text-overflow: ellipsis; }
     .field-wrap label {
       font-size: 13px;
       font-weight: 500;
@@ -211,6 +212,32 @@
     }
     .checkbox-item .cb-icon { font-size: 18px; }
 
+
+    /* Food Log shortcut */
+    .foodlog-card {
+      display: flex; align-items: center; gap: 18px;
+      background: var(--navy); color: var(--white);
+      border-radius: 16px; padding: 24px 28px; margin-bottom: 24px;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .foodlog-card:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(28,52,97,0.18); }
+    .foodlog-icon { font-size: 30px; flex-shrink: 0; }
+    .foodlog-text { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .foodlog-title { font-family: var(--font-serif); font-size: 24px; }
+    .foodlog-sub { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+    .foodlog-arrow { font-size: 22px; color: var(--teal); }
+
+    /* Targets */
+    .path-toggle { margin-bottom: 24px; }
+    .path-panel { margin-top: 4px; }
+    .input-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .calc-done { font-size: 13px; color: var(--teal); font-weight: 600; margin: 24px 0 14px; padding-top: 22px; border-top: 1px solid rgba(0,0,0,0.08); }
+    .saved-targets-nums { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 10px; }
+    .saved-targets-nums strong { font-size: 30px; font-weight: 600; color: var(--navy); display: block; }
+    .saved-targets-nums span { font-size: 12px; color: #999; }
+    .saved-targets-meta { font-size: 13px; color: #888; margin-bottom: 18px; }
+    .results-actions a.btn-print { text-decoration: none; }
+
     /* Generate button */
     .generate-btn {
       display: block;
@@ -300,6 +327,7 @@
     .results-actions {
       display: flex;
       gap: 12px;
+      flex-wrap: wrap;
       flex-shrink: 0;
     }
     .btn-print {
@@ -422,7 +450,8 @@
       .planner-hero { padding: 100px 24px 70px; }
       #planner-form-section, #results-section { padding: 60px 24px; }
       .form-card { padding: 28px 24px; }
-      .input-row { grid-template-columns: 1fr; }
+      .input-row, .input-row.three { grid-template-columns: 1fr; }
+      .foodlog-card { padding: 20px; }
       .checkbox-grid { grid-template-columns: 1fr 1fr; }
       .results-header { flex-direction: column; }
     }
@@ -477,90 +506,126 @@
 
       <p style="font-size:13px;line-height:1.7;color:#777;max-width:520px;margin:0 auto 24px;text-align:left;">A quick note before you dive in. We designed The Menu ourselves, trained the AI behind it, and have personally tested its outputs. We've built in as many safeguards, filters, and double-checkers as we can, and we're confident it's a genuinely good guide. What it is not is a substitute for a registered nutritionist, especially if you have any ongoing health concerns, a history of disordered eating, or severe gastrointestinal issues. It's rare, but this programme can make mistakes, and we would never want to put any of you at risk. So please, if you have any specific concerns or health issues, book a private consultation with Nesse directly, or see a registered dietitian, rather than relying on The Menu alone.</p>
 
-      <!-- Macro Calculator -->
-      <div class="form-card" style="border:1.5px dashed rgba(42,157,181,0.4);">
-        <p class="step-label">Not sure of your numbers?</p>
-        <p class="step-title">Calculate your macros</p>
-        <p class="step-sub">Answer a few quick questions and we'll work out your daily targets — they'll fill in below automatically.</p>
-
-        <div class="input-row">
-          <div class="field-wrap">
-            <label for="calcWeight">Weight (kg)</label>
-            <input type="number" id="calcWeight" placeholder="e.g. 65">
-          </div>
-          <div class="field-wrap">
-            <label for="calcHeight">Height (cm)</label>
-            <input type="number" id="calcHeight" placeholder="e.g. 165">
-          </div>
-        </div>
-        <div class="input-row">
-          <div class="field-wrap">
-            <label for="calcAge">Age</label>
-            <input type="number" id="calcAge" placeholder="e.g. 32">
-          </div>
-          <div class="field-wrap">
-            <label>Sex</label>
-            <div class="day-toggle">
-              <div>
-                <input type="radio" name="calcSex" id="calcSexFemale" value="female" checked>
-                <label for="calcSexFemale"><span class="toggle-title">Female</span></label>
-              </div>
-              <div>
-                <input type="radio" name="calcSex" id="calcSexMale" value="male">
-                <label for="calcSexMale"><span class="toggle-title">Male</span></label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="input-row">
-          <div class="field-wrap">
-            <label for="calcActivity">Activity level</label>
-            <select id="calcActivity">
-              <option value="1.2">Sedentary (little to no exercise)</option>
-              <option value="1.375">Light (1–3 sessions/week)</option>
-              <option value="1.55" selected>Moderate (4–5 sessions/week)</option>
-              <option value="1.725">Very active (6–7 sessions/week)</option>
-              <option value="1.9">Extremely active (physical job + training)</option>
-            </select>
-          </div>
-          <div class="field-wrap">
-            <label for="calcGoal">Goal</label>
-            <select id="calcGoal">
-              <option value="lose">Lose fat</option>
-              <option value="maintain" selected>Maintain</option>
-              <option value="build">Build muscle</option>
-            </select>
-          </div>
-        </div>
-
-        <button class="generate-btn" id="calcBtn" style="background:var(--navy);" onclick="calculateMacros()">Calculate My Macros</button>
-
-        <div id="calcResults" style="display:none; margin-top:24px; padding-top:24px; border-top:1px solid rgba(0,0,0,0.08);">
-          <p style="font-size:13px; color:var(--teal); font-weight:600; margin-bottom:12px;">✓ Applied to your targets below</p>
-          <div style="display:flex; gap:28px; flex-wrap:wrap;">
-            <div><span style="font-size:28px;font-weight:600;color:var(--navy);" id="calcResultCalories"></span><span style="font-size:12px;color:#999;display:block;">kcal / day</span></div>
-            <div><span style="font-size:28px;font-weight:600;color:var(--navy);" id="calcResultProtein"></span><span style="font-size:12px;color:#999;display:block;">protein</span></div>
-            <div><span style="font-size:18px;color:#777;" id="calcResultCarbs"></span><span style="font-size:12px;color:#999;display:block;">carbs</span></div>
-            <div><span style="font-size:18px;color:#777;" id="calcResultFat"></span><span style="font-size:12px;color:#999;display:block;">fat</span></div>
-          </div>
-        </div>
-      </div>
+      <!-- Food Log shortcut -->
+      <a href="food-log.html" class="foodlog-card">
+        <span class="foodlog-icon">📒</span>
+        <span class="foodlog-text">
+          <span class="foodlog-title">Your Food Log</span>
+          <span class="foodlog-sub">Log what you eat — scan a barcode, tap a meal from your plan, or add your own — and see your calories, protein and fibre for the day.</span>
+        </span>
+        <span class="foodlog-arrow">→</span>
+      </a>
 
       <!-- Step 1: Targets -->
-      <div class="form-card">
+      <div class="form-card" id="targets">
         <p class="step-label">Step 1</p>
         <p class="step-title">Your daily targets</p>
-        <p class="step-sub">Already know your numbers? Enter them directly — or use the calculator above.</p>
-        <div class="input-row">
-          <div class="field-wrap">
-            <label for="calories">Daily calories (kcal)</label>
-            <input type="number" id="calories" placeholder="e.g. 1800" min="1000" max="4000">
-            <p class="field-hint">Your maintenance or goal calories from the calculator</p>
+        <p class="step-sub">These are saved to your account and used by both your meal plans and your Food Log.</p>
+
+        <div id="savedTargetsSummary" class="saved-targets" style="display:none;">
+          <div class="saved-targets-nums">
+            <div><strong id="sumCalories"></strong><span>kcal / day</span></div>
+            <div><strong id="sumProtein"></strong><span>protein</span></div>
+            <div><strong id="sumFibre"></strong><span>fibre</span></div>
           </div>
-          <div class="field-wrap">
-            <label for="protein">Daily protein (g)</label>
-            <input type="number" id="protein" placeholder="e.g. 120" min="40" max="300">
-            <p class="field-hint">Your protein target from the calculator</p>
+          <p class="saved-targets-meta" id="sumMeta"></p>
+          <button type="button" class="btn-print" onclick="editTargets()">Change my targets</button>
+        </div>
+
+        <div id="targetsEditor">
+          <div class="day-toggle path-toggle">
+            <div>
+              <input type="radio" name="targetPath" id="pathCalc" value="calculated" checked>
+              <label for="pathCalc">
+                <span class="toggle-icon">🧮</span>
+                <span class="toggle-title">Work them out for me</span>
+                <span class="toggle-sub">Answer a few quick questions</span>
+              </label>
+            </div>
+            <div>
+              <input type="radio" name="targetPath" id="pathCustom" value="custom">
+              <label for="pathCustom">
+                <span class="toggle-icon">📋</span>
+                <span class="toggle-title">I have my numbers</span>
+                <span class="toggle-sub">e.g. from your nutrition plan</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Path A: calculator -->
+          <div id="calcPanel" class="path-panel">
+            <div class="input-row">
+              <div class="field-wrap">
+                <label for="calcWeight">Weight (kg)</label>
+                <input type="number" id="calcWeight" placeholder="e.g. 65" inputmode="decimal">
+              </div>
+              <div class="field-wrap">
+                <label for="calcHeight">Height (cm)</label>
+                <input type="number" id="calcHeight" placeholder="e.g. 165" inputmode="decimal">
+              </div>
+            </div>
+            <div class="input-row">
+              <div class="field-wrap">
+                <label for="calcAge">Age</label>
+                <input type="number" id="calcAge" placeholder="e.g. 32" inputmode="numeric">
+              </div>
+              <div class="field-wrap">
+                <label>Sex</label>
+                <div class="day-toggle">
+                  <div>
+                    <input type="radio" name="calcSex" id="calcSexFemale" value="female" checked>
+                    <label for="calcSexFemale"><span class="toggle-title">Female</span></label>
+                  </div>
+                  <div>
+                    <input type="radio" name="calcSex" id="calcSexMale" value="male">
+                    <label for="calcSexMale"><span class="toggle-title">Male</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="input-row">
+              <div class="field-wrap">
+                <label for="calcActivity">Activity level</label>
+                <select id="calcActivity">
+                  <option value="1.2">Sedentary (little to no exercise)</option>
+                  <option value="1.375">Light (1–3 sessions/week)</option>
+                  <option value="1.55" selected>Moderate (4–5 sessions/week)</option>
+                  <option value="1.725">Very active (6–7 sessions/week)</option>
+                  <option value="1.9">Extremely active (physical job + training)</option>
+                </select>
+              </div>
+              <div class="field-wrap">
+                <label for="calcGoal">Goal</label>
+                <select id="calcGoal">
+                  <option value="lose">Lose fat</option>
+                  <option value="maintain" selected>Maintain</option>
+                  <option value="build">Build muscle</option>
+                </select>
+              </div>
+            </div>
+            <button class="generate-btn" id="calcBtn" type="button" style="background:var(--navy);" onclick="calculateMacros()">Work Out My Targets</button>
+          </div>
+
+          <!-- Path B (and the calculator's output): the actual targets -->
+          <div id="targetFields" class="path-panel">
+            <p class="calc-done" id="calcDone" style="display:none;">✓ Here's what we worked out — tweak anything you like, then save.</p>
+            <div class="input-row three">
+              <div class="field-wrap">
+                <label for="calories">Calories (kcal)</label>
+                <input type="number" id="calories" placeholder="e.g. 1800" min="1000" max="5000" inputmode="numeric">
+              </div>
+              <div class="field-wrap">
+                <label for="protein">Protein (g)</label>
+                <input type="number" id="protein" placeholder="e.g. 120" min="30" max="400" inputmode="numeric">
+              </div>
+              <div class="field-wrap">
+                <label for="fibre">Fibre (g)</label>
+                <input type="number" id="fibre" placeholder="30" min="10" max="80" inputmode="numeric">
+              </div>
+            </div>
+            <p class="field-hint" style="margin:-6px 0 18px;">Calories are your base, rest-day number — on training days your plan and Food Log add a little extra to fuel your workout. Not sure on fibre? 30g a day is the UK recommendation for adults.</p>
+            <button class="generate-btn" id="saveTargetsBtn" type="button" style="background:var(--navy);" onclick="saveTargets()">Save My Targets</button>
+            <p class="field-hint" id="saveTargetsMsg" style="margin-top:10px;display:none;"></p>
           </div>
         </div>
       </div>
@@ -666,9 +731,11 @@
     <div class="results-header">
       <div>
         <h2>Your 7-Day Plan</h2>
-        <p>Generated based on your targets and preferences</p>
+        <p>Every plan you make is saved to your account — find them all under "All my plans".</p>
       </div>
       <div class="results-actions">
+        <a class="btn-print" href="food-log.html">📒 Food Log</a>
+        <a class="btn-print" href="dashboard.html#mealPlans">🗂️ All my plans</a>
         <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
         <button class="btn-new" onclick="newPlan()">↩ New Plan</button>
       </div>
@@ -780,6 +847,8 @@
     // Show their most recent saved plan on return, rather than an empty
     // form — plans used to only live in page memory and vanished on refresh.
     if (hasAccess) {
+      loadTargets(session.user.id);
+
       const { data: savedPlans } = await sb
         .from('meal_plans')
         .select('plan_content')
@@ -833,10 +902,104 @@
 
   checkNutritionAccess();
 
-  // ── MACRO CALCULATOR ─────────────────────────────────────────────────────
-  // Mifflin-St Jeor BMR, same formula as the Sofa to Studio calculator, but
-  // self-contained here — no cross-page dependency — and it fills the
-  // targets below directly instead of requiring manual copy-over.
+  // ── TARGETS ───────────────────────────────────────────────────────────────
+  // Two ways in: "Work them out for me" (calculator) or "I have my numbers"
+  // (e.g. from a nutrition plan Nesse wrote). Either way the result lands in
+  // the same three fields and is saved to nutrition_targets, which the Food
+  // Log reads too.
+  let savedTargets = null;
+
+  function showPath(path) {
+    document.getElementById('calcPanel').style.display = path === 'calculated' ? 'block' : 'none';
+    // Custom path: fields straight away. Calc path: only once calculated.
+    const calcDone = document.getElementById('calcDone').style.display === 'block';
+    document.getElementById('targetFields').style.display = (path === 'custom' || calcDone) ? 'block' : 'none';
+  }
+  document.querySelectorAll('input[name="targetPath"]').forEach(r =>
+    r.addEventListener('change', () => {
+      if (r.value === 'custom') document.getElementById('calcDone').style.display = 'none';
+      showPath(r.value);
+    })
+  );
+  showPath('calculated');
+
+  function currentPath() {
+    return document.querySelector('input[name="targetPath"]:checked').value;
+  }
+
+  function showSavedSummary(t) {
+    document.getElementById('sumCalories').textContent = t.calories.toLocaleString();
+    document.getElementById('sumProtein').textContent = t.protein + 'g';
+    document.getElementById('sumFibre').textContent = t.fibre + 'g';
+    const how = t.source === 'calculated' ? 'Worked out with our calculator' : 'Your own numbers';
+    const when = t.updated_at ? ` · saved ${new Date(t.updated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}` : '';
+    document.getElementById('sumMeta').textContent = how + when;
+    document.getElementById('savedTargetsSummary').style.display = 'block';
+    document.getElementById('targetsEditor').style.display = 'none';
+  }
+
+  function editTargets() {
+    document.getElementById('savedTargetsSummary').style.display = 'none';
+    document.getElementById('targetsEditor').style.display = 'block';
+    if (savedTargets) {
+      const radio = document.getElementById(savedTargets.source === 'calculated' ? 'pathCalc' : 'pathCustom');
+      radio.checked = true;
+      document.getElementById('calcDone').style.display = savedTargets.source === 'calculated' ? 'block' : 'none';
+      showPath(savedTargets.source);
+    }
+  }
+
+  async function loadTargets(userId) {
+    const { data, error } = await sb
+      .from('nutrition_targets')
+      .select('calories, protein, fibre, source, updated_at')
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (error) { console.error('Could not load targets:', error); return; }
+    if (data) {
+      savedTargets = data;
+      document.getElementById('calories').value = data.calories;
+      document.getElementById('protein').value = data.protein;
+      document.getElementById('fibre').value = data.fibre;
+      showSavedSummary(data);
+    }
+  }
+
+  function readTargetFields() {
+    const calories = parseInt(document.getElementById('calories').value, 10);
+    const protein  = parseInt(document.getElementById('protein').value, 10);
+    const fibreRaw = document.getElementById('fibre').value.trim();
+    const fibre    = fibreRaw ? parseInt(fibreRaw, 10) : 30;
+    if (!calories || !protein) return { error: 'Please enter your daily calorie and protein targets. Not sure what they are? Choose "Work them out for me".' };
+    if (calories < 1000 || calories > 5000) return { error: 'Please enter a calorie target between 1,000 and 5,000 kcal.' };
+    if (protein < 30 || protein > 400) return { error: 'Please enter a protein target between 30g and 400g.' };
+    if (!fibre || fibre < 10 || fibre > 80) return { error: 'Please enter a fibre target between 10g and 80g.' };
+    return { calories, protein, fibre };
+  }
+
+  async function saveTargets({ quiet = false } = {}) {
+    const msg = document.getElementById('saveTargetsMsg');
+    const t = readTargetFields();
+    if (t.error) {
+      if (!quiet) { msg.textContent = t.error; msg.style.color = '#dc2626'; msg.style.display = 'block'; }
+      return t;
+    }
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return t;
+    const row = { user_id: session.user.id, ...t, source: currentPath(), updated_at: new Date().toISOString() };
+    const { error } = await sb.from('nutrition_targets').upsert(row);
+    if (error) {
+      console.error('Could not save targets:', error);
+      if (!quiet) { msg.textContent = 'We couldn\'t save your targets just now — please try again.'; msg.style.color = '#dc2626'; msg.style.display = 'block'; }
+      return t;
+    }
+    savedTargets = row;
+    msg.style.display = 'none';
+    if (!quiet) showSavedSummary(row);
+    return t;
+  }
+
+  // Mifflin-St Jeor BMR, same formula as the Sofa to Studio calculator.
   function calculateMacros() {
     const weight   = parseFloat(document.getElementById('calcWeight').value);
     const height   = parseFloat(document.getElementById('calcHeight').value);
@@ -860,33 +1023,26 @@
     if (goal === 'lose') calories = Math.round(tdee - 400);
     else if (goal === 'build') calories = Math.round(tdee + 200);
     else calories = Math.round(tdee);
+    calories = Math.max(1200, calories);
 
     const proteinPerKg = (goal === 'maintain') ? 1.6 : 2.0;
     const protein = Math.round(weight * proteinPerKg);
-    const proteinCals = protein * 4;
-    const fat = Math.round(weight * 0.9);
-    const fatCals = fat * 9;
-    const carbCals = calories - proteinCals - fatCals;
-    const carbs = Math.max(0, Math.round(carbCals / 4));
+    const fibre = 30; // UK adult recommendation
 
-    // Auto-fill Step 1's targets
     document.getElementById('calories').value = calories;
     document.getElementById('protein').value = protein;
-
-    document.getElementById('calcResultCalories').textContent = calories.toLocaleString();
-    document.getElementById('calcResultProtein').textContent = protein + 'g';
-    document.getElementById('calcResultCarbs').textContent = carbs + 'g';
-    document.getElementById('calcResultFat').textContent = fat + 'g';
-    document.getElementById('calcResults').style.display = 'block';
+    document.getElementById('fibre').value = fibre;
+    document.getElementById('calcDone').style.display = 'block';
+    showPath('calculated');
 
     setTimeout(() => {
-      document.getElementById('calories').closest('.form-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('targetFields').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 150);
   }
 
   ['calcWeight', 'calcHeight', 'calcAge'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => {
-      if (e.key === 'Enter') { e.preventDefault(); calculateMacros(); }
+      if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); calculateMacros(); }
     });
   });
 
@@ -899,9 +1055,14 @@
   // ── GENERATE PLAN ──────────────────────────────────────────────────────────
   async function generatePlan() {
 
-    // Get values
-    const calories   = document.getElementById('calories').value.trim();
-    const protein    = document.getElementById('protein').value.trim();
+    // Targets — validated and saved to the account (quietly) before generating
+    const t = readTargetFields();
+    if (t.error) {
+      if (document.getElementById('targetsEditor').style.display === 'none') editTargets();
+      showError(t.error);
+      return;
+    }
+    const { calories, protein, fibre } = t;
     const activeDays = parseInt(document.getElementById('activeDays').value, 10);
 
     // Collect dietary frameworks
@@ -912,18 +1073,8 @@
 
     const allergies = document.getElementById('allergies').value.trim();
 
-    // Validate
-    if (!calories || !protein) {
-      showError('Please enter your daily calorie and protein targets to continue. Not sure what they are? Use our macro calculator above.');
-      return;
-    }
-    if (parseInt(calories) < 1000 || parseInt(calories) > 5000) {
-      showError('Please enter a calorie target between 1,000 and 5,000 kcal.');
-      return;
-    }
-    if (parseInt(protein) < 30 || parseInt(protein) > 400) {
-      showError('Please enter a protein target between 30g and 400g.');
-      return;
+    if (!savedTargets || savedTargets.calories !== calories || savedTargets.protein !== protein || savedTargets.fibre !== fibre) {
+      saveTargets({ quiet: true });
     }
 
     // Show loading, hide results and errors
@@ -937,7 +1088,7 @@
       const response = await fetch('/api/meal-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ calories, protein, activeDays, frameworks, allergies, programme: currentProgramme, userId: session?.user?.id })
+        body: JSON.stringify({ calories, protein, fibre, activeDays, frameworks, allergies, programme: currentProgramme, userId: session?.user?.id })
       });
 
       const data = await response.json();
@@ -996,9 +1147,9 @@
   }
 
   // Allow Enter key on inputs to trigger generation
-  document.querySelectorAll('input[type="number"]').forEach(input => {
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') generatePlan();
+  ['calories', 'protein', 'fibre'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); saveTargets(); }
     });
   });
 

@@ -9,6 +9,9 @@ export default async function handler(req, res) {
   }
 
   const { calories, protein, activeDays, frameworks, allergies, programme, userId } = req.body;
+  // Fibre target is optional (older clients don't send it) — UK guidance is 30g/day.
+  const fibreNum = parseInt(req.body.fibre, 10);
+  const fibre = fibreNum >= 10 && fibreNum <= 80 ? fibreNum : 30;
 
   // Basic validation
   if (!calories || !protein) {
@@ -60,7 +63,7 @@ NUTRITIONAL PRIORITIES
 
 1. PROTEIN — hit the user's protein target every single day. Distribute evenly across meals where possible. Prioritise whole food sources: eggs, fish, chicken, legumes, Greek yoghurt, cottage cheese, tofu, tempeh, edamame. For plant-based users, pay particular attention to protein combining.
 
-2. FIBRE — aim for roughly 1g fibre per 3–4g protein as a practical guide, with a target of 25–30g fibre per day. Prioritise vegetables, legumes, wholegrains, and fruit. If the dietary framework or calorie target makes this target difficult to achieve through food alone, include this note at the end of the plan:
+2. FIBRE — hit the user's daily fibre target (given below; usually around 30g). As a practical guide, aim for roughly 1g fibre per 3–4g protein. Prioritise vegetables, legumes, wholegrains, and fruit. If the dietary framework or calorie target makes this target difficult to achieve through food alone, include this note at the end of the plan:
 "💚 Gut health tip: Based on your plan, you may find it helpful to supplement with a high-quality fibre product to support digestion and keep things moving. We'll share our recommended option in the app soon."
 
 3. CARBOHYDRATES — prioritise complex, whole food sources (oats, sweet potato, brown rice, quinoa, legumes, wholegrain bread). On active days, time the majority of carbohydrates around the workout — in the pre-workout snack and post-workout meal.
@@ -79,14 +82,14 @@ Produce a 7-day plan. Each day should include:
 - Evening snack (optional — include only if calories allow and it aids protein/fibre targets)
 
 For each meal, include:
-- **Meal name** in bold
+- A bold header line in exactly this form: **<Meal> — <Meal name>**, where <Meal> is one of Breakfast, Mid-morning snack, Lunch, Pre-workout snack, Dinner, Evening snack. e.g. **Breakfast — Spiced Overnight Oats**
 - A one-line description of what it is
-- Approximate kcal and protein (g) in brackets, e.g. *(~420 kcal | 32g protein)*
+- Approximate kcal, protein (g) and fibre (g) per serving in brackets, in exactly this form: *(~420 kcal | 32g protein | 7g fibre)* — members log meals from this line, so always include all three numbers
 - **Ingredients**: a short bulleted list with realistic quantities for one serving (e.g. "120g chicken breast", "1 tbsp olive oil", "80g spinach"). If the meal is batch-cooked, quantities should reflect the full batch, with a note on how many portions it makes.
 - **Method**: 2–5 short, numbered steps. Assume a home cook with basic kitchen equipment (hob, oven, blender) and no professional technique. Be concrete and quick to follow, not padded.
 - A ⭐ **BATCH COOK** label for any meal that can be made in bulk and stored
 
-At the end of the day, include a **Day Total** showing total kcal and protein.
+At the end of the day, include a **Day Total** showing total kcal, protein and fibre.
 
 After all 7 days, include:
 ### 🥘 Batch Cooking Plan
@@ -142,6 +145,7 @@ End every meal plan with:
 
 Daily calorie target: ${calories} kcal
 Daily protein target: ${protein}g
+Daily fibre target: ${fibre}g
 This week has exactly ${activeDays} ACTIVE day(s) and ${7 - activeDays} REST day(s) out of the 7 — this is a hard requirement, not a suggestion. Exactly ${activeDays} of the 7 days must include a pre-workout snack and the +250–300 kcal active-day boost on top of the base calorie target. Exactly ${7 - activeDays} days must use the base calorie target exactly as provided, with no pre-workout snack. Spread the active days naturally through the week rather than clustering them, unless the count makes that impossible (e.g. 0 or 7 active days). Before finishing, check your plan actually contains ${activeDays} active day(s) and ${7 - activeDays} rest day(s) — not a uniform week.
 Dietary framework: ${frameworkList}
 Additional allergies or foods to avoid: ${allergies && allergies.trim() ? allergies.trim() : 'None'}
