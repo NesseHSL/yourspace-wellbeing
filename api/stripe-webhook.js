@@ -61,6 +61,23 @@ async function updatePurchasesForSubscription(subscriptionId, { isActive, expire
   }
 }
 
+// Newer Stripe API versions (2025-03-31 onwards) moved invoice.subscription
+// to invoice.parent.subscription_details.subscription, and moved
+// current_period_end from the subscription onto its items. Read both shapes
+// so renewals keep extending access whichever version Stripe sends.
+function getInvoiceSubscriptionId(invoice) {
+  return invoice?.subscription
+    || invoice?.parent?.subscription_details?.subscription
+    || null;
+}
+
+function getPeriodEnd(subscription, invoice) {
+  const seconds = subscription?.current_period_end
+    || subscription?.items?.data?.[0]?.current_period_end
+    || invoice?.lines?.data?.[0]?.period?.end;
+  return seconds ? new Date(seconds * 1000).toISOString() : null;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -81,15 +98,20 @@ export default async function handler(req, res) {
       // Fires on every successful subscription payment, including renewals —
       // this is what keeps expires_at current without anyone re-purchasing.
       case 'invoice.paid': {
-        const subscriptionId = event.data.object.subscription;
-        if (!subscriptionId) break;
+        const invoice = event.data.object;
+        const subscriptionId = getInvoiceSubscriptionId(invoice);
+        if (!subscriptionId) {
+          console.warn('invoice.paid with no subscription id', invoice.id);
+          break;
+        }
 
         const subRes = await fetch(
           `https://api.stripe.com/v1/subscriptions/${subscriptionId}`,
           { headers: { 'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}` } }
         );
         const subscription = await subRes.json();
-        const expiresAt = new Date(subscription.current_period_end * 1000).toISOString();
+        const expiresAt = getPeriodEnd(subscription, invoice);
+        if (!expiresAt) throw new Error(`No period end for subscription ${subscriptionId}`);
 
         // Sofa to Studio is deliberately excluded — it keeps the fixed
         // 60-day window set at purchase (api/record-purchase.js) rather than
@@ -109,7 +131,7 @@ export default async function handler(req, res) {
       }
 
       case 'invoice.payment_failed': {
-        const subscriptionId = event.data.object.subscription;
+        const subscriptionId = getInvoiceSubscriptionId(event.data.object);
         if (subscriptionId) {
           await updatePurchasesForSubscription(subscriptionId, { isActive: false });
         }
